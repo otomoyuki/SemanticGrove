@@ -1,0 +1,6 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">次の色は？（パターン18）</text>
+  <circle cx="150" cy="150" r="40" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  <circle cx="300" cy="150" r="40" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <text x="450" y="165" font-size="40" font-weight="bold" text-anchor="middle" fill="#666">?</text>
+</svg>

@@ -1,0 +1,176 @@
+import sqlite3
+import json
+
+DB_NAME = "SemanticGrove.db"
+
+def add_vba_20_questions_part2():
+    """VBA問題20問追加（第2弾：30問→50問）"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    print("=" * 60)
+    print("VBA問題追加スクリプト（第2弾：20問）")
+    print("=" * 60)
+    
+    questions = []
+    
+    # ==================== プロシージャ・関数（10問） ====================
+    print("[1/2] プロシージャ・関数を生成中...")
+    
+    procedures = [
+        ("Subプロシージャの定義は？",
+         [{"id":"A","text":"Sub ProcName() ... End Sub"},{"id":"B","text":"procedure ProcName() { ... }"},{"id":"C","text":"def ProcName(): ..."},{"id":"D","text":"void ProcName() { ... }"}],
+         [0], "プロシージャ", "1", 5, "戻り値なしの処理", "Sub"),
+        
+        ("Functionプロシージャの定義は？",
+         [{"id":"A","text":"Function FuncName() As Integer ... End Function"},{"id":"B","text":"function FuncName(): Integer { ... }"},{"id":"C","text":"def FuncName() -> int: ..."},{"id":"D","text":"int FuncName() { ... }"}],
+         [0], "プロシージャ", "2", 7, "戻り値ありの処理", "Function"),
+        
+        ("引数の渡し方でByValは？",
+         [{"id":"A","text":"値渡し（コピーを渡す）"},{"id":"B","text":"参照渡し"},{"id":"C","text":"ポインタ渡し"},{"id":"D","text":"アドレス渡し"}],
+         [0], "プロシージャ", "2", 8, "値のコピー", "ByVal"),
+        
+        ("引数の渡し方でByRefは？",
+         [{"id":"A","text":"参照渡し（元の変数を変更可能）"},{"id":"B","text":"値渡し"},{"id":"C","text":"コピー渡し"},{"id":"D","text":"定数渡し"}],
+         [0], "プロシージャ", "2", 8, "参照の共有", "ByRef"),
+        
+        ("VBAのデフォルトの引数渡し方は？",
+         [{"id":"A","text":"ByRef（参照渡し）"},{"id":"B","text":"ByVal（値渡し）"},{"id":"C","text":"指定必須"},{"id":"D","text":"状況による"}],
+         [0], "プロシージャ", "3", 9, "既定の動作", "default passing"),
+        
+        ("Optional引数の特徴は？",
+         [{"id":"A","text":"省略可能な引数"},{"id":"B","text":"必須の引数"},{"id":"C","text":"可変長引数"},{"id":"D","text":"名前付き引数"}],
+         [0], "プロシージャ", "3", 9, "任意の引数", "Optional"),
+        
+        ("ParamArrayの用途は？",
+         [{"id":"A","text":"可変長引数（任意個の引数を受け取る）"},{"id":"B","text":"配列を返す"},{"id":"C","text":"省略可能な引数"},{"id":"D","text":"名前付き引数"}],
+         [0], "プロシージャ", "4", 11, "可変個引数", "ParamArray"),
+        
+        ("Callステートメントの役割は？",
+         [{"id":"A","text":"プロシージャを明示的に呼び出し"},{"id":"B","text":"プロシージャを定義"},{"id":"C","text":"プロシージャを終了"},{"id":"D","text":"プロシージャを削除"}],
+         [0], "プロシージャ", "2", 7, "明示的呼び出し", "Call"),
+        
+        ("Staticキーワードの役割は？",
+         [{"id":"A","text":"変数の値を保持（プロシージャ終了後も）"},{"id":"B","text":"定数を定義"},{"id":"C","text":"グローバル変数"},{"id":"D","text":"読み取り専用"}],
+         [0], "プロシージャ", "3", 10, "状態の保持", "Static"),
+        
+        ("Exit Functionの役割は？",
+         [{"id":"A","text":"Functionプロシージャを抜ける"},{"id":"B","text":"Subプロシージャを抜ける"},{"id":"C","text":"ループを抜ける"},{"id":"D","text":"プログラム終了"}],
+         [0], "プロシージャ", "2", 7, "関数の終了", "Exit Function"),
+    ]
+    
+    questions.extend(procedures)
+    print(f"  ✓ プロシージャ・関数: {len(procedures)}問")
+    
+    # ==================== 配列・オブジェクト・エラー処理（10問） ====================
+    print("[2/2] 配列・オブジェクト・エラー処理を生成中...")
+    
+    advanced = [
+        ("配列の宣言方法は？",
+         [{"id":"A","text":"Dim arr(1 To 10) As Integer"},{"id":"B","text":"int[] arr = new int[10]"},{"id":"C","text":"arr = [0] * 10"},{"id":"D","text":"var arr = new Array(10)"}],
+         [0], "配列", "2", 7, "固定サイズ配列", "array"),
+        
+        ("動的配列の宣言は？",
+         [{"id":"A","text":"Dim arr() As Integer と ReDim"},{"id":"B","text":"Dim arr[] As Integer"},{"id":"C","text":"Dynamic arr As Integer"},{"id":"D","text":"var arr = []"}],
+         [0], "配列", "3", 9, "可変サイズ配列", "dynamic array"),
+        
+        ("ReDim Preserveの役割は？",
+         [{"id":"A","text":"配列のサイズ変更（データ保持）"},{"id":"B","text":"配列の初期化"},{"id":"C","text":"配列の削除"},{"id":"D","text":"配列のコピー"}],
+         [0], "配列", "3", 10, "データを保持してリサイズ", "ReDim Preserve"),
+        
+        ("UBound関数の役割は？",
+         [{"id":"A","text":"配列の最大インデックスを取得"},{"id":"B","text":"配列の最小インデックス"},{"id":"C","text":"配列の要素数"},{"id":"D","text":"配列の合計値"}],
+         [0], "配列", "2", 8, "上限の取得", "UBound"),
+        
+        ("LBound関数の役割は？",
+         [{"id":"A","text":"配列の最小インデックスを取得"},{"id":"B","text":"配列の最大インデックス"},{"id":"C","text":"配列の要素数"},{"id":"D","text":"配列の最小値"}],
+         [0], "配列", "2", 8, "下限の取得", "LBound"),
+        
+        ("Set文の用途は？",
+         [{"id":"A","text":"オブジェクト変数への代入"},{"id":"B","text":"数値変数への代入"},{"id":"C","text":"文字列変数への代入"},{"id":"D","text":"定数の定義"}],
+         [0], "オブジェクト", "2", 8, "オブジェクト参照", "Set"),
+        
+        ("Nothingの意味は？",
+         [{"id":"A","text":"オブジェクト参照を解放"},{"id":"B","text":"0"},{"id":"C","text":"空文字列"},{"id":"D","text":"False"}],
+         [0], "オブジェクト", "2", 8, "オブジェクトの空参照", "Nothing"),
+        
+        ("On Error Resume Nextの効果は？",
+         [{"id":"A","text":"エラーを無視して次の行へ"},{"id":"B","text":"エラー発生時に停止"},{"id":"C","text":"エラーをログ出力"},{"id":"D","text":"エラーを再発生"}],
+         [0], "エラー処理", "2", 8, "エラーのスキップ", "On Error Resume Next"),
+        
+        ("On Error GoTo ラベルの効果は？",
+         [{"id":"A","text":"エラー発生時に指定ラベルへジャンプ"},{"id":"B","text":"エラーを無視"},{"id":"C","text":"プログラム終了"},{"id":"D","text":"エラーをログ出力"}],
+         [0], "エラー処理", "3", 9, "エラーハンドラへ移動", "On Error GoTo"),
+        
+        ("Err.Numberの役割は？",
+         [{"id":"A","text":"エラー番号を取得"},{"id":"B","text":"エラーメッセージを取得"},{"id":"C","text":"エラー発生行を取得"},{"id":"D","text":"エラーをクリア"}],
+         [0], "エラー処理", "3", 9, "エラーコード", "Err.Number"),
+    ]
+    
+    questions.extend(advanced)
+    print(f"  ✓ 配列・オブジェクト・エラー処理: {len(advanced)}問")
+    
+    # データベースに挿入
+    print("\nデータベースに保存中...")
+    for q in questions:
+        question_json = {
+            "question": q[0],
+            "options": q[1],
+            "answer": q[2]
+        }
+        
+        cursor.execute("""
+            INSERT INTO questions 
+            (language, question_json, category, difficulty, score, meaning, usage)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("VBA", json.dumps(question_json, ensure_ascii=False), 
+              q[3], q[4], q[5], q[6], q[7]))
+    
+    conn.commit()
+    
+    # 統計表示
+    cursor.execute("SELECT COUNT(*) FROM questions WHERE language = 'VBA'")
+    vba_count = cursor.fetchone()[0]
+    
+    cursor.execute("""
+        SELECT category, COUNT(*) as count 
+        FROM questions 
+        WHERE language = 'VBA' 
+        GROUP BY category 
+        ORDER BY count DESC
+    """)
+    categories = cursor.fetchall()
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    total_count = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    print("\n" + "=" * 60)
+    print("🎊🎊🎊 VBA 50問達成！！！ 🎊🎊🎊")
+    print("=" * 60)
+    print(f"VBA問題数: 10問 → {vba_count}問（+40問）")
+    print(f"全体問題数: {total_count}問")
+    
+    print("\n【VBAカテゴリ別内訳】")
+    for cat, count in categories:
+        print(f"  {cat}: {count}問")
+    
+    print("\n" + "=" * 60)
+    print("✅✅✅ VBA 50問達成！ ✅✅✅")
+    print("\n【全体達成状況】")
+    print("  🎯 主要バックエンド: Java(150), C#(150), Python(314), PHP(203)")
+    print("  🎯 フロントエンド: React(80), CSS(100), HTML(80), JS(104)")
+    print("  🎯 モダン言語: TypeScript(80), Go(80), Ruby(80)")
+    print(f"  🎯 ビジネス言語: VBA({vba_count}), COBOL(15)")
+    print(f"\n  📊 総問題数: {total_count}問")
+    print(f"  🎯 目標2,000問まで残り: 約{2000 - total_count}問")
+    print("\n【次の目標候補】")
+    print("  🎯 COBOL: 15問 → 50問（+35問）← 残り1言語")
+    print("  または")
+    print("  🎯 JavaScript: 104問 → 150問（+46問）")
+    print("  🎯 React: 80問 → 100問（+20問）")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    add_vba_20_questions_part2()

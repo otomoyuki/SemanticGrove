@@ -1,0 +1,7 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">図形パターン27</text>
+  <circle cx="120" cy="150" r="30" fill="#06b6d4" stroke="#333" stroke-width="2"/>
+  <rect x="210" y="120" width="60" height="60" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+  <polygon points="380,120 410,180 350,180" fill="#ec4899" stroke="#333" stroke-width="2"/>
+  <text x="300" y="280" font-size="16" text-anchor="middle" fill="#666">次に来る図形は？</text>
+</svg>

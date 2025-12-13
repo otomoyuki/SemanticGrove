@@ -1,0 +1,7 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">数のパターン34</text>
+  <text x="120" y="150" font-size="48" text-anchor="middle" fill="#333">4</text>
+  <text x="250" y="150" font-size="48" text-anchor="middle" fill="#333">8</text>
+  <text x="380" y="150" font-size="48" text-anchor="middle" fill="#333">12</text>
+  <text x="300" y="250" font-size="40" text-anchor="middle" fill="#e11d48">?</text>
+</svg>

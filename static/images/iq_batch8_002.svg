@@ -1,0 +1,18 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">図形の数のパターンは？</text>
+  
+  <!-- 1個 -->
+  <circle cx="100" cy="120" r="20" fill="#10b981" stroke="#333" stroke-width="2"/>
+  
+  <!-- 2個 -->
+  <circle cx="220" cy="120" r="20" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <circle cx="260" cy="120" r="20" fill="#10b981" stroke="#333" stroke-width="2"/>
+  
+  <!-- 3個 -->
+  <circle cx="360" cy="120" r="20" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <circle cx="400" cy="120" r="20" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <circle cx="440" cy="120" r="20" fill="#10b981" stroke="#333" stroke-width="2"/>
+  
+  <!-- ? -->
+  <text x="300" y="250" font-size="48" font-weight="bold" text-anchor="middle" fill="#666">次は何個？</text>
+</svg>

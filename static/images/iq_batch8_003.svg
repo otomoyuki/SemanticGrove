@@ -1,0 +1,9 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">次に来る図形は？</text>
+  
+  <circle cx="100" cy="150" r="40" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+  <rect x="210" y="110" width="80" height="80" fill="#8b5cf6" stroke="#333" stroke-width="2"/>
+  <polygon points="400,110 440,190 360,190" fill="#ec4899" stroke="#333" stroke-width="2"/>
+  
+  <text x="300" y="300" font-size="48" font-weight="bold" text-anchor="middle" fill="#666">?</text>
+</svg>

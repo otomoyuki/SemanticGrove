@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SemanticGrove - 新規登録</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- ツールバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button">学習モード</a>
+      <a href="/practice/low" class="toolbar-button">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button active">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+  
+  <div class="main-content">
+    <h1 class="logo-title">SemanticGrove</h1>
+    <h2>新規登録</h2>
+    
+    <!-- フラッシュメッセージ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- 登録フォーム -->
+    <div class="form-container">
+      <form method="POST" action="/register">
+        <div class="form-group">
+          <label for="username">ユーザー名 *</label>
+          <input type="text" id="username" name="username" required 
+                 autocomplete="username"
+                 placeholder="半角英数字3-20文字">
+        </div>
+        
+        <div class="form-group">
+          <label for="display_name">表示名 *</label>
+          <input type="text" id="display_name" name="display_name" required 
+                 placeholder="プロフィールに表示される名前">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">メールアドレス *</label>
+          <input type="email" id="email" name="email" required 
+                 autocomplete="email"
+                 placeholder="example@example.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">パスワード *</label>
+          <input type="password" id="password" name="password" required 
+                 autocomplete="new-password"
+                 placeholder="8文字以上">
+        </div>
+        
+        <div class="form-group">
+          <label for="password_confirm">パスワード（確認） *</label>
+          <input type="password" id="password_confirm" name="password_confirm" required 
+                 autocomplete="new-password"
+                 placeholder="もう一度入力してください">
+        </div>
+        
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary">登録する</button>
+        </div>
+      </form>
+      
+      <div class="form-footer">
+        <p>すでにアカウントをお持ちですか？ <a href="/login">ログイン</a></p>
+      </div>
+      
+      <div class="test-account-info">
+        <h3>💡 ヒント</h3>
+        <p>すぐに試したい方は<a href="/login">ログイン</a>から</p>
+        <p>テストアカウントをご利用ください</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

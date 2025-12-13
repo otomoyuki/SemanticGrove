@@ -1,0 +1,230 @@
+import sqlite3
+import json
+
+DB_NAME = "SemanticGrove.db"
+
+def add_go_35_questions_part1():
+    """Go問題35問追加（第1弾：11問→46問）"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    print("=" * 60)
+    print("Go問題追加スクリプト（第1弾：35問）")
+    print("=" * 60)
+    
+    questions = []
+    
+    # ==================== 基本文法（10問） ====================
+    print("[1/4] 基本文法を生成中...")
+    
+    basics = [
+        ("Go言語の変数宣言の正しい形は？",
+         [{"id":"A","text":"var name string"},{"id":"B","text":"string name"},{"id":"C","text":"let name: string"},{"id":"D","text":"name: string"}],
+         [0], "基本文法", "1", 5, "変数宣言", "var"),
+        
+        ("短縮変数宣言の記述は？",
+         [{"id":"A","text":"name := \"Go\""},{"id":"B","text":"var name = \"Go\""},{"id":"C","text":"let name = \"Go\""},{"id":"D","text":"const name = \"Go\""}],
+         [0], "基本文法", "1", 5, "型推論による宣言", ":="),
+        
+        ("定数の宣言方法は？",
+         [{"id":"A","text":"const Pi = 3.14"},{"id":"B","text":"var Pi = 3.14"},{"id":"C","text":"let Pi = 3.14"},{"id":"D","text":"final Pi = 3.14"}],
+         [0], "基本文法", "1", 5, "定数定義", "const"),
+        
+        ("複数の変数を同時に宣言するには？",
+         [{"id":"A","text":"var x, y int"},{"id":"B","text":"var x int, y int"},{"id":"C","text":"int x, y"},{"id":"D","text":"var (x, y) int"}],
+         [0], "基本文法", "2", 7, "複数変数宣言", "multiple declaration"),
+        
+        ("ゼロ値（zero value）とは？",
+         [{"id":"A","text":"変数の初期値（int:0, bool:false等）"},{"id":"B","text":"nil値"},{"id":"C","text":"空文字列"},{"id":"D","text":"未定義"}],
+         [0], "基本文法", "2", 7, "デフォルト値", "zero value"),
+        
+        ("型変換の記述方法は？",
+         [{"id":"A","text":"float64(x)"},{"id":"B","text":"(float64)x"},{"id":"C","text":"x as float64"},{"id":"D","text":"x.toFloat64()"}],
+         [0], "基本文法", "2", 7, "キャスト", "type conversion"),
+        
+        ("Goの基本型でないものは？",
+         [{"id":"A","text":"char"},{"id":"B","text":"int"},{"id":"C","text":"float64"},{"id":"D","text":"bool"}],
+         [0], "基本文法", "1", 5, "データ型の理解", "types"),
+        
+        ("runeは何の別名？",
+         [{"id":"A","text":"int32（Unicode文字）"},{"id":"B","text":"byte"},{"id":"C","text":"string"},{"id":"D","text":"char"}],
+         [0], "基本文法", "2", 7, "文字型", "rune"),
+        
+        ("byteは何の別名？",
+         [{"id":"A","text":"uint8"},{"id":"B","text":"int8"},{"id":"C","text":"char"},{"id":"D","text":"rune"}],
+         [0], "基本文法", "2", 7, "バイト型", "byte"),
+        
+        ("未使用変数がある場合は？",
+         [{"id":"A","text":"コンパイルエラー"},{"id":"B","text":"警告のみ"},{"id":"C","text":"実行時エラー"},{"id":"D","text":"問題なし"}],
+         [0], "基本文法", "2", 7, "厳格なルール", "unused variable"),
+    ]
+    
+    questions.extend(basics)
+    print(f"  ✓ 基本文法: {len(basics)}問")
+    
+    # ==================== 制御構文（10問） ====================
+    print("[2/4] 制御構文を生成中...")
+    
+    controls = [
+        ("for文の基本形は？",
+         [{"id":"A","text":"for i := 0; i < 10; i++ {}"},{"id":"B","text":"for (i := 0; i < 10; i++) {}"},{"id":"C","text":"for i in range(10) {}"},{"id":"D","text":"foreach i in 10 {}"}],
+         [0], "制御構文", "1", 5, "ループの基本", "for"),
+        
+        ("無限ループの記述は？",
+         [{"id":"A","text":"for {}"},{"id":"B","text":"while true {}"},{"id":"C","text":"loop {}"},{"id":"D","text":"for (;;) {}"}],
+         [0], "制御構文", "2", 7, "無限繰り返し", "infinite loop"),
+        
+        ("range文の使い方は？",
+         [{"id":"A","text":"for i, v := range slice {}"},{"id":"B","text":"for i, v in slice {}"},{"id":"C","text":"foreach (i, v) in slice {}"},{"id":"D","text":"for slice as i => v {}"}],
+         [0], "制御構文", "2", 7, "コレクション走査", "range"),
+        
+        ("Goにwhile文は存在する？",
+         [{"id":"A","text":"存在しない（forで代用）"},{"id":"B","text":"while文がある"},{"id":"C","text":"do-while文がある"},{"id":"D","text":"until文がある"}],
+         [0], "制御構文", "2", 7, "ループの種類", "while"),
+        
+        ("if文で変数を初期化するには？",
+         [{"id":"A","text":"if v := getValue(); v > 0 {}"},{"id":"B","text":"if (v := getValue()) > 0 {}"},{"id":"C","text":"v := getValue(); if v > 0 {}"},{"id":"D","text":"if getValue() as v > 0 {}"}],
+         [0], "制御構文", "3", 9, "スコープ付き条件", "if with statement"),
+        
+        ("switch文のデフォルトは？",
+         [{"id":"A","text":"自動的にbreakされる"},{"id":"B","text":"fallthroughが必要"},{"id":"C","text":"breakが必要"},{"id":"D","text":"continueが必要"}],
+         [0], "制御構文", "2", 8, "フォールスルーなし", "switch"),
+        
+        ("fallthroughの役割は？",
+         [{"id":"A","text":"次のcaseに処理を続ける"},{"id":"B","text":"switchを抜ける"},{"id":"C","text":"ループを抜ける"},{"id":"D","text":"関数を抜ける"}],
+         [0], "制御構文", "3", 9, "意図的な継続", "fallthrough"),
+        
+        ("型によるswitch文は？",
+         [{"id":"A","text":"switch v := x.(type) {}"},{"id":"B","text":"switch typeof(x) {}"},{"id":"C","text":"switch x.type {}"},{"id":"D","text":"typeswitch x {}"}],
+         [0], "制御構文", "3", 10, "型判定", "type switch"),
+        
+        ("defer文の実行タイミングは？",
+         [{"id":"A","text":"関数終了時"},{"id":"B","text":"即座に実行"},{"id":"C","text":"スコープ終了時"},{"id":"D","text":"プログラム終了時"}],
+         [0], "制御構文", "3", 9, "遅延実行", "defer"),
+        
+        ("複数のdeferの実行順は？",
+         [{"id":"A","text":"LIFO（後入れ先出し）"},{"id":"B","text":"FIFO（先入れ先出し）"},{"id":"C","text":"ランダム"},{"id":"D","text":"宣言順"}],
+         [0], "制御構文", "3", 10, "スタック順序", "defer order"),
+    ]
+    
+    questions.extend(controls)
+    print(f"  ✓ 制御構文: {len(controls)}問")
+    
+    # ==================== 関数（10問） ====================
+    print("[3/4] 関数を生成中...")
+    
+    functions = [
+        ("関数の基本定義は？",
+         [{"id":"A","text":"func add(x int, y int) int {}"},{"id":"B","text":"function add(x, y int) int {}"},{"id":"C","text":"def add(x: int, y: int) -> int:"},{"id":"D","text":"int add(int x, int y) {}"}],
+         [0], "関数", "1", 5, "関数宣言", "func"),
+        
+        ("同じ型の引数をまとめる書き方は？",
+         [{"id":"A","text":"func add(x, y int) int {}"},{"id":"B","text":"func add(x int, y) int {}"},{"id":"C","text":"func add(int x, y) int {}"},{"id":"D","text":"func add(x: int, y: int) int {}"}],
+         [0], "関数", "2", 7, "引数の省略記法", "parameter grouping"),
+        
+        ("複数の戻り値を返すには？",
+         [{"id":"A","text":"func divide(x, y int) (int, error) {}"},{"id":"B","text":"func divide(x, y int) int, error {}"},{"id":"C","text":"func divide(x, y int) (int | error) {}"},{"id":"D","text":"func divide(x, y int) [int, error] {}"}],
+         [0], "関数", "2", 8, "多値返却", "multiple returns"),
+        
+        ("名前付き戻り値の記述は？",
+         [{"id":"A","text":"func divide(x, y int) (result int, err error) {}"},{"id":"B","text":"func divide(x, y int) (int result, error err) {}"},{"id":"C","text":"func divide(x, y int) result int, err error {}"},{"id":"D","text":"func divide(x, y int) int as result, error as err {}"}],
+         [0], "関数", "3", 9, "返却値の命名", "named returns"),
+        
+        ("可変長引数の定義は？",
+         [{"id":"A","text":"func sum(nums ...int) int {}"},{"id":"B","text":"func sum(nums []int) int {}"},{"id":"C","text":"func sum(...nums int) int {}"},{"id":"D","text":"func sum(int... nums) int {}"}],
+         [0], "関数", "2", 8, "任意個の引数", "variadic"),
+        
+        ("関数を変数に代入するには？",
+         [{"id":"A","text":"f := func(x int) int { return x * 2 }"},{"id":"B","text":"f = function(x int) int { return x * 2 }"},{"id":"C","text":"var f = (x int) => x * 2"},{"id":"D","text":"f := (x int) -> x * 2"}],
+         [0], "関数", "2", 8, "無名関数", "function literal"),
+        
+        ("クロージャの特徴は？",
+         [{"id":"A","text":"外部変数を参照できる"},{"id":"B","text":"外部変数を参照できない"},{"id":"C","text":"グローバル変数のみ参照可"},{"id":"D","text":"引数のみ使用可"}],
+         [0], "関数", "3", 10, "変数の捕捉", "closure"),
+        
+        ("メソッドの定義方法は？",
+         [{"id":"A","text":"func (v Vertex) Abs() float64 {}"},{"id":"B","text":"func Vertex.Abs() float64 {}"},{"id":"C","text":"method Abs() float64 on Vertex {}"},{"id":"D","text":"Vertex::Abs() float64 {}"}],
+         [0], "関数", "2", 8, "レシーバ付き関数", "method"),
+        
+        ("ポインタレシーバの利点は？",
+         [{"id":"A","text":"値を変更できる"},{"id":"B","text":"コピーが速い"},{"id":"C","text":"メモリ使用量削減"},{"id":"D","text":"すべて正しい"}],
+         [3], "関数", "3", 10, "参照渡し", "pointer receiver"),
+        
+        ("initファイルの役割は？",
+         [{"id":"A","text":"パッケージ初期化時に自動実行"},{"id":"B","text":"メイン関数の代わり"},{"id":"C","text":"設定ファイル読み込み"},{"id":"D","text":"テスト用関数"}],
+         [0], "関数", "3", 10, "初期化処理", "init"),
+    ]
+    
+    questions.extend(functions)
+    print(f"  ✓ 関数: {len(functions)}問")
+    
+    # ==================== データ構造（5問） ====================
+    print("[4/4] データ構造を生成中...")
+    
+    data_structures = [
+        ("配列の宣言方法は？",
+         [{"id":"A","text":"var arr [5]int"},{"id":"B","text":"var arr []int"},{"id":"C","text":"arr := array[5]int"},{"id":"D","text":"int[5] arr"}],
+         [0], "データ構造", "1", 5, "固定長配列", "array"),
+        
+        ("スライスの作成方法は？",
+         [{"id":"A","text":"s := []int{1, 2, 3}"},{"id":"B","text":"s := [3]int{1, 2, 3}"},{"id":"C","text":"s := array(1, 2, 3)"},{"id":"D","text":"s := list[int]{1, 2, 3}"}],
+         [0], "データ構造", "2", 7, "動的配列", "slice"),
+        
+        ("makeでスライスを作成するには？",
+         [{"id":"A","text":"s := make([]int, 5)"},{"id":"B","text":"s := make(int[], 5)"},{"id":"C","text":"s := new([]int, 5)"},{"id":"D","text":"s := slice[int](5)"}],
+         [0], "データ構造", "2", 8, "初期化", "make"),
+        
+        ("mapの宣言方法は？",
+         [{"id":"A","text":"m := make(map[string]int)"},{"id":"B","text":"m := map<string, int>{}"},{"id":"C","text":"m := new Map<string, int>"},{"id":"D","text":"m := dict[string]int{}"}],
+         [0], "データ構造", "2", 7, "連想配列", "map"),
+        
+        ("構造体の定義は？",
+         [{"id":"A","text":"type Person struct { Name string }"},{"id":"B","text":"struct Person { Name string }"},{"id":"C","text":"class Person { Name string }"},{"id":"D","text":"type Person = { Name: string }"}],
+         [0], "データ構造", "2", 7, "複合型", "struct"),
+    ]
+    
+    questions.extend(data_structures)
+    print(f"  ✓ データ構造: {len(data_structures)}問")
+    
+    # データベースに挿入
+    print("\nデータベースに保存中...")
+    for q in questions:
+        question_json = {
+            "question": q[0],
+            "options": q[1],
+            "answer": q[2]
+        }
+        
+        cursor.execute("""
+            INSERT INTO questions 
+            (language, question_json, category, difficulty, score, meaning, usage)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("Go", json.dumps(question_json, ensure_ascii=False), 
+              q[3], q[4], q[5], q[6], q[7]))
+    
+    conn.commit()
+    
+    # 統計表示
+    cursor.execute("SELECT COUNT(*) FROM questions WHERE language = 'Go'")
+    go_count = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    total_count = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    print("\n" + "=" * 60)
+    print(f"✅ Go 第1弾完了: {go_count}問")
+    print("=" * 60)
+    print(f"Go問題数: 11問 → {go_count}問（+35問）")
+    print(f"全体問題数: {total_count}問")
+    print("\n【追加内容】")
+    print("  ✓ 基本文法: 10問")
+    print("  ✓ 制御構文: 10問")
+    print("  ✓ 関数: 10問")
+    print("  ✓ データ構造: 5問")
+    print("\n🎯 次回: 第2弾で残り34問追加 → 80問達成")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    add_go_35_questions_part1()

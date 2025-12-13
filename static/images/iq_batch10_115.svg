@@ -1,0 +1,9 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">組み合わせ115：7個から2個選ぶ方法は？</text>
+  <circle cx="200" cy="140" r="30" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+  <circle cx="260" cy="140" r="30" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <circle cx="320" cy="140" r="30" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+  <circle cx="380" cy="140" r="30" fill="#ec4899" stroke="#333" stroke-width="2"/>
+  <text x="300" y="220" font-size="20" text-anchor="middle" fill="#333">↓ 2個選ぶ ↓</text>
+  <text x="300" y="280" font-size="16" text-anchor="middle" fill="#666">組み合わせの数は？</text>
+</svg>

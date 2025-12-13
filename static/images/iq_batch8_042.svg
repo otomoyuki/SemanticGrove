@@ -1,0 +1,8 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">複合パターン42</text>
+  <rect x="100" y="100" width="400" height="200" fill="none" stroke="#333" stroke-width="2"/>
+  <circle cx="200" cy="150" r="25" fill="#14b8a6" stroke="#333" stroke-width="2"/>
+  <rect x="280" y="125" width="50" height="50" fill="#a78bfa" stroke="#333" stroke-width="2"/>
+  <polygon points="420,125 445,175 395,175" fill="#f43f5e" stroke="#333" stroke-width="2"/>
+  <text x="300" y="260" font-size="16" text-anchor="middle" fill="#666">規則性を見つけよ</text>
+</svg>

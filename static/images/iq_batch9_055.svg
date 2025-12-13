@@ -1,0 +1,8 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">時計パターン55：次の時刻は？</text>
+  <circle cx="200" cy="180" r="60" fill="white" stroke="#333" stroke-width="3"/>
+  <line x1="200" y1="180" x2="200" y2="140" stroke="#333" stroke-width="3"/>
+  <line x1="200" y1="180" x2="230" y2="180" stroke="#e11d48" stroke-width="2"/>
+  <text x="450" y="190" font-size="40" text-anchor="middle" fill="#666">?</text>
+  <text x="300" y="320" font-size="14" text-anchor="middle" fill="#666">2時間後は？</text>
+</svg>

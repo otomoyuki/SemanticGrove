@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SemanticGrove - 上級モード</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- ツールバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button">学習モード</a>
+      <a href="/practice/low" class="toolbar-button">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button active">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <div class="content-wrapper">
+    
+    <!-- 左側：メイン -->
+    <div class="main-content">
+      <h1 class="logo-title">SemanticGrove</h1>
+      <h2>上級モード（ランキングチャレンジ）</h2>
+      
+      <p>全難易度の問題に挑戦！タイムとスコアでランキングに挑戦しよう</p>
+
+      <!-- ログイン状態で非表示 -->
+      {% if not current_user.is_authenticated %}
+      <div class="warning-box">
+        <p>⚠️ 上級モードはログインが必要です</p>
+        <p>ランキングに記録するには<a href="/login">ログイン</a>してください</p>
+        <p>ゲストとしてプレイすることもできます（記録されません）</p>
+      </div>
+      {% endif %}
+
+      <!-- 言語選択 -->
+      <div class="setup-area" id="setupArea">
+        <label for="language">言語を選択：</label>
+        <select id="language">
+          <option value="Python">Python</option>
+          <option value="PHP">PHP</option>
+          <option value="C#">C#</option>
+          <option value="Java">Java</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="CSS">CSS</option>
+          <option value="Go">Go</option>
+          <option value="HTML">HTML</option>
+          <option value="Kotlin">Kotlin</option>
+          <option value="React">React</option>
+          <option value="Ruby">Ruby</option>
+          <option value="Rust">Rust</option>
+          <option value="Swift">Swift</option>
+          <option value="TypeScript">TypeScript</option>
+          <option value="COBOL">COBOL</option>
+          <option value="VBA">VBA</option>
+          <option value="IQ">IQ</option>
+        </select>
+
+        <div class="button-group">
+          <button onclick="startChallenge()" class="start-button">チャレンジ開始</button>
+          <button onclick="viewRanking()" class="ranking-button">ランキングを見る</button>
+        </div>
+      </div>
+
+      <!-- 問題エリア -->
+      <div id="questionArea" style="display:none;">
+        <div class="question-box">
+          <h3 id="questionText">問題文がここに表示されます</h3>
+          <div class="choices" id="choicesArea">
+            <!-- 選択肢がJavaScriptで動的に生成されます -->
+          </div>
+        </div>
+      </div>
+
+      <!-- フィードバックエリア -->
+      <div class="feedback" id="feedbackArea" style="display:none;"></div>
+
+      <!-- 解説エリア -->
+      <div class="explanation-box" id="explanationArea" style="display:none;">
+        <h3>解説</h3>
+        <p id="explanationText"></p>
+        <h4>学習ポイント</h4>
+        <p id="learningPointText"></p>
+      </div>
+
+      <!-- 次へボタン -->
+      <div class="next-button-area" id="nextButtonArea" style="display:none;">
+        <button onclick="goNextHigh()">次へ</button>
+      </div>
+
+      <!-- 結果表示エリア -->
+      <div class="result-box" id="resultArea" style="display:none;">
+        <h2>お疲れ様でした！</h2>
+        <div class="result-stats">
+          <p>総問題数: <span id="finalTotal">0</span>問</p>
+          <p>正解数: <span id="finalCorrect">0</span>問</p>
+          <p>不正解数: <span id="finalIncorrect">0</span>問</p>
+          <p>正答率: <span id="finalAccuracy">0</span>%</p>
+          <p>タイム: <span id="finalTime">00:00</span></p>
+          <p>獲得点数: <span id="finalScore">0</span>点</p>
+        </div>
+        <div id="rankingMessage" style="margin: 20px 0; font-size: 18px; font-weight: bold;"></div>
+        <div class="result-buttons">
+          <button onclick="restartHigh()">もう一度挑戦</button>
+          <button onclick="location.href='/'">ホームに戻る</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右側：問題一覧パネル -->
+    <div class="side-panel" id="sidePanel" style="display:none;">
+      <div class="stats-summary">
+        <h3 id="panelLanguage">JavaScript</h3>
+        <div class="progress-info">
+          <span id="currentQuestionNumber">1</span> / <span id="totalQuestions">10</span>
+        </div>
+        <div class="accuracy-display">
+          正解率: <span id="accuracyRate">0%</span>
+        </div>
+        <div style="margin-top: 10px; font-size: 14px;">
+          ⏱️ <span id="timerDisplay">00:00</span>
+        </div>
+      </div>
+
+      <div class="question-list" id="questionList">
+        <!-- JavaScriptで動的生成 -->
+      </div>
+    </div>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='practice-high.js') }}"></script>
+</body>
+</html>

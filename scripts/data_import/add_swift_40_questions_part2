@@ -1,0 +1,294 @@
+import sqlite3
+import json
+
+DB_NAME = "SemanticGrove.db"
+
+def add_swift_40_questions_part2():
+    """Swift問題40問追加（第2弾：40問→80問）"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    print("=" * 60)
+    print("Swift問題追加スクリプト（第2弾：40問）")
+    print("=" * 60)
+    
+    questions = []
+    
+    # ==================== クラス・構造体（10問） ====================
+    print("[1/4] クラス・構造体を生成中...")
+    
+    classes_structs = [
+        ("構造体の定義方法は？",
+         [{"id":"A","text":"struct Person { var name: String }"},{"id":"B","text":"class Person { var name: String }"},{"id":"C","text":"type Person = { name: String }"},{"id":"D","text":"object Person { name: String }"}],
+         [0], "構造体", "2", 7, "値型の定義", "struct"),
+        
+        ("クラスの定義方法は？",
+         [{"id":"A","text":"class Person { var name: String }"},{"id":"B","text":"struct Person { var name: String }"},{"id":"C","text":"type Person = class { name: String }"},{"id":"D","text":"object Person { name: String }"}],
+         [0], "クラス", "2", 7, "参照型の定義", "class"),
+        
+        ("構造体とクラスの違いは？",
+         [{"id":"A","text":"構造体は値型、クラスは参照型"},{"id":"B","text":"構造体は参照型、クラスは値型"},{"id":"C","text":"同じ"},{"id":"D","text":"構造体は継承可能"}],
+         [0], "クラス・構造体", "3", 10, "値型vs参照型", "struct vs class"),
+        
+        ("イニシャライザの定義は？",
+         [{"id":"A","text":"init(name: String) { self.name = name }"},{"id":"B","text":"constructor(name: String) { ... }"},{"id":"C","text":"func init(name: String) { ... }"},{"id":"D","text":"new(name: String) { ... }"}],
+         [0], "クラス・構造体", "2", 7, "初期化処理", "init"),
+        
+        ("デイニシャライザの定義は？",
+         [{"id":"A","text":"deinit { ... }"},{"id":"B","text":"destructor { ... }"},{"id":"C","text":"~ClassName() { ... }"},{"id":"D","text":"finalize() { ... }"}],
+         [0], "クラス", "3", 9, "解放処理", "deinit"),
+        
+        ("計算プロパティの定義は？",
+         [{"id":"A","text":"var fullName: String { return firstName + lastName }"},{"id":"B","text":"var fullName = firstName + lastName"},{"id":"C","text":"func fullName() -> String { ... }"},{"id":"D","text":"property fullName { ... }"}],
+         [0], "プロパティ", "3", 9, "動的プロパティ", "computed property"),
+        
+        ("プロパティオブザーバーwillSetは？",
+         [{"id":"A","text":"値が設定される直前に呼ばれる"},{"id":"B","text":"値が設定された直後"},{"id":"C","text":"値が取得されたとき"},{"id":"D","text":"値が削除されたとき"}],
+         [0], "プロパティ", "3", 9, "設定前の監視", "willSet"),
+        
+        ("プロパティオブザーバーdidSetは？",
+         [{"id":"A","text":"値が設定された直後に呼ばれる"},{"id":"B","text":"値が設定される直前"},{"id":"C","text":"値が取得されたとき"},{"id":"D","text":"値が削除されたとき"}],
+         [0], "プロパティ", "3", 9, "設定後の監視", "didSet"),
+        
+        ("型プロパティ（static）の定義は？",
+         [{"id":"A","text":"static var count = 0"},{"id":"B","text":"class var count = 0"},{"id":"C","text":"shared var count = 0"},{"id":"D","text":"global var count = 0"}],
+         [0], "プロパティ", "2", 8, "型レベルのプロパティ", "static property"),
+        
+        ("lazyプロパティの特徴は？",
+         [{"id":"A","text":"最初のアクセス時に初期化"},{"id":"B","text":"即座に初期化"},{"id":"C","text":"複数回初期化"},{"id":"D","text":"初期化不要"}],
+         [0], "プロパティ", "3", 9, "遅延初期化", "lazy"),
+    ]
+    
+    questions.extend(classes_structs)
+    print(f"  ✓ クラス・構造体: {len(classes_structs)}問")
+    
+    # ==================== プロトコル・拡張（10問） ====================
+    print("[2/4] プロトコル・拡張を生成中...")
+    
+    protocols_extensions = [
+        ("プロトコルの定義は？",
+         [{"id":"A","text":"protocol Drawable { func draw() }"},{"id":"B","text":"interface Drawable { func draw() }"},{"id":"C","text":"abstract protocol Drawable { func draw() }"},{"id":"D","text":"trait Drawable { func draw() }"}],
+         [0], "プロトコル", "2", 8, "インターフェース定義", "protocol"),
+        
+        ("プロトコルの準拠は？",
+         [{"id":"A","text":"class Circle: Drawable { ... }"},{"id":"B","text":"class Circle extends Drawable { ... }"},{"id":"C","text":"class Circle implements Drawable { ... }"},{"id":"D","text":"class Circle adopts Drawable { ... }"}],
+         [0], "プロトコル", "2", 7, "プロトコルの実装", "conformance"),
+        
+        ("プロトコルの継承は？",
+         [{"id":"A","text":"protocol Printable: Drawable { ... }"},{"id":"B","text":"protocol Printable extends Drawable { ... }"},{"id":"C","text":"protocol Printable implements Drawable { ... }"},{"id":"D","text":"protocol Printable(Drawable) { ... }"}],
+         [0], "プロトコル", "3", 9, "プロトコルの拡張", "protocol inheritance"),
+        
+        ("プロトコルのデフォルト実装は？",
+         [{"id":"A","text":"extensionでメソッドを実装"},{"id":"B","text":"protocolブロック内に実装"},{"id":"C","text":"default キーワード"},{"id":"D","text":"実装不可"}],
+         [0], "プロトコル", "3", 10, "既定の動作", "default implementation"),
+        
+        ("拡張の定義は？",
+         [{"id":"A","text":"extension String { func reversed() -> String { ... } }"},{"id":"B","text":"extend String { func reversed() { ... } }"},{"id":"C","text":"String.extend { func reversed() { ... } }"},{"id":"D","text":"augment String { func reversed() { ... } }"}],
+         [0], "拡張", "3", 9, "既存型への機能追加", "extension"),
+        
+        ("拡張でプロトコル準拠を追加するには？",
+         [{"id":"A","text":"extension String: Drawable { ... }"},{"id":"B","text":"String implements Drawable { ... }"},{"id":"C","text":"extend String with Drawable { ... }"},{"id":"D","text":"String conforms Drawable { ... }"}],
+         [0], "拡張", "3", 10, "後付けプロトコル", "retroactive conformance"),
+        
+        ("where句でプロトコルを制約するには？",
+         [{"id":"A","text":"extension Array where Element: Equatable { ... }"},{"id":"B","text":"extension Array<Element: Equatable> { ... }"},{"id":"C","text":"extension Array if Element: Equatable { ... }"},{"id":"D","text":"extension Array(Element: Equatable) { ... }"}],
+         [0], "プロトコル", "4", 11, "条件付き拡張", "conditional extension"),
+        
+        ("associatedtypeの用途は？",
+         [{"id":"A","text":"プロトコル内で関連型を定義"},{"id":"B","text":"型エイリアスを定義"},{"id":"C","text":"ジェネリック型を定義"},{"id":"D","text":"列挙型を定義"}],
+         [0], "プロトコル", "4", 12, "関連型", "associatedtype"),
+        
+        ("Equatableプロトコルの役割は？",
+         [{"id":"A","text":"==と!=演算子の実装"},{"id":"B","text":"比較演算子の実装"},{"id":"C","text":"ソート機能"},{"id":"D","text":"文字列変換"}],
+         [0], "プロトコル", "2", 8, "等価性判定", "Equatable"),
+        
+        ("Comparableプロトコルの役割は？",
+         [{"id":"A","text":"<, >, <=, >=演算子の実装"},{"id":"B","text":"==演算子のみ"},{"id":"C","text":"ソート機能"},{"id":"D","text":"文字列変換"}],
+         [0], "プロトコル", "3", 9, "順序比較", "Comparable"),
+    ]
+    
+    questions.extend(protocols_extensions)
+    print(f"  ✓ プロトコル・拡張: {len(protocols_extensions)}問")
+    
+    # ==================== ジェネリクス・列挙型（10問） ====================
+    print("[3/4] ジェネリクス・列挙型を生成中...")
+    
+    generics_enums = [
+        ("ジェネリック関数の定義は？",
+         [{"id":"A","text":"func swap<T>(_ a: inout T, _ b: inout T) { ... }"},{"id":"B","text":"func swap(T)(a: inout T, b: inout T) { ... }"},{"id":"C","text":"func<T> swap(a: inout T, b: inout T) { ... }"},{"id":"D","text":"generic func swap<T>(a: T, b: T) { ... }"}],
+         [0], "ジェネリクス", "3", 10, "型パラメータ", "generic function"),
+        
+        ("ジェネリック型の定義は？",
+         [{"id":"A","text":"struct Stack<Element> { ... }"},{"id":"B","text":"struct Stack(Element) { ... }"},{"id":"C","text":"struct<Element> Stack { ... }"},{"id":"D","text":"generic struct Stack<Element> { ... }"}],
+         [0], "ジェネリクス", "3", 9, "汎用型", "generic type"),
+        
+        ("型制約の記述は？",
+         [{"id":"A","text":"func findIndex<T: Equatable>(of value: T) { ... }"},{"id":"B","text":"func findIndex<T>(of value: T: Equatable) { ... }"},{"id":"C","text":"func findIndex<T extends Equatable>(of value: T) { ... }"},{"id":"D","text":"func findIndex(of value: T where T: Equatable) { ... }"}],
+         [0], "ジェネリクス", "3", 10, "型の制約", "type constraint"),
+        
+        ("列挙型の定義は？",
+         [{"id":"A","text":"enum Direction { case north, south, east, west }"},{"id":"B","text":"enum Direction = north | south | east | west"},{"id":"C","text":"type Direction = north | south | east | west"},{"id":"D","text":"enumeration Direction { north, south, east, west }"}],
+         [0], "列挙型", "2", 7, "列挙値の定義", "enum"),
+        
+        ("関連値を持つ列挙型は？",
+         [{"id":"A","text":"enum Barcode { case upc(Int, Int) }"},{"id":"B","text":"enum Barcode = upc(Int, Int)"},{"id":"C","text":"enum Barcode { upc: (Int, Int) }"},{"id":"D","text":"enum Barcode<Int, Int> { case upc }"}],
+         [0], "列挙型", "3", 10, "付加データ", "associated values"),
+        
+        ("Raw値を持つ列挙型は？",
+         [{"id":"A","text":"enum Planet: Int { case mercury = 1 }"},{"id":"B","text":"enum Planet { case mercury: 1 }"},{"id":"C","text":"enum Planet = { mercury: 1 }"},{"id":"D","text":"enum Planet(Int) { mercury = 1 }"}],
+         [0], "列挙型", "2", 8, "生の値", "raw values"),
+        
+        ("列挙型のメソッド定義は？",
+         [{"id":"A","text":"enum内にfuncを定義"},{"id":"B","text":"extensionでのみ定義可能"},{"id":"C","text":"メソッド定義不可"},{"id":"D","text":"protocolが必要"}],
+         [0], "列挙型", "3", 9, "列挙型の動作", "enum methods"),
+        
+        ("再帰的列挙型の記述は？",
+         [{"id":"A","text":"indirect enum Node { case value(Int, Node) }"},{"id":"B","text":"enum Node { case value(Int, Node) }"},{"id":"C","text":"recursive enum Node { case value(Int, Node) }"},{"id":"D","text":"enum Node(recursive) { case value(Int, Node) }"}],
+         [0], "列挙型", "4", 12, "自己参照", "indirect enum"),
+        
+        ("CaseIterableプロトコルの役割は？",
+         [{"id":"A","text":"全ケースを列挙可能にする"},{"id":"B","text":"ケースをソート"},{"id":"C","text":"ケースを変換"},{"id":"D","text":"ケースを削除"}],
+         [0], "列挙型", "3", 10, "全ケース取得", "CaseIterable"),
+        
+        ("opaque型（some）の用途は？",
+         [{"id":"A","text":"具体的な型を隠蔽（戻り値の型）"},{"id":"B","text":"任意の型"},{"id":"C","text":"Optional型"},{"id":"D","text":"ジェネリック型"}],
+         [0], "ジェネリクス", "4", 12, "型の抽象化", "opaque type"),
+    ]
+    
+    questions.extend(generics_enums)
+    print(f"  ✓ ジェネリクス・列挙型: {len(generics_enums)}問")
+    
+    # ==================== エラー処理・メモリ管理（10問） ====================
+    print("[4/4] エラー処理・メモリ管理を生成中...")
+    
+    error_memory = [
+        ("エラー型の定義は？",
+         [{"id":"A","text":"enum FileError: Error { case notFound }"},{"id":"B","text":"class FileError: Error { ... }"},{"id":"C","text":"struct FileError: Error { ... }"},{"id":"D","text":"error FileError { notFound }"}],
+         [0], "エラー処理", "3", 9, "エラーの定義", "Error protocol"),
+        
+        ("throwsキーワードの役割は？",
+         [{"id":"A","text":"エラーを投げる可能性がある関数"},{"id":"B","text":"エラーを捕捉"},{"id":"C","text":"エラーを無視"},{"id":"D","text":"エラーをログ出力"}],
+         [0], "エラー処理", "2", 8, "エラー伝播", "throws"),
+        
+        ("エラーの投げ方は？",
+         [{"id":"A","text":"throw FileError.notFound"},{"id":"B","text":"raise FileError.notFound"},{"id":"C","text":"throw new FileError.notFound"},{"id":"D","text":"error(FileError.notFound)"}],
+         [0], "エラー処理", "2", 7, "エラー送出", "throw"),
+        
+        ("do-catch文の基本形は？",
+         [{"id":"A","text":"do { try func() } catch { ... }"},{"id":"B","text":"try { func() } catch { ... }"},{"id":"C","text":"do { func() } rescue { ... }"},{"id":"D","text":"try { func() } except { ... }"}],
+         [0], "エラー処理", "2", 8, "エラー捕捉", "do-catch"),
+        
+        ("try?の効果は？",
+         [{"id":"A","text":"エラーをOptionalに変換"},{"id":"B","text":"エラーを無視"},{"id":"C","text":"エラーを強制アンラップ"},{"id":"D","text":"エラーをログ出力"}],
+         [0], "エラー処理", "3", 9, "Optional変換", "try?"),
+        
+        ("try!の効果は？",
+         [{"id":"A","text":"エラーが発生したらクラッシュ"},{"id":"B","text":"エラーを無視"},{"id":"C","text":"エラーをOptionalに変換"},{"id":"D","text":"エラーをログ出力"}],
+         [0], "エラー処理", "3", 9, "強制実行", "try!"),
+        
+        ("ARCとは？",
+         [{"id":"A","text":"自動参照カウント（メモリ管理）"},{"id":"B","text":"配列操作"},{"id":"C","text":"非同期処理"},{"id":"D","text":"エラー処理"}],
+         [0], "メモリ管理", "3", 10, "自動メモリ管理", "ARC"),
+        
+        ("強参照循環とは？",
+         [{"id":"A","text":"相互参照によるメモリリーク"},{"id":"B","text":"強制参照"},{"id":"C","text":"循環配列"},{"id":"D","text":"無限ループ"}],
+         [0], "メモリ管理", "4", 11, "循環参照", "strong reference cycle"),
+        
+        ("weakキーワードの役割は？",
+         [{"id":"A","text":"弱参照（参照カウントを増やさない）"},{"id":"B","text":"強参照"},{"id":"C","text":"変数を弱くする"},{"id":"D","text":"Optional化"}],
+         [0], "メモリ管理", "4", 11, "弱参照", "weak"),
+        
+        ("unownedキーワードの役割は？",
+         [{"id":"A","text":"非所有参照（常に値がある前提）"},{"id":"B","text":"弱参照"},{"id":"C","text":"強参照"},{"id":"D","text":"Optional参照"}],
+         [0], "メモリ管理", "4", 12, "非所有参照", "unowned"),
+    ]
+    
+    questions.extend(error_memory)
+    print(f"  ✓ エラー処理・メモリ管理: {len(error_memory)}問")
+    
+    # データベースに挿入
+    print("\nデータベースに保存中...")
+    for q in questions:
+        question_json = {
+            "question": q[0],
+            "options": q[1],
+            "answer": q[2]
+        }
+        
+        cursor.execute("""
+            INSERT INTO questions 
+            (language, question_json, category, difficulty, score, meaning, usage)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("Swift", json.dumps(question_json, ensure_ascii=False), 
+              q[3], q[4], q[5], q[6], q[7]))
+    
+    conn.commit()
+    
+    # 統計表示
+    cursor.execute("SELECT COUNT(*) FROM questions WHERE language = 'Swift'")
+    swift_count = cursor.fetchone()[0]
+    
+    cursor.execute("""
+        SELECT category, COUNT(*) as count 
+        FROM questions 
+        WHERE language = 'Swift' 
+        GROUP BY category 
+        ORDER BY count DESC
+    """)
+    categories = cursor.fetchall()
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    total_count = cursor.fetchone()[0]
+    
+    # 各言語の問題数を取得
+    cursor.execute("""
+        SELECT language, COUNT(*) as count 
+        FROM questions 
+        GROUP BY language 
+        ORDER BY count DESC
+    """)
+    all_languages = cursor.fetchall()
+    
+    conn.close()
+    
+    print("\n" + "=" * 60)
+    print("🎊🎊🎊 Swift 80問達成！！！ 🎊🎊🎊")
+    print("=" * 60)
+    print(f"Swift問題数: 0問 → {swift_count}問（+80問）")
+    print(f"全体問題数: {total_count}問")
+    
+    print("\n【Swiftカテゴリ別内訳】")
+    for cat, count in categories:
+        print(f"  {cat}: {count}問")
+    
+    print("\n" + "=" * 60)
+    print("🏆🏆🏆 Phase 6B 完全達成！ 🏆🏆🏆")
+    print("=" * 60)
+    print("\n【Phase 6B 最終状況】")
+    print("  ✅ Rust: 80問")
+    print("  ✅ Kotlin: 80問")
+    print(f"  ✅ Swift: {swift_count}問")
+    
+    print("\n" + "=" * 60)
+    print("🎉🎉🎉 全Phase達成状況 🎉🎉🎉")
+    print("=" * 60)
+    print("\n【全言語一覧】")
+    for lang, count in all_languages:
+        status = "✅" if count >= 50 else "⚠️"
+        print(f"  {status} {lang}: {count}問")
+    
+    print("\n" + "=" * 60)
+    print(f"📊 総問題数: {total_count}問")
+    
+    if total_count >= 2000:
+        print("🎊🎊🎊 目標2,000問達成！おめでとうございます！ 🎊🎊🎊")
+    else:
+        remaining = 2000 - total_count
+        print(f"🎯 目標2,000問まで残り: {remaining}問")
+    
+    print("\n【SemanticGrove データベース完成！】")
+    print("プログラミング学習の包括的なリソースが完成しました。")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    add_swift_40_questions_part2()

@@ -1,0 +1,16 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">次の色パターンで？に入るのは？</text>
+  
+  <!-- 3x3グリッド -->
+  <rect x="80" y="80" width="60" height="60" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  <rect x="170" y="80" width="60" height="60" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+  <rect x="260" y="80" width="60" height="60" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  
+  <rect x="80" y="170" width="60" height="60" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+  <rect x="170" y="170" width="60" height="60" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  <rect x="260" y="170" width="60" height="60" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+  
+  <rect x="80" y="260" width="60" height="60" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  <rect x="170" y="260" width="60" height="60" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+  <text x="290" y="305" font-size="48" font-weight="bold" text-anchor="middle" fill="#666">?</text>
+</svg>

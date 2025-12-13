@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SemanticGrove</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 左サイドバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button active">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button">学習モード</a>
+      <a href="/practice/low" class="toolbar-button">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <div class="main-content">
+    <h1 class="logo-title">SemanticGrove</h1>
+
+    <h2>Semantic Grove へようこそ</h2>
+    
+    <!-- フラッシュメッセージ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message flash-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <br><br>
+    
+    <!-- 初期選択表示エリア -->
+    <div class="choices">
+      <a href="/learn" class="choice-button">学習モード</a>
+      <a href="/practice/low" class="choice-button">初級モード</a>
+      <a href="/practice/middle" class="choice-button">中級モード</a>
+      <a href="/practice/high" class="choice-button">上級モード</a>
+    </div>
+
+    <br>
+    <p>プログラミング言語学習用のアプリ、セマンティックグローブへようこそ<br>
+     学び始めて半年も経つのに右も左もわからないのでわかりたくて作りました。<br>
+     作り始めて２カ月が経とうとしています。難して立ち止まったりもしました。<br>
+      まだまだ発展途上ですが、ぜひ使ってみてください！
+    </p>
+    </div>
+
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+</body>
+</html>

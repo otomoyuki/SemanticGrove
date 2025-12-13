@@ -1,0 +1,251 @@
+import sqlite3
+import json
+
+DB_NAME = "SemanticGrove.db"
+
+def add_swift_40_questions_part1():
+    """Swift問題40問追加（第1弾：0問→40問）"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    print("=" * 60)
+    print("Swift問題追加スクリプト（第1弾：40問）")
+    print("=" * 60)
+    
+    questions = []
+    
+    # ==================== 基本文法（10問） ====================
+    print("[1/4] 基本文法を生成中...")
+    
+    basics = [
+        ("Swiftの変数宣言で正しいのは？",
+         [{"id":"A","text":"var x = 5（可変）、let y = 10（不変）"},{"id":"B","text":"let x = 5（可変）、var y = 10（不変）"},{"id":"C","text":"var x: Int = 5のみ"},{"id":"D","text":"let x: constant = 5"}],
+         [0], "基本文法", "1", 5, "変数宣言", "var/let"),
+        
+        ("letとvarの違いは？",
+         [{"id":"A","text":"letは定数、varは変数"},{"id":"B","text":"letは変数、varは定数"},{"id":"C","text":"同じ"},{"id":"D","text":"letはローカル専用"}],
+         [0], "基本文法", "2", 7, "可変性の区別", "let vs var"),
+        
+        ("型注釈の記述は？",
+         [{"id":"A","text":"var name: String = \"Swift\""},{"id":"B","text":"var name as String = \"Swift\""},{"id":"C","text":"String var name = \"Swift\""},{"id":"D","text":"var name = String(\"Swift\")"}],
+         [0], "基本文法", "2", 7, "型の明示", "type annotation"),
+        
+        ("文字列補間の記述は？",
+         [{"id":"A","text":"\"Hello \\(name)\""},{"id":"B","text":"\"Hello ${name}\""},{"id":"C","text":"\"Hello $name\""},{"id":"D","text":"f\"Hello {name}\""}],
+         [0], "基本文法", "2", 7, "文字列埋め込み", "string interpolation"),
+        
+        ("複数行文字列リテラルは？",
+         [{"id":"A","text":"\"\"\"複数行\\n文字列\"\"\""},{"id":"B","text":"'''複数行\\n文字列'''"},{"id":"C","text":"\"複数行\\n文字列\""},{"id":"D","text":"`複数行\\n文字列`"}],
+         [0], "基本文法", "2", 7, "複数行文字列", "multiline string"),
+        
+        ("タプルの定義は？",
+         [{"id":"A","text":"let person = (\"Alice\", 30)"},{"id":"B","text":"let person = [\"Alice\", 30]"},{"id":"C","text":"let person = {\"Alice\", 30}"},{"id":"D","text":"tuple person = (\"Alice\", 30)"}],
+         [0], "基本文法", "2", 7, "複数値の組", "tuple"),
+        
+        ("タプルの要素アクセスは？",
+         [{"id":"A","text":"person.0 または person.1"},{"id":"B","text":"person[0] または person[1]"},{"id":"C","text":"person(0) または person(1)"},{"id":"D","text":"person{0} または person{1}"}],
+         [0], "基本文法", "2", 7, "タプル要素取得", "tuple access"),
+        
+        ("名前付きタプルの記述は？",
+         [{"id":"A","text":"let person = (name: \"Alice\", age: 30)"},{"id":"B","text":"let person = [name: \"Alice\", age: 30]"},{"id":"C","text":"let person = {name: \"Alice\", age: 30}"},{"id":"D","text":"struct person = (name: \"Alice\", age: 30)"}],
+         [0], "基本文法", "2", 8, "ラベル付きタプル", "named tuple"),
+        
+        ("範囲演算子の記述は？",
+         [{"id":"A","text":"1...5（1から5まで）"},{"id":"B","text":"1..5"},{"id":"C","text":"range(1, 5)"},{"id":"D","text":"1:5"}],
+         [0], "基本文法", "2", 7, "閉区間", "closed range"),
+        
+        ("半開区間演算子は？",
+         [{"id":"A","text":"1..<5（1から4まで）"},{"id":"B","text":"1..5"},{"id":"C","text":"1...4"},{"id":"D","text":"1:5"}],
+         [0], "基本文法", "2", 7, "終端を含まない", "half-open range"),
+    ]
+    
+    questions.extend(basics)
+    print(f"  ✓ 基本文法: {len(basics)}問")
+    
+    # ==================== Optional・制御構文（10問） ====================
+    print("[2/4] Optional・制御構文を生成中...")
+    
+    optionals_control = [
+        ("Optionalの宣言は？",
+         [{"id":"A","text":"var name: String?"},{"id":"B","text":"var name: Optional<String>"},{"id":"C","text":"var name: String | nil"},{"id":"D","text":"var name: Nullable<String>"}],
+         [0], "Optional", "2", 8, "nilの可能性", "optional type"),
+        
+        ("Optional Bindingの記述は？",
+         [{"id":"A","text":"if let name = optionalName { ... }"},{"id":"B","text":"if optionalName != nil { ... }"},{"id":"C","text":"if (name = optionalName) { ... }"},{"id":"D","text":"let name = optionalName ?? \"\""}],
+         [0], "Optional", "2", 8, "安全な取り出し", "optional binding"),
+        
+        ("強制アンラップの記述は？",
+         [{"id":"A","text":"name!"},{"id":"B","text":"name?"},{"id":"C","text":"name!!"},{"id":"D","text":"unwrap(name)"}],
+         [0], "Optional", "2", 7, "nilでないと保証", "force unwrap"),
+        
+        ("Nil合体演算子の記述は？",
+         [{"id":"A","text":"name ?? \"Unknown\""},{"id":"B","text":"name ?: \"Unknown\""},{"id":"C","text":"name || \"Unknown\""},{"id":"D","text":"name default \"Unknown\""}],
+         [0], "Optional", "2", 8, "nilの既定値", "nil coalescing"),
+        
+        ("Optional Chainingの記述は？",
+         [{"id":"A","text":"person?.address?.street"},{"id":"B","text":"person!.address!.street"},{"id":"C","text":"person.address.street"},{"id":"D","text":"person->address->street"}],
+         [0], "Optional", "3", 9, "連鎖的アクセス", "optional chaining"),
+        
+        ("guard文の特徴は？",
+         [{"id":"A","text":"早期リターン（条件不成立で抜ける）"},{"id":"B","text":"ifと同じ"},{"id":"C","text":"ループ制御"},{"id":"D","text":"例外処理"}],
+         [0], "制御構文", "3", 9, "早期脱出", "guard"),
+        
+        ("switch文の特徴は？",
+         [{"id":"A","text":"網羅性チェック・自動breakあり"},{"id":"B","text":"fallthroughがデフォルト"},{"id":"C","text":"break必須"},{"id":"D","text":"default不要"}],
+         [0], "制御構文", "2", 8, "パターンマッチング", "switch"),
+        
+        ("for-in文の基本形は？",
+         [{"id":"A","text":"for item in collection { ... }"},{"id":"B","text":"for (item in collection) { ... }"},{"id":"C","text":"for item of collection { ... }"},{"id":"D","text":"foreach item in collection { ... }"}],
+         [0], "制御構文", "1", 5, "コレクション走査", "for-in"),
+        
+        ("where句の用途は？",
+         [{"id":"A","text":"ループやswitchで追加条件を指定"},{"id":"B","text":"変数宣言"},{"id":"C","text":"型指定"},{"id":"D","text":"関数定義"}],
+         [0], "制御構文", "3", 9, "条件フィルタ", "where"),
+        
+        ("defer文の役割は？",
+         [{"id":"A","text":"スコープを抜ける直前に実行"},{"id":"B","text":"遅延初期化"},{"id":"C","text":"非同期実行"},{"id":"D","text":"エラー処理"}],
+         [0], "制御構文", "3", 9, "遅延実行", "defer"),
+    ]
+    
+    questions.extend(optionals_control)
+    print(f"  ✓ Optional・制御構文: {len(optionals_control)}問")
+    
+    # ==================== 関数・クロージャ（10問） ====================
+    print("[3/4] 関数・クロージャを生成中...")
+    
+    functions_closures = [
+        ("関数の定義方法は？",
+         [{"id":"A","text":"func greet(name: String) -> String { ... }"},{"id":"B","text":"function greet(name: String): String { ... }"},{"id":"C","text":"def greet(name: String) -> String: ..."},{"id":"D","text":"fn greet(name: String) -> String { ... }"}],
+         [0], "関数", "1", 5, "関数宣言", "func"),
+        
+        ("引数ラベルの記述は？",
+         [{"id":"A","text":"func greet(to name: String) { ... }"},{"id":"B","text":"func greet(name as to: String) { ... }"},{"id":"C","text":"func greet(@to name: String) { ... }"},{"id":"D","text":"func greet(String name to) { ... }"}],
+         [0], "関数", "3", 9, "外部名と内部名", "argument label"),
+        
+        ("引数ラベルの省略は？",
+         [{"id":"A","text":"func greet(_ name: String) { ... }"},{"id":"B","text":"func greet(name: String) { ... }"},{"id":"C","text":"func greet(@_ name: String) { ... }"},{"id":"D","text":"func greet(- name: String) { ... }"}],
+         [0], "関数", "2", 8, "アンダースコア省略", "omit label"),
+        
+        ("デフォルト引数の記述は？",
+         [{"id":"A","text":"func greet(name: String = \"Guest\") { ... }"},{"id":"B","text":"func greet(name: String := \"Guest\") { ... }"},{"id":"C","text":"func greet(name: String | \"Guest\") { ... }"},{"id":"D","text":"func greet(name: String? = \"Guest\") { ... }"}],
+         [0], "関数", "2", 7, "既定値の設定", "default parameter"),
+        
+        ("可変長引数の定義は？",
+         [{"id":"A","text":"func sum(_ numbers: Int...) { ... }"},{"id":"B","text":"func sum(_ numbers: ...Int) { ... }"},{"id":"C","text":"func sum(_ numbers: [Int]) { ... }"},{"id":"D","text":"func sum(varargs numbers: Int) { ... }"}],
+         [0], "関数", "2", 8, "任意個の引数", "variadic parameter"),
+        
+        ("inout引数の用途は？",
+         [{"id":"A","text":"参照渡し（値を変更可能）"},{"id":"B","text":"値渡し"},{"id":"C","text":"入力専用"},{"id":"D","text":"出力専用"}],
+         [0], "関数", "3", 9, "参照渡し", "inout"),
+        
+        ("クロージャの基本記法は？",
+         [{"id":"A","text":"{ (x: Int, y: Int) -> Int in return x + y }"},{"id":"B","text":"(x, y) => x + y"},{"id":"C","text":"lambda x, y: x + y"},{"id":"D","text":"fn(x, y) { x + y }"}],
+         [0], "クロージャ", "2", 8, "無名関数", "closure"),
+        
+        ("簡略化されたクロージャは？",
+         [{"id":"A","text":"{ $0 + $1 }"},{"id":"B","text":"{ x, y in x + y }"},{"id":"C","text":"{ return $0 + $1 }"},{"id":"D","text":"{ (x, y) -> x + y }"}],
+         [0], "クロージャ", "3", 9, "暗黙のパラメータ", "shorthand"),
+        
+        ("trailing closureの記述は？",
+         [{"id":"A","text":"func() { ... }（最後の引数がクロージャ）"},{"id":"B","text":"func({ ... })"},{"id":"C","text":"func(closure: { ... })"},{"id":"D","text":"func() -> { ... }"}],
+         [0], "クロージャ", "3", 9, "末尾クロージャ", "trailing closure"),
+        
+        ("@escapingの意味は？",
+         [{"id":"A","text":"クロージャが関数終了後も保持される"},{"id":"B","text":"クロージャを即座に実行"},{"id":"C","text":"クロージャをキャプチャしない"},{"id":"D","text":"クロージャを削除"}],
+         [0], "クロージャ", "4", 11, "エスケープクロージャ", "escaping"),
+    ]
+    
+    questions.extend(functions_closures)
+    print(f"  ✓ 関数・クロージャ: {len(functions_closures)}問")
+    
+    # ==================== コレクション（10問） ====================
+    print("[4/4] コレクションを生成中...")
+    
+    collections = [
+        ("配列の宣言は？",
+         [{"id":"A","text":"var numbers = [1, 2, 3]"},{"id":"B","text":"var numbers = array(1, 2, 3)"},{"id":"C","text":"var numbers = (1, 2, 3)"},{"id":"D","text":"var numbers = {1, 2, 3}"}],
+         [0], "コレクション", "1", 5, "配列の作成", "array"),
+        
+        ("空の配列の宣言は？",
+         [{"id":"A","text":"var numbers: [Int] = []"},{"id":"B","text":"var numbers = []"},{"id":"C","text":"var numbers = Array()"},{"id":"D","text":"var numbers = new Array<Int>()"}],
+         [0], "コレクション", "2", 7, "型付き空配列", "empty array"),
+        
+        ("セットの作成は？",
+         [{"id":"A","text":"var set: Set<Int> = [1, 2, 3]"},{"id":"B","text":"var set = Set(1, 2, 3)"},{"id":"C","text":"var set = {1, 2, 3}"},{"id":"D","text":"var set = [1, 2, 3]"}],
+         [0], "コレクション", "2", 7, "重複なし集合", "set"),
+        
+        ("辞書の作成は？",
+         [{"id":"A","text":"var dict = [\"key\": \"value\"]"},{"id":"B","text":"var dict = {\"key\": \"value\"}"},{"id":"C","text":"var dict = (\"key\": \"value\")"},{"id":"D","text":"var dict = Map(\"key\", \"value\")"}],
+         [0], "コレクション", "2", 7, "キー・値のペア", "dictionary"),
+        
+        ("mapメソッドの役割は？",
+         [{"id":"A","text":"各要素を変換"},{"id":"B","text":"条件で絞り込み"},{"id":"C","text":"要素を削除"},{"id":"D","text":"辞書を作成"}],
+         [0], "コレクション", "2", 8, "写像", "map"),
+        
+        ("filterメソッドの役割は？",
+         [{"id":"A","text":"条件に合う要素を抽出"},{"id":"B","text":"要素を変換"},{"id":"C","text":"要素を削除"},{"id":"D","text":"要素をソート"}],
+         [0], "コレクション", "2", 8, "絞り込み", "filter"),
+        
+        ("reduceメソッドの役割は？",
+         [{"id":"A","text":"要素を1つの値に集約"},{"id":"B","text":"要素を変換"},{"id":"C","text":"要素をフィルタ"},{"id":"D","text":"要素をソート"}],
+         [0], "コレクション", "3", 10, "畳み込み", "reduce"),
+        
+        ("compactMapの用途は？",
+         [{"id":"A","text":"nilを除外しながら変換"},{"id":"B","text":"mapと同じ"},{"id":"C","text":"配列を平坦化"},{"id":"D","text":"要素をフィルタ"}],
+         [0], "コレクション", "3", 10, "nil除去マップ", "compactMap"),
+        
+        ("flatMapの用途は？",
+         [{"id":"A","text":"変換後に平坦化"},{"id":"B","text":"mapと同じ"},{"id":"C","text":"nilを除外"},{"id":"D","text":"要素をフィルタ"}],
+         [0], "コレクション", "3", 10, "平坦化マップ", "flatMap"),
+        
+        ("sortedメソッドの特徴は？",
+         [{"id":"A","text":"新しいソート済み配列を返す"},{"id":"B","text":"元の配列を変更"},{"id":"C","text":"ソート不可"},{"id":"D","text":"降順のみ"}],
+         [0], "コレクション", "2", 7, "非破壊的ソート", "sorted"),
+    ]
+    
+    questions.extend(collections)
+    print(f"  ✓ コレクション: {len(collections)}問")
+    
+    # データベースに挿入
+    print("\nデータベースに保存中...")
+    for q in questions:
+        question_json = {
+            "question": q[0],
+            "options": q[1],
+            "answer": q[2]
+        }
+        
+        cursor.execute("""
+            INSERT INTO questions 
+            (language, question_json, category, difficulty, score, meaning, usage)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("Swift", json.dumps(question_json, ensure_ascii=False), 
+              q[3], q[4], q[5], q[6], q[7]))
+    
+    conn.commit()
+    
+    # 統計表示
+    cursor.execute("SELECT COUNT(*) FROM questions WHERE language = 'Swift'")
+    swift_count = cursor.fetchone()[0]
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    total_count = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    print("\n" + "=" * 60)
+    print(f"✅ Swift 第1弾完了: {swift_count}問")
+    print("=" * 60)
+    print(f"Swift問題数: 0問 → {swift_count}問（+40問）")
+    print(f"全体問題数: {total_count}問")
+    print("\n【追加内容】")
+    print("  ✓ 基本文法: 10問")
+    print("  ✓ Optional・制御構文: 10問")
+    print("  ✓ 関数・クロージャ: 10問")
+    print("  ✓ コレクション: 10問")
+    print("\n🎯 次回: 第2弾で残り40問追加 → 80問達成")
+    print("  そして2,000問達成へ！")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    add_swift_40_questions_part1()

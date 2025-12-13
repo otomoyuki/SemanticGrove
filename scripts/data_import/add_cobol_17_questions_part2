@@ -1,0 +1,188 @@
+import sqlite3
+import json
+
+DB_NAME = "SemanticGrove.db"
+
+def add_cobol_17_questions_part2():
+    """COBOL問題17問追加（第2弾：33問→50問）"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    print("=" * 60)
+    print("COBOL問題追加スクリプト（第2弾：17問）")
+    print("=" * 60)
+    
+    questions = []
+    
+    # ==================== 処理手続き（10問） ====================
+    print("[1/2] 処理手続きを生成中...")
+    
+    procedure = [
+        ("MOVEの役割は？",
+         [{"id":"A","text":"データを転送（代入）"},{"id":"B","text":"データを削除"},{"id":"C","text":"データを比較"},{"id":"D","text":"データを計算"}],
+         [0], "処理手続き", "1", 5, "データ転送", "MOVE"),
+        
+        ("ADDの基本形は？",
+         [{"id":"A","text":"ADD A TO B（BにAを加算）"},{"id":"B","text":"B = A + B"},{"id":"C","text":"ADD(A, B)"},{"id":"D","text":"B += A"}],
+         [0], "処理手続き", "2", 7, "加算処理", "ADD"),
+        
+        ("SUBTRACTの基本形は？",
+         [{"id":"A","text":"SUBTRACT A FROM B（BからAを減算）"},{"id":"B","text":"B = B - A"},{"id":"C","text":"SUBTRACT(A, B)"},{"id":"D","text":"B -= A"}],
+         [0], "処理手続き", "2", 7, "減算処理", "SUBTRACT"),
+        
+        ("MULTIPLYの基本形は？",
+         [{"id":"A","text":"MULTIPLY A BY B（BにAを乗算）"},{"id":"B","text":"B = A * B"},{"id":"C","text":"MULTIPLY(A, B)"},{"id":"D","text":"B *= A"}],
+         [0], "処理手続き", "2", 7, "乗算処理", "MULTIPLY"),
+        
+        ("DIVIDEの基本形は？",
+         [{"id":"A","text":"DIVIDE A INTO B（BをAで除算）"},{"id":"B","text":"B = B / A"},{"id":"C","text":"DIVIDE(B, A)"},{"id":"D","text":"B /= A"}],
+         [0], "処理手続き", "2", 7, "除算処理", "DIVIDE"),
+        
+        ("COMPUTEの特徴は？",
+         [{"id":"A","text":"数式を使った計算（A = B + C * D等）"},{"id":"B","text":"加算のみ"},{"id":"C","text":"減算のみ"},{"id":"D","text":"文字列操作"}],
+         [0], "処理手続き", "2", 8, "数式計算", "COMPUTE"),
+        
+        ("IF文の基本形は？",
+         [{"id":"A","text":"IF 条件 THEN 処理 END-IF"},{"id":"B","text":"if (条件) { 処理 }"},{"id":"C","text":"IF 条件: 処理"},{"id":"D","text":"IF 条件 DO 処理 DONE"}],
+         [0], "処理手続き", "1", 5, "条件分岐", "IF"),
+        
+        ("EVALUATE文の用途は？",
+         [{"id":"A","text":"多岐分岐（switchに相当）"},{"id":"B","text":"ループ処理"},{"id":"C","text":"計算処理"},{"id":"D","text":"ファイル操作"}],
+         [0], "処理手続き", "2", 8, "多方向分岐", "EVALUATE"),
+        
+        ("PERFORMの役割は？",
+         [{"id":"A","text":"段落やセクションを実行"},{"id":"B","text":"計算処理"},{"id":"C","text":"ファイル読み込み"},{"id":"D","text":"データ転送"}],
+         [0], "処理手続き", "2", 7, "サブルーチン呼び出し", "PERFORM"),
+        
+        ("PERFORM UNTIL文の特徴は？",
+         [{"id":"A","text":"条件が真になるまで繰り返し"},{"id":"B","text":"条件が真の間繰り返し"},{"id":"C","text":"指定回数繰り返し"},{"id":"D","text":"無限ループ"}],
+         [0], "処理手続き", "2", 8, "条件付きループ", "PERFORM UNTIL"),
+    ]
+    
+    questions.extend(procedure)
+    print(f"  ✓ 処理手続き: {len(procedure)}問")
+    
+    # ==================== ファイル操作・その他（7問） ====================
+    print("[2/2] ファイル操作・その他を生成中...")
+    
+    file_ops = [
+        ("OPENの役割は？",
+         [{"id":"A","text":"ファイルをオープン（INPUT/OUTPUT/I-O）"},{"id":"B","text":"ファイルを作成"},{"id":"C","text":"ファイルを削除"},{"id":"D","text":"ファイルを読み込み"}],
+         [0], "ファイル操作", "2", 7, "ファイルアクセス開始", "OPEN"),
+        
+        ("READの役割は？",
+         [{"id":"A","text":"ファイルからレコードを読み込み"},{"id":"B","text":"ファイルを開く"},{"id":"C","text":"ファイルを閉じる"},{"id":"D","text":"ファイルに書き込み"}],
+         [0], "ファイル操作", "1", 5, "レコード読み込み", "READ"),
+        
+        ("WRITEの役割は？",
+         [{"id":"A","text":"ファイルにレコードを書き込み"},{"id":"B","text":"ファイルを開く"},{"id":"C","text":"ファイルを閉じる"},{"id":"D","text":"ファイルを読み込み"}],
+         [0], "ファイル操作", "1", 5, "レコード書き込み", "WRITE"),
+        
+        ("CLOSEの役割は？",
+         [{"id":"A","text":"ファイルをクローズ"},{"id":"B","text":"ファイルを開く"},{"id":"C","text":"ファイルを削除"},{"id":"D","text":"ファイルを読み込み"}],
+         [0], "ファイル操作", "1", 5, "ファイルアクセス終了", "CLOSE"),
+        
+        ("AT ENDの用途は？",
+         [{"id":"A","text":"ファイル終端時の処理を指定"},{"id":"B","text":"エラー処理"},{"id":"C","text":"ループ終了"},{"id":"D","text":"プログラム終了"}],
+         [0], "ファイル操作", "2", 8, "EOF処理", "AT END"),
+        
+        ("STOP RUNの役割は？",
+         [{"id":"A","text":"プログラムを終了"},{"id":"B","text":"一時停止"},{"id":"C","text":"ループを抜ける"},{"id":"D","text":"段落を終了"}],
+         [0], "制御", "1", 5, "プログラム終了", "STOP RUN"),
+        
+        ("DISPLAYの役割は？",
+         [{"id":"A","text":"画面やログに出力"},{"id":"B","text":"ファイルに書き込み"},{"id":"C","text":"データを計算"},{"id":"D","text":"データを転送"}],
+         [0], "入出力", "1", 5, "画面出力", "DISPLAY"),
+    ]
+    
+    questions.extend(file_ops)
+    print(f"  ✓ ファイル操作・その他: {len(file_ops)}問")
+    
+    # データベースに挿入
+    print("\nデータベースに保存中...")
+    for q in questions:
+        question_json = {
+            "question": q[0],
+            "options": q[1],
+            "answer": q[2]
+        }
+        
+        cursor.execute("""
+            INSERT INTO questions 
+            (language, question_json, category, difficulty, score, meaning, usage)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("COBOL", json.dumps(question_json, ensure_ascii=False), 
+              q[3], q[4], q[5], q[6], q[7]))
+    
+    conn.commit()
+    
+    # 統計表示
+    cursor.execute("SELECT COUNT(*) FROM questions WHERE language = 'COBOL'")
+    cobol_count = cursor.fetchone()[0]
+    
+    cursor.execute("""
+        SELECT category, COUNT(*) as count 
+        FROM questions 
+        WHERE language = 'COBOL' 
+        GROUP BY category 
+        ORDER BY count DESC
+    """)
+    categories = cursor.fetchall()
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    total_count = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    print("\n" + "=" * 60)
+    print("🎊🎊🎊 COBOL 50問達成！！！ 🎊🎊🎊")
+    print("=" * 60)
+    print(f"COBOL問題数: 15問 → {cobol_count}問（+35問）")
+    print(f"全体問題数: {total_count}問")
+    
+    print("\n【COBOLカテゴリ別内訳】")
+    for cat, count in categories:
+        print(f"  {cat}: {count}問")
+    
+    print("\n" + "=" * 60)
+    print("🎉🎉🎉 マイナー言語の底上げ完了！ 🎉🎉🎉")
+    print("=" * 60)
+    print("\n【Phase 5 - マイナー言語強化 完了】")
+    print(f"  ✅ VBA: 50問 ← 完了！")
+    print(f"  ✅ COBOL: {cobol_count}問 ← 完了！")
+    print("\n【全体達成状況】")
+    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    print("【Phase 1】IQ: 500問")
+    print("【Phase 2】主要バックエンド")
+    print("  • Python: 314問")
+    print("  • PHP: 203問")
+    print("  • Java: 150問")
+    print("  • C#: 150問")
+    print("【Phase 3】フロントエンド")
+    print("  • JavaScript: 104問")
+    print("  • CSS: 100問")
+    print("  • React: 80問")
+    print("  • HTML: 80問")
+    print("【Phase 4】モダン言語")
+    print("  • TypeScript: 80問")
+    print("  • Go: 80問")
+    print("  • Ruby: 80問")
+    print("【Phase 5】ビジネス言語")
+    print("  • VBA: 50問")
+    print(f"  • COBOL: {cobol_count}問")
+    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    print(f"\n  📊 総問題数: {total_count}問")
+    print(f"  🎯 目標2,000問まで残り: 約{2000 - total_count}問")
+    print("\n【次のPhase候補】")
+    print("  🎯 Phase 6A: 主要言語の深化")
+    print("    • JavaScript: 104→150問（+46問）")
+    print("    • React: 80→100問（+20問）")
+    print("    • HTML: 80→100問（+20問）")
+    print("  🎯 Phase 6B: 新言語の追加")
+    print("    • Rust: 80問")
+    print("    • Kotlin: 80問")
+    print("    • Swift: 80問")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    add_cobol_17_questions_part2()

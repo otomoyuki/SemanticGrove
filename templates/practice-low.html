@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SemanticGrove - 初級モード</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- ツールバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button">学習モード</a>
+      <a href="/practice/low" class="toolbar-button active">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+  
+  <h1 class="logo-title">SemanticGrove</h1>
+  <h2>初級モード（練習）</h2>
+  <p>解説を見ながら学べる練習モードです</p>
+  
+  <!-- スコア表示エリア -->
+  <div class="score-display" id="scoreDisplay" style="display: none;">
+    <span>問題: <span id="currentQuestion">0</span> / <span id="totalQuestions">0</span></span>
+    <span style="margin-left: 30px;">正解: <span id="correctCount">0</span></span>
+  </div>
+  
+  <!-- 言語選択 -->
+  <div class="language-select" id="setupArea">
+    <label for="language">言語を選択：</label>
+    <select id="language">
+      <option value="Python">Python</option>
+      <option value="PHP">PHP</option>
+      <option value="C#">C#</option>
+      <option value="Java">Java</option>
+      <option value="JavaScript">JavaScript</option>
+      <option value="CSS">CSS</option>
+      <option value="Go">Go</option>
+      <option value="HTML">HTML</option>
+      <option value="Kotlin">Kotlin</option>
+      <option value="React">React</option>
+      <option value="Ruby">Ruby</option>
+      <option value="Rust">Rust</option>
+      <option value="Swift">Swift</option>
+      <option value="TypeScript">TypeScript</option>
+      <option value="COBOL">COBOL</option>
+      <option value="VBA">VBA</option>
+      <option value="IQ">IQ問題</option>
+      <option value="すべて">すべて</option>
+    </select>
+    
+    <div class="start-button-area">
+      <button onclick="startLowMode()">開始</button>
+    </div>
+  </div>
+  
+  <!-- 問題表示エリア（中級と同じボタン形式） -->
+  <div class="question-box" id="questionArea" style="display: none;">
+    <h3>問題 <span id="questionNumber">1</span></h3>
+    <h3 id="questionText">問題文</h3>
+    
+    <!-- 選択肢ボタンエリア -->
+    <div class="choices" id="choicesArea">
+      <!-- 選択肢がJavaScriptで動的に生成されます -->
+    </div>
+  </div>
+  
+  <!-- フィードバックエリア -->
+  <div class="feedback" id="feedbackArea" style="display: none;"></div>
+  
+  <!-- 解説エリア（初級では最初から表示） -->
+  <div class="explanation-box" id="explanationArea" style="display: none;">
+    <h3>解説</h3>
+    <p id="explanationText"></p>
+    <h4>学習ポイント</h4>
+    <p id="learningPointText"></p>
+  </div>
+  
+  <!-- 次へボタン -->
+  <div class="next-button-area" id="nextButtonArea" style="display: none;">
+    <button onclick="goNextLow()">次へ</button>
+  </div>
+  
+  <!-- 結果表示エリア -->
+  <div class="result-box" id="resultArea" style="display: none;">
+    <h2>学習完了！</h2>
+    <div class="result-stats">
+      <p>総問題数: <span id="finalTotal">0</span>問</p>
+      <p>正解数: <span id="finalCorrect">0</span>問</p>
+      <p>不正解数: <span id="finalIncorrect">0</span>問</p>
+      <p>正答率: <span id="finalAccuracy">0</span>%</p>
+    </div>
+    <div class="result-buttons">
+      <button onclick="restartLow()">もう一度学習する</button>
+      <button onclick="location.href='/practice/middle'">中級モードに挑戦</button>
+      <button onclick="location.href='/'">ホームに戻る</button>
+    </div>
+  </div>
+  
+  <script src="{{ url_for('static', filename='practice-low.js') }}"></script>
+</body>
+</html>

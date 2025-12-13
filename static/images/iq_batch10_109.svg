@@ -1,0 +1,11 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">確率問題109：サイコロで4が出る確率は？</text>
+  <rect x="220" y="120" width="80" height="80" fill="white" stroke="#333" stroke-width="3" rx="5"/>
+  <circle cx="260" cy="140" r="6" fill="#333"/>
+  <circle cx="260" cy="160" r="6" fill="#333"/>
+  <circle cx="260" cy="180" r="6" fill="#333"/>
+  <circle cx="280" cy="140" r="6" fill="#333"/>
+  <circle cx="280" cy="160" r="6" fill="#333"/>
+  <circle cx="280" cy="180" r="6" fill="#333"/>
+  <text x="300" y="280" font-size="16" text-anchor="middle" fill="#666">1個のサイコロ</text>
+</svg>

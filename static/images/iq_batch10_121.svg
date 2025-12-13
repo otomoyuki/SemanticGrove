@@ -1,0 +1,14 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">推移律121：A&gt;B、B&gt;C ならば？</text>
+  <circle cx="150" cy="140" r="40" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  <text x="150" y="150" font-size="24" font-weight="bold" text-anchor="middle" fill="white">A</text>
+  <line x1="190" y1="140" x2="240" y2="140" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="215" y="130" font-size="16" fill="#333">&gt;</text>
+  <circle cx="280" cy="140" r="40" fill="#3b82f6" stroke="#333" stroke-width="2"/>
+  <text x="280" y="150" font-size="24" font-weight="bold" text-anchor="middle" fill="white">B</text>
+  <line x1="320" y1="140" x2="370" y2="140" stroke="#333" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="345" y="130" font-size="16" fill="#333">&gt;</text>
+  <circle cx="410" cy="140" r="40" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <text x="410" y="150" font-size="24" font-weight="bold" text-anchor="middle" fill="white">C</text>
+  <text x="300" y="250" font-size="20" text-anchor="middle" fill="#666">A と C の関係は？</text>
+</svg>

@@ -1,0 +1,20 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">矢印の向きのパターンは？</text>
+  
+  <!-- 上 -->
+  <g transform="translate(100, 120)">
+    <polygon points="0,-30 15,10 -15,10" fill="#14b8a6" stroke="#333" stroke-width="2"/>
+  </g>
+  
+  <!-- 右 -->
+  <g transform="translate(240, 120)">
+    <polygon points="30,0 -10,15 -10,-15" fill="#14b8a6" stroke="#333" stroke-width="2"/>
+  </g>
+  
+  <!-- 下 -->
+  <g transform="translate(380, 120)">
+    <polygon points="0,30 15,-10 -15,-10" fill="#14b8a6" stroke="#333" stroke-width="2"/>
+  </g>
+  
+  <text x="300" y="280" font-size="48" font-weight="bold" text-anchor="middle" fill="#666">?</text>
+</svg>

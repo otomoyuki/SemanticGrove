@@ -1,0 +1,10 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+  <text x="300" y="30" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">🎉 最終問題 7/9 🎉</text>
+  <rect x="150" y="80" width="300" height="220" fill="#f0f9ff" stroke="#3b82f6" stroke-width="3" rx="10"/>
+  <text x="300" y="120" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">総合問題 #147</text>
+  <circle cx="200" cy="170" r="25" fill="#ef4444" stroke="#333" stroke-width="2"/>
+  <rect x="265" y="145" width="50" height="50" fill="#10b981" stroke="#333" stroke-width="2"/>
+  <polygon points="380,145 405,195 355,195" fill="#f59e0b" stroke="#333" stroke-width="2"/>
+  <text x="300" y="250" font-size="16" text-anchor="middle" fill="#666">パターンを見つけよ</text>
+  <text x="300" y="350" font-size="14" font-style="italic" text-anchor="middle" fill="#999">あと3問で500問達成！</text>
+</svg>

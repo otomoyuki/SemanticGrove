@@ -1,0 +1,244 @@
+import sqlite3
+import json
+
+DB_NAME = "SemanticGrove.db"
+
+def add_typescript_34_questions_part2():
+    """TypeScript問題34問追加（第2弾：46問→80問）"""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    print("=" * 60)
+    print("TypeScript問題追加スクリプト（第2弾：34問）")
+    print("=" * 60)
+    
+    questions = []
+    
+    # ==================== クラス（10問） ====================
+    print("[1/4] クラスを生成中...")
+    
+    classes = [
+        ("TypeScriptのクラスの定義は？",
+         [{"id":"A","text":"class User { name: string; }"},{"id":"B","text":"function User() { this.name = ''; }"},{"id":"C","text":"const User = { name: '' };"},{"id":"D","text":"type User = { name: string; }"}],
+         [0], "クラス", "1", 5, "クラスの基本", "class"),
+        
+        ("アクセス修飾子publicの効果は？",
+         [{"id":"A","text":"どこからでもアクセス可能"},{"id":"B","text":"クラス内のみ"},{"id":"C","text":"サブクラスから可能"},{"id":"D","text":"アクセス不可"}],
+         [0], "クラス", "2", 7, "公開メンバー", "public"),
+        
+        ("アクセス修飾子privateの効果は？",
+         [{"id":"A","text":"クラス内のみアクセス可能"},{"id":"B","text":"どこからでも可能"},{"id":"C","text":"サブクラスから可能"},{"id":"D","text":"同パッケージ内"}],
+         [0], "クラス", "2", 7, "非公開メンバー", "private"),
+        
+        ("アクセス修飾子protectedの効果は？",
+         [{"id":"A","text":"クラスとサブクラスからアクセス可能"},{"id":"B","text":"どこからでも可能"},{"id":"C","text":"クラス内のみ"},{"id":"D","text":"アクセス不可"}],
+         [0], "クラス", "2", 7, "保護メンバー", "protected"),
+        
+        ("readonlyプロパティの特徴は？",
+         [{"id":"A","text":"初期化後は変更不可"},{"id":"B","text":"読み取り不可"},{"id":"C","text":"書き込み専用"},{"id":"D","text":"削除不可"}],
+         [0], "クラス", "2", 7, "不変プロパティ", "readonly"),
+        
+        ("staticメンバーの特徴は？",
+         [{"id":"A","text":"インスタンス化不要でアクセス可能"},{"id":"B","text":"継承不可"},{"id":"C","text":"変更不可"},{"id":"D","text":"非公開"}],
+         [0], "クラス", "2", 8, "クラスメンバー", "static"),
+        
+        ("abstractクラスの特徴は？",
+         [{"id":"A","text":"直接インスタンス化できない"},{"id":"B","text":"継承不可"},{"id":"C","text":"メソッドなし"},{"id":"D","text":"プロパティなし"}],
+         [0], "クラス", "3", 9, "抽象クラス", "abstract"),
+        
+        ("ゲッターの定義方法は？",
+         [{"id":"A","text":"get name() { return this._name; }"},{"id":"B","text":"getName() { return this._name; }"},{"id":"C","text":"getter name() { return this._name; }"},{"id":"D","text":"function get name() {}"}],
+         [0], "クラス", "2", 8, "アクセサ", "getter"),
+        
+        ("セッターの定義方法は？",
+         [{"id":"A","text":"set name(value: string) { this._name = value; }"},{"id":"B","text":"setName(value: string) { this._name = value; }"},{"id":"C","text":"setter name(value) {}"},{"id":"D","text":"function set name(value) {}"}],
+         [0], "クラス", "2", 8, "アクセサ", "setter"),
+        
+        ("パラメータプロパティの記述は？",
+         [{"id":"A","text":"constructor(public name: string) {}"},{"id":"B","text":"constructor(name: string) { this.name = name; }"},{"id":"C","text":"class User(public name: string) {}"},{"id":"D","text":"public name: string; constructor(name) {}"}],
+         [0], "クラス", "3", 10, "コンストラクタ簡略化", "parameter properties"),
+    ]
+    
+    questions.extend(classes)
+    print(f"  ✓ クラス: {len(classes)}問")
+    
+    # ==================== デコレータ（8問） ====================
+    print("[2/4] デコレータを生成中...")
+    
+    decorators = [
+        ("クラスデコレータの定義は？",
+         [{"id":"A","text":"function MyDecorator(target: Function) {}"},{"id":"B","text":"@decorator class MyClass {}"},{"id":"C","text":"class MyDecorator extends Decorator {}"},{"id":"D","text":"decorator MyDecorator() {}"}],
+         [0], "デコレータ", "3", 10, "クラスの装飾", "class decorator"),
+        
+        ("メソッドデコレータのシグネチャは？",
+         [{"id":"A","text":"(target, propertyKey, descriptor)"},{"id":"B","text":"(target, propertyKey)"},{"id":"C","text":"(target)"},{"id":"D","text":"(descriptor)"}],
+         [0], "デコレータ", "4", 12, "メソッドの装飾", "method decorator"),
+        
+        ("プロパティデコレータのシグネチャは？",
+         [{"id":"A","text":"(target, propertyKey)"},{"id":"B","text":"(target, propertyKey, descriptor)"},{"id":"C","text":"(target)"},{"id":"D","text":"(propertyKey)"}],
+         [0], "デコレータ", "4", 12, "プロパティの装飾", "property decorator"),
+        
+        ("パラメータデコレータのシグネチャは？",
+         [{"id":"A","text":"(target, propertyKey, parameterIndex)"},{"id":"B","text":"(target, propertyKey)"},{"id":"C","text":"(target, parameterIndex)"},{"id":"D","text":"(parameterIndex)"}],
+         [0], "デコレータ", "4", 12, "パラメータの装飾", "parameter decorator"),
+        
+        ("デコレータファクトリの用途は？",
+         [{"id":"A","text":"引数を受け取るデコレータを作成"},{"id":"B","text":"デコレータの削除"},{"id":"C","text":"デコレータの継承"},{"id":"D","text":"デコレータの無効化"}],
+         [0], "デコレータ", "4", 12, "カスタマイズ可能な装飾", "decorator factory"),
+        
+        ("デコレータの実行順序は？",
+         [{"id":"A","text":"下から上へ（最も近いものから）"},{"id":"B","text":"上から下へ"},{"id":"C","text":"ランダム"},{"id":"D","text":"アルファベット順"}],
+         [0], "デコレータ", "4", 12, "適用順序", "execution order"),
+        
+        ("experimentalDecoratorsの設定は？",
+         [{"id":"A","text":"tsconfig.jsonで有効化が必要"},{"id":"B","text":"デフォルトで有効"},{"id":"C","text":"設定不要"},{"id":"D","text":"廃止された"}],
+         [0], "デコレータ", "3", 10, "実験的機能", "tsconfig"),
+        
+        ("デコレータの合成は？",
+         [{"id":"A","text":"@A @B class C {} のように複数適用可能"},{"id":"B","text":"1つのみ適用可能"},{"id":"C","text":"継承が必要"},{"id":"D","text":"不可能"}],
+         [0], "デコレータ", "3", 10, "複数の装飾", "composition"),
+    ]
+    
+    questions.extend(decorators)
+    print(f"  ✓ デコレータ: {len(decorators)}問")
+    
+    # ==================== モジュール・名前空間（8問） ====================
+    print("[3/4] モジュール・名前空間を生成中...")
+    
+    modules = [
+        ("ES6モジュールのexportは？",
+         [{"id":"A","text":"export const value = 10;"},{"id":"B","text":"module.exports = { value: 10 };"},{"id":"C","text":"exports.value = 10;"},{"id":"D","text":"public const value = 10;"}],
+         [0], "モジュール", "2", 7, "ES6エクスポート", "export"),
+        
+        ("default exportの記述は？",
+         [{"id":"A","text":"export default class User {}"},{"id":"B","text":"export class User {}"},{"id":"C","text":"default export class User {}"},{"id":"D","text":"module.exports = User;"}],
+         [0], "モジュール", "2", 7, "デフォルトエクスポート", "default"),
+        
+        ("名前付きimportの記述は？",
+         [{"id":"A","text":"import { User } from './user';"},{"id":"B","text":"import User from './user';"},{"id":"C","text":"const User = require('./user');"},{"id":"D","text":"using { User } from './user';"}],
+         [0], "モジュール", "2", 7, "名前付きインポート", "named import"),
+        
+        ("default importの記述は？",
+         [{"id":"A","text":"import User from './user';"},{"id":"B","text":"import { User } from './user';"},{"id":"C","text":"import * as User from './user';"},{"id":"D","text":"const User = require('./user');"}],
+         [0], "モジュール", "2", 7, "デフォルトインポート", "default import"),
+        
+        ("名前空間のimportは？",
+         [{"id":"A","text":"import * as Utils from './utils';"},{"id":"B","text":"import Utils from './utils';"},{"id":"C","text":"import { * as Utils } from './utils';"},{"id":"D","text":"const Utils = require('./utils');"}],
+         [0], "モジュール", "2", 8, "全体インポート", "namespace import"),
+        
+        ("型のみのimportは？",
+         [{"id":"A","text":"import type { User } from './user';"},{"id":"B","text":"import { type User } from './user';"},{"id":"C","text":"import { User: type } from './user';"},{"id":"D","text":"type import { User } from './user';"}],
+         [0], "モジュール", "3", 9, "型インポート", "type import"),
+        
+        ("namespaceの定義は？",
+         [{"id":"A","text":"namespace Utils { export function log() {} }"},{"id":"B","text":"module Utils { function log() {} }"},{"id":"C","text":"package Utils { function log() {} }"},{"id":"D","text":"class Utils { static log() {} }"}],
+         [0], "名前空間", "3", 9, "名前空間の作成", "namespace"),
+        
+        ("moduleとnamespaceの違いは？",
+         [{"id":"A","text":"moduleはファイル単位、namespaceは論理単位"},{"id":"B","text":"完全に同じ"},{"id":"C","text":"moduleは廃止された"},{"id":"D","text":"namespaceは新機能"}],
+         [0], "名前空間", "3", 10, "モジュール化の違い", "module vs namespace"),
+    ]
+    
+    questions.extend(modules)
+    print(f"  ✓ モジュール・名前空間: {len(modules)}問")
+    
+    # ==================== ユーティリティ型・応用（8問） ====================
+    print("[4/4] ユーティリティ型・応用を生成中...")
+    
+    utilities = [
+        ("Omit<T, K>の効果は？",
+         [{"id":"A","text":"指定プロパティを除外"},{"id":"B","text":"指定プロパティのみ抽出"},{"id":"C","text":"全プロパティを取得"},{"id":"D","text":"型を削除"}],
+         [0], "ユーティリティ型", "4", 12, "プロパティ除外", "Omit"),
+        
+        ("Record<K, T>の効果は？",
+         [{"id":"A","text":"キーと値の型を指定したオブジェクト型を作成"},{"id":"B","text":"配列型を作成"},{"id":"C","text":"関数型を作成"},{"id":"D","text":"クラス型を作成"}],
+         [0], "ユーティリティ型", "3", 10, "オブジェクト型の構築", "Record"),
+        
+        ("Exclude<T, U>の効果は？",
+         [{"id":"A","text":"TからUに代入可能な型を除外"},{"id":"B","text":"TとUの共通部分"},{"id":"C","text":"TとUの結合"},{"id":"D","text":"型を削除"}],
+         [0], "ユーティリティ型", "4", 12, "型の差分", "Exclude"),
+        
+        ("Extract<T, U>の効果は？",
+         [{"id":"A","text":"TからUに代入可能な型を抽出"},{"id":"B","text":"TからUを除外"},{"id":"C","text":"TとUの結合"},{"id":"D","text":"型を削除"}],
+         [0], "ユーティリティ型", "4", 12, "型の共通部分", "Extract"),
+        
+        ("NonNullable<T>の効果は？",
+         [{"id":"A","text":"nullとundefinedを除外"},{"id":"B","text":"nullのみ除外"},{"id":"C","text":"undefinedのみ除外"},{"id":"D","text":"全て許可"}],
+         [0], "ユーティリティ型", "3", 9, "null除外", "NonNullable"),
+        
+        ("ReturnType<T>の効果は？",
+         [{"id":"A","text":"関数の戻り値の型を取得"},{"id":"B","text":"関数の引数の型を取得"},{"id":"C","text":"関数全体の型を取得"},{"id":"D","text":"型を削除"}],
+         [0], "ユーティリティ型", "3", 10, "返却値型の抽出", "ReturnType"),
+        
+        ("Parameters<T>の効果は？",
+         [{"id":"A","text":"関数の引数の型をタプルで取得"},{"id":"B","text":"関数の戻り値の型を取得"},{"id":"C","text":"関数全体の型を取得"},{"id":"D","text":"型を削除"}],
+         [0], "ユーティリティ型", "4", 12, "引数型の抽出", "Parameters"),
+        
+        ("Awaited<T>の効果は？",
+         [{"id":"A","text":"Promiseの解決値の型を取得"},{"id":"B","text":"Promise型を作成"},{"id":"C","text":"async関数を作成"},{"id":"D","text":"型を削除"}],
+         [0], "ユーティリティ型", "4", 12, "Promise型の展開", "Awaited"),
+    ]
+    
+    questions.extend(utilities)
+    print(f"  ✓ ユーティリティ型・応用: {len(utilities)}問")
+    
+    # データベースに挿入
+    print("\nデータベースに保存中...")
+    for q in questions:
+        question_json = {
+            "question": q[0],
+            "options": q[1],
+            "answer": q[2]
+        }
+        
+        cursor.execute("""
+            INSERT INTO questions 
+            (language, question_json, category, difficulty, score, meaning, usage)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, ("TypeScript", json.dumps(question_json, ensure_ascii=False), 
+              q[3], q[4], q[5], q[6], q[7]))
+    
+    conn.commit()
+    
+    # 統計表示
+    cursor.execute("SELECT COUNT(*) FROM questions WHERE language = 'TypeScript'")
+    ts_count = cursor.fetchone()[0]
+    
+    cursor.execute("""
+        SELECT category, COUNT(*) as count 
+        FROM questions 
+        WHERE language = 'TypeScript' 
+        GROUP BY category 
+        ORDER BY count DESC
+    """)
+    categories = cursor.fetchall()
+    
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    total_count = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    print("\n" + "=" * 60)
+    print("🎊🎊🎊 TypeScript 80問達成！！！ 🎊🎊🎊")
+    print("=" * 60)
+    print(f"TypeScript問題数: 11問 → {ts_count}問（+69問）")
+    print(f"全体問題数: {total_count}問")
+    
+    print("\n【TypeScriptカテゴリ別内訳】")
+    for cat, count in categories:
+        print(f"  {cat}: {count}問")
+    
+    print("\n" + "=" * 60)
+    print("✅✅✅ モダン言語 Phase 4 - TypeScript完了！ ✅✅✅")
+    print("\n【達成状況】")
+    print(f"  ✅ TypeScript: {ts_count}問 / 80問 ← 完了！")
+    print("\n【次の目標 - Phase 4 継続】")
+    print("  🎯 Go: 11問 → 80問（+69問）")
+    print("  🎯 Ruby: 15問 → 80問（+65問）")
+    print("\nまたは")
+    print("  🎯 VBA: 10問 → 50問（+40問）")
+    print("  🎯 COBOL: 15問 → 50問（+35問）")
+    print("=" * 60)
+
+if __name__ == "__main__":
+    add_typescript_34_questions_part2()

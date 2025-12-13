@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>SemanticGrove - 学習モード</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- ツールバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button active">学習モード</a>
+      <a href="/practice/low" class="toolbar-button">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+  
+  <h1 class="logo-title">SemanticGrove</h1>
+  <h1>学習モード</h1>
+  
+  <!-- 言語選択 -->
+  <div class="language-select">
+    <label for="language">　　言語を選択：</label>
+    <select id="language" onchange="startLearning()">
+      <option value="Python">Python</option>
+      <option value="PHP">PHP</option>
+      <option value="C#">C#</option>
+      <option value="Java">Java</option>
+      <option value="JavaScript">JavaScript</option>
+      <option value="CSS">CSS</option>
+      <option value="Go">Go</option>
+      <option value="HTML">HTML</option>
+      <option value="Kotlin">Kotlin</option>
+      <option value="React">React</option>
+      <option value="Ruby">Ruby</option>
+      <option value="Rust">Rust</option>
+      <option value="Swift">Swift</option>
+      <option value="TypeScript">TypeScript</option>
+      <option value="COBOL">COBOL</option>
+      <option value="VBA">VBA</option>
+      <option value="IQ">IQ問題</option>
+    </select>
+  </div>
+  
+  <!-- 学習エリア -->
+  <div class="learning-box">
+    <p>言語を選択すると問題が表示されます</p>
+  </div>
+  
+  <div class="next-button-area">
+    <button onclick="goNext()">次へ</button>
+  </div>
+  
+  <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
