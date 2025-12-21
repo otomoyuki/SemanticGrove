@@ -1,4 +1,4 @@
-// 中級モード用JavaScript
+// 中級モード用JavaScript（正しい選択肢シャッフル実装）
 let middleQuestions = [];
 let currentIndex = 0;
 let correctCount = 0;
@@ -17,11 +17,45 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+// 選択肢の中身だけをシャッフルする関数
+function shuffleOptions(question) {
+  const originalOptions = [...question.options];
+  const originalCorrectIndex = question.answer[0];
+  
+  const labels = ['A', 'B', 'C', 'D'];
+  const indices = originalOptions.map((_, index) => index);
+  
+  // Fisher-Yates シャッフル
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  
+  // ラベルは固定、中身だけシャッフル
+  const shuffledOptions = indices.map((originalIndex, newIndex) => ({
+    id: labels[newIndex],
+    text: originalOptions[originalIndex].text
+  }));
+  
+  const newCorrectIndex = indices.indexOf(originalCorrectIndex);
+  
+  return {
+    ...question,
+    options: shuffledOptions,
+    answer: [newCorrectIndex],
+    originalOptions: originalOptions,
+    originalAnswer: [originalCorrectIndex]
+  };
+}
+
 function startMiddleMode() {
   const lang = document.getElementById("language").value;
+  const questionCount = document.getElementById("questionCount") ? 
+    document.getElementById("questionCount").value : "10";
+  
   document.getElementById("setupArea").innerHTML = "<p>問題を読み込み中...</p>";
   
-  fetch("/api/practice/middle?lang=" + encodeURIComponent(lang))
+  fetch("/api/practice/middle?lang=" + encodeURIComponent(lang) + "&limit=" + questionCount)
     .then(function(res) {
       if (!res.ok) throw new Error("HTTP error! status: " + res.status);
       return res.json();
@@ -33,7 +67,9 @@ function startMiddleMode() {
         return;
       }
       
-      middleQuestions = data;
+      // 各問題の選択肢をシャッフル
+      middleQuestions = data.map(q => shuffleOptions(q));
+      
       currentIndex = 0;
       correctCount = 0;
       
@@ -62,14 +98,33 @@ function showMiddleQuestion() {
   const accuracy = currentIndex === 0 ? 0 : Math.round((correctCount / currentIndex) * 100);
   document.getElementById("accuracyRate").textContent = accuracy;
   
-  document.getElementById("questionText").textContent = question.question;
+  const questionTextElement = document.getElementById("questionText");
+  if (question.image) {
+    const imagePath = question.image.replace(/^images\//, '');
+    const fullPath = `/static/images/${imagePath}`;
+    console.log("=== 画像情報 ===");
+    console.log("元のパス:", question.image);
+    console.log("修正後のパス:", imagePath);
+    console.log("完全なURL:", fullPath);
+    
+    questionTextElement.innerHTML = `
+      <img src="${fullPath}" 
+           alt="問題画像" 
+           style="max-width: 600px; width: 100%; height: auto; margin: 20px 0; display: block; border: 2px solid #4a7c59; border-radius: 8px;"
+           onerror="console.error('❌ 画像読み込み失敗:', '${fullPath}'); this.style.display='none'; this.insertAdjacentHTML('afterend', '<p style=\\'color:red; font-weight:bold;\\'>画像を読み込めませんでした: ${imagePath}</p>');"
+           onload="console.log('✅ 画像読み込み成功:', '${fullPath}')">
+      <p style="margin-top: 10px;">${escapeHtml(question.question)}</p>
+    `;
+  } else {
+    questionTextElement.textContent = question.question;
+  }
   
   const choicesArea = document.getElementById("choicesArea");
   choicesArea.innerHTML = "";
   
   question.options.forEach(function(option, index) {
     const button = document.createElement("button");
-    button.innerHTML = escapeHtml(option.id + ". " + option.text);
+    button.innerHTML = escapeHtml(option.text);  // ラベル削除
     button.onclick = function() { selectAnswer(index); };
     button.id = "option-" + index;
     choicesArea.appendChild(button);
@@ -113,7 +168,7 @@ function selectAnswer(selectedIndex) {
   } else {
     const correctOption = question.options[correctIndex];
     feedbackArea.className = "feedback incorrect";
-    feedbackArea.innerHTML = "<h3>✗ 不正解</h3><p>正解は <strong>" + escapeHtml(correctOption.id + ". " + correctOption.text) + "</strong> です</p>";
+    feedbackArea.innerHTML = "<h3>✗ 不正解</h3><p>正解は <strong>" + escapeHtml(correctOption.text) + "</strong> です</p>";  // ラベル削除
   }
   
   const explanationArea = document.getElementById("explanationArea");

@@ -257,6 +257,20 @@ def practice_high():
     """上級モード"""
     return render_template("practice-high.html")
 
+# ==================== 新規追加：ゲームとフィードバックページ ====================
+
+@app.route("/games")
+def games():
+    """ゲームページ（Coming Soon）"""
+    return render_template("coming-soon.html", page_title="ゲーム")
+
+@app.route("/feedback")
+def feedback():
+    """フィードバックページ（Coming Soon）"""
+    return render_template("coming-soon.html", page_title="ご意見")
+
+# ====================================================================================
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     """ログイン"""
@@ -471,24 +485,30 @@ def get_ranking():
         print(f"Error getting ranking: {e}")
         return jsonify([]), 500
 
-# ↓ ここから追加 ↓
-
 @app.route("/api/practice/low")
 def get_practice_low():
-    """初級モード用API"""
+    """初級モード用API - 問題数をカスタマイズ可能"""
     lang = request.args.get("lang", "JavaScript")
+    limit = request.args.get("limit", "10")  # デフォルト10問
+    
+    try:
+        limit = int(limit)
+        if limit not in [10, 20, 30, 50]:
+            limit = 10
+    except ValueError:
+        limit = 10
     
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
         # 難易度1-2の問題を取得
-        query = """
+        query = f"""
             SELECT id, language, question_json, category, difficulty, score, meaning, usage
             FROM questions
             WHERE language = ? AND difficulty IN ('1', '2')
             ORDER BY RANDOM()
-            LIMIT 10
+            LIMIT {limit}
         """
         
         cursor.execute(query, (lang,))
@@ -529,20 +549,28 @@ def get_practice_low():
 
 @app.route("/api/practice/middle")
 def get_practice_middle():
-    """中級モード用API"""
+    """中級モード用API - 問題数をカスタマイズ可能"""
     lang = request.args.get("lang", "JavaScript")
+    limit = request.args.get("limit", "10")
+    
+    try:
+        limit = int(limit)
+        if limit not in [10, 20, 30, 50]:
+            limit = 10
+    except ValueError:
+        limit = 10
     
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
         # 難易度3-4の問題を取得
-        query = """
+        query = f"""
             SELECT id, language, question_json, category, difficulty, score, meaning, usage
             FROM questions
             WHERE language = ? AND difficulty IN ('3', '4')
             ORDER BY RANDOM()
-            LIMIT 10
+            LIMIT {limit}
         """
         
         cursor.execute(query, (lang,))
@@ -583,20 +611,28 @@ def get_practice_middle():
 
 @app.route("/api/practice/high")
 def get_practice_high():
-    """上級モード用API"""
+    """上級モード用API - 問題数をカスタマイズ可能"""
     lang = request.args.get("lang", "JavaScript")
+    limit = request.args.get("limit", "10")
+    
+    try:
+        limit = int(limit)
+        if limit not in [10, 20, 30, 50]:
+            limit = 10
+    except ValueError:
+        limit = 10
     
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
         # 難易度5以上の問題を取得
-        query = """
+        query = f"""
             SELECT id, language, question_json, category, difficulty, score, meaning, usage
             FROM questions
             WHERE language = ? AND CAST(difficulty AS INTEGER) >= 5
             ORDER BY RANDOM()
-            LIMIT 10
+            LIMIT {limit}
         """
         
         cursor.execute(query, (lang,))
@@ -634,8 +670,6 @@ def get_practice_high():
         print(f"Error: {e}")
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
-# ↑ ここまで追加 ↑
 
 # ==================== 新API（統計機能） ====================
 

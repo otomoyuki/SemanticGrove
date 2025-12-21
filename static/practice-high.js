@@ -1,4 +1,4 @@
-// 上級モード用JavaScript（右パネル対応版）
+// 上級モード用JavaScript（正しい選択肢シャッフル実装）
 let highQuestions = [];
 let currentIndex = 0;
 let correctCount = 0;
@@ -20,10 +20,43 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+// 選択肢の中身だけをシャッフルする関数
+function shuffleOptions(question) {
+  const originalOptions = [...question.options];
+  const originalCorrectIndex = question.answer[0];
+  
+  const labels = ['A', 'B', 'C', 'D'];
+  const indices = originalOptions.map((_, index) => index);
+  
+  // Fisher-Yates シャッフル
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  
+  // ラベルは固定、中身だけシャッフル
+  const shuffledOptions = indices.map((originalIndex, newIndex) => ({
+    id: labels[newIndex],
+    text: originalOptions[originalIndex].text
+  }));
+  
+  const newCorrectIndex = indices.indexOf(originalCorrectIndex);
+  
+  return {
+    ...question,
+    options: shuffledOptions,
+    answer: [newCorrectIndex],
+    originalOptions: originalOptions,
+    originalAnswer: [originalCorrectIndex]
+  };
+}
+
 function startChallenge() {
   const lang = document.getElementById("language").value;
+  const questionCount = document.getElementById("questionCount") ? 
+    document.getElementById("questionCount").value : "10";
   
-  fetch("/api/practice/high?lang=" + encodeURIComponent(lang))
+  fetch("/api/practice/high?lang=" + encodeURIComponent(lang) + "&limit=" + questionCount)
     .then(function(res) {
       if (!res.ok) throw new Error("HTTP error! status: " + res.status);
       return res.json();
@@ -35,18 +68,18 @@ function startChallenge() {
         return;
       }
       
-      highQuestions = data;
+      // 各問題の選択肢をシャッフル
+      highQuestions = data.map(q => shuffleOptions(q));
+      
       currentIndex = 0;
       correctCount = 0;
       currentScore = 0;
       
-      // セットアップエリアを非表示
       const setupArea = document.getElementById("setupArea");
       if (setupArea) {
         setupArea.style.display = "none";
       }
       
-      // サイドパネル表示
       const sidePanel = document.getElementById("sidePanel");
       if (sidePanel) {
         sidePanel.style.display = "block";
@@ -62,12 +95,8 @@ function startChallenge() {
         totalQuestions.textContent = highQuestions.length;
       }
       
-      // 問題リスト生成
       generateQuestionList();
-      
-      // 最初の問題を表示
       showQuestion(0);
-      
       startTimer();
     })
     .catch(function(error) {
@@ -85,7 +114,6 @@ function generateQuestionList() {
     item.className = "question-item";
     item.id = `q-item-${index}`;
     
-    // 問題文の最初の30文字
     const shortText = q.question.substring(0, 30) + (q.question.length > 30 ? "..." : "");
     
     item.innerHTML = `
@@ -101,7 +129,6 @@ function generateQuestionList() {
     `;
     
     item.onclick = () => jumpToQuestion(index);
-    
     listContainer.appendChild(item);
   });
 }
@@ -113,7 +140,6 @@ function showQuestion(index) {
   
   const question = highQuestions[currentIndex];
   
-  // 現在の問題をハイライト
   document.querySelectorAll(".question-item").forEach((item, i) => {
     if (i === index) {
       item.classList.add("current");
@@ -122,7 +148,6 @@ function showQuestion(index) {
     }
   });
   
-  // 進捗更新（安全にチェック）
   const currentQuestionNumberEl = document.getElementById("currentQuestionNumber");
   if (currentQuestionNumberEl) {
     currentQuestionNumberEl.textContent = index + 1;
@@ -134,7 +159,6 @@ function showQuestion(index) {
     accuracyRateEl.textContent = accuracy + "%";
   }
   
-  // 問題表示
   const questionAreaEl = document.getElementById("questionArea");
   if (questionAreaEl) {
     questionAreaEl.style.display = "block";
@@ -142,7 +166,25 @@ function showQuestion(index) {
   
   const questionTextEl = document.getElementById("questionText");
   if (questionTextEl) {
-    questionTextEl.textContent = question.question;
+    if (question.image) {
+      const imagePath = question.image.replace(/^images\//, '');
+      const fullPath = `/static/images/${imagePath}`;
+      console.log("=== 画像情報 ===");
+      console.log("元のパス:", question.image);
+      console.log("修正後のパス:", imagePath);
+      console.log("完全なURL:", fullPath);
+      
+      questionTextEl.innerHTML = `
+        <img src="${fullPath}" 
+             alt="問題画像" 
+             style="max-width: 600px; width: 100%; height: auto; margin: 20px 0; display: block; border: 2px solid #4a7c59; border-radius: 8px;"
+             onerror="console.error('❌ 画像読み込み失敗:', '${fullPath}'); this.style.display='none'; this.insertAdjacentHTML('afterend', '<p style=\\'color:red; font-weight:bold;\\'>画像を読み込めませんでした: ${imagePath}</p>');"
+             onload="console.log('✅ 画像読み込み成功:', '${fullPath}')">
+        <p style="margin-top: 10px;">${escapeHtml(question.question)}</p>
+      `;
+    } else {
+      questionTextEl.textContent = question.question;
+    }
   }
   
   const choicesArea = document.getElementById("choicesArea");
@@ -151,7 +193,7 @@ function showQuestion(index) {
     
     question.options.forEach(function(option, idx) {
       const button = document.createElement("button");
-      button.innerHTML = escapeHtml(option.id + ". " + option.text);
+      button.innerHTML = escapeHtml(option.text);  // ラベル削除
       button.onclick = function() { selectAnswer(idx); };
       button.id = "option-" + idx;
       choicesArea.appendChild(button);
@@ -183,10 +225,8 @@ function selectAnswer(selectedIndex) {
     currentScore += question.score || 1;
   }
   
-  // 問題リストに結果を反映
   markQuestionResult(currentIndex, isCorrect);
   
-  // ボタンの色変更
   const buttons = document.querySelectorAll("#choicesArea button");
   buttons.forEach(function(btn, idx) {
     btn.disabled = true;
@@ -197,7 +237,6 @@ function selectAnswer(selectedIndex) {
     }
   });
   
-  // フィードバック表示
   const feedbackArea = document.getElementById("feedbackArea");
   feedbackArea.style.display = "block";
   
@@ -207,10 +246,9 @@ function selectAnswer(selectedIndex) {
   } else {
     const correctOption = question.options[correctIndex];
     feedbackArea.className = "feedback incorrect";
-    feedbackArea.innerHTML = "<h3>✗ 不正解</h3><p>正解は <strong>" + escapeHtml(correctOption.id + ". " + correctOption.text) + "</strong> です</p>";
+    feedbackArea.innerHTML = "<h3>✗ 不正解</h3><p>正解は <strong>" + escapeHtml(correctOption.text) + "</strong> です</p>";  // ラベル削除
   }
   
-  // 解説表示
   const explanationArea = document.getElementById("explanationArea");
   explanationArea.style.display = "block";
   document.getElementById("explanationText").textContent = question.explanation || "解説はありません";
@@ -218,7 +256,6 @@ function selectAnswer(selectedIndex) {
   
   document.getElementById("nextButtonArea").style.display = "block";
   
-  // 進捗更新
   const accuracy = Math.round((correctCount / (currentIndex + 1)) * 100);
   document.getElementById("accuracyRate").textContent = accuracy + "%";
 }
@@ -237,7 +274,6 @@ function markQuestionResult(index, isCorrect) {
 
 function jumpToQuestion(index) {
   if (index < currentIndex) {
-    // 既に解答済みの問題は見直しのみ
     alert("この問題は既に解答済みです");
     return;
   }

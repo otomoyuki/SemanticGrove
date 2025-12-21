@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ page_title }} - SemanticGrove</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .coming-soon-container {
+      margin-left: 280px;
+      padding: 60px 40px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .coming-soon-box {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 60px;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .coming-soon-icon {
+      font-size: 80px;
+      margin-bottom: 30px;
+    }
+
+    .coming-soon-title {
+      font-size: 2.5em;
+      color: #2d5016;
+      margin-bottom: 20px;
+      font-family: 'Dancing Script', cursive;
+    }
+
+    .coming-soon-message {
+      font-size: 1.2em;
+      color: #555;
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+
+    .back-button {
+      display: inline-block;
+      padding: 15px 40px;
+      background: linear-gradient(135deg, #4a7c2c, #6a9c3d);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(74, 124, 44, 0.3);
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 124, 44, 0.4);
+      background: linear-gradient(135deg, #5a8c3c, #7aac4d);
+    }
+
+    @media (max-width: 768px) {
+      .coming-soon-container {
+        margin-left: 0;
+        padding: 40px 20px;
+      }
+
+      .coming-soon-box {
+        padding: 40px 30px;
+      }
+
+      .coming-soon-title {
+        font-size: 2em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 左サイドバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button">学習モード</a>
+      <a href="/practice/low" class="toolbar-button">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <div class="coming-soon-container">
+    <div class="coming-soon-box">
+      <div class="coming-soon-icon">
+        {% if page_title == 'ゲーム' %}
+          🎮
+        {% elif page_title == 'ご意見' %}
+          💭
+        {% else %}
+          🚧
+        {% endif %}
+      </div>
+      
+      <h1 class="coming-soon-title">{{ page_title }}</h1>
+      
+      <p class="coming-soon-message">
+        この機能は現在開発中です。<br>
+        近日公開予定ですので、もうしばらくお待ちください！<br>
+        <br>
+        楽しみにしていてくださいね 🌱
+      </p>
+      
+      <a href="/" class="back-button">ホームに戻る</a>
+    </div>
+  </div>
+
+</body>
+</html>

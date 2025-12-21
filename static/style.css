@@ -1,11 +1,11 @@
 /* ========================================
-   SemanticGrove - 完全版 CSS
-   最終更新: 2025-12-11
+   SemanticGrove - 最終版CSS
+   - 透過率95%
+   - 練習モード: 正解は緑色
+   - 学習モード: 選択肢は全て白、正解表示は下だけ
 ======================================== */
 
-/* ========================================
-   基本設定
-======================================== */
+/* 基本設定 */
 * {
   box-sizing: border-box;
 }
@@ -21,11 +21,10 @@ body {
   background-color: #2d5016;
   color: #f0f0f0;
   min-height: 100vh;
+  font-size: 18px;
 }
 
-/* ========================================
-   左サイドバー（縦ツールバー）
-======================================== */
+/* 左サイドバー */
 .toolbar {
   position: fixed;
   left: 0;
@@ -67,7 +66,6 @@ body {
   border-left-color: #ffffff;
 }
 
-//* ゲームボタン */
 .game-button {
   background-color: rgba(255, 152, 0, 0.2);
 }
@@ -76,7 +74,6 @@ body {
   background-color: rgba(255, 152, 0, 0.3);
 }
 
-/* ログアウトボタン */
 .logout-button {
   background-color: rgba(122, 157, 136, 0.3) !important;
   color: #d0d0d0 !important;
@@ -87,7 +84,6 @@ body {
   background-color: rgba(106, 141, 120, 0.5) !important;
 }
 
-/* ユーザー情報 */
 .user-info {
   display: block;
   padding: 10px 20px;
@@ -98,7 +94,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* SGカウンター */
 .sg-display {
   display: block;
   background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
@@ -111,9 +106,7 @@ body {
   text-align: center;
 }
 
-/* ========================================
-   メインコンテンツ
-======================================== */
+/* メインコンテンツ */
 .main-content {
   margin-left: 220px;
   padding: 40px;
@@ -121,7 +114,6 @@ body {
   background: transparent;
 }
 
-/* 上級モード用の2カラム */
 .content-wrapper {
   margin-left: 220px;
   display: flex;
@@ -139,9 +131,7 @@ body {
   border-radius: 12px;
 }
 
-/* ========================================
-   タイトル
-======================================== */
+/* タイトル */
 .logo-title {
   font-family: 'Dancing Script', cursive;
   font-size: 4.5em;
@@ -186,22 +176,19 @@ h4 {
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* メインコンテンツ内の文字色 */
 .main-content > p {
   text-align: center;
-  font-size: 16px;
+  font-size: 18px;
   color: #f0f0f0;
   line-height: 1.8;
   margin: 15px 0 25px 0;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* ========================================
-   ボタン
-======================================== */
+/* ボタン */
 button {
   padding: 12px 30px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   border: none;
   border-radius: 8px;
@@ -220,7 +207,6 @@ button:active {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* 選択肢ボタン */
 .choices {
   display: flex;
   flex-direction: column;
@@ -231,7 +217,7 @@ button:active {
 
 .choice-button {
   padding: 20px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   background: linear-gradient(135deg, #4a7c59 0%, #5a8c69 100%);
   color: white;
@@ -248,7 +234,6 @@ button:active {
   box-shadow: 0 6px 12px rgba(0,0,0,0.3);
 }
 
-/* ゲームセンターボタン */
 .game-center-button {
   background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
   color: white;
@@ -262,27 +247,43 @@ button:active {
 }
 
 /* ========================================
-   言語選択
+   練習モード - 正解は緑色
 ======================================== */
+#choicesArea button.correct {
+  background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%) !important;
+  color: white !important;
+  border: 3px solid #1b5e20 !important;
+  box-shadow: 0 0 20px rgba(46, 125, 50, 0.6) !important;
+  font-weight: bold !important;
+}
+
+#choicesArea button.incorrect {
+  background: linear-gradient(135deg, #c62828 0%, #e53935 100%) !important;
+  color: white !important;
+  border: 3px solid #b71c1c !important;
+  box-shadow: 0 0 20px rgba(198, 40, 40, 0.6) !important;
+}
+
+/* 言語選択 */
 .language-select {
   text-align: center;
   margin: 30px 0;
   padding: 25px;
-  background: rgba(232, 245, 233, 0.8);
+  background: rgba(104, 136, 136, 0.95);
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .language-select label {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  color: #2d5016;
+  color: #f0f0f0;
   margin-right: 15px;
 }
 
 .language-select select {
   padding: 12px 20px;
-  font-size: 16px;
+  font-size: 18px;
   border: 2px solid #4a7c59;
   border-radius: 8px;
   background: white;
@@ -290,11 +291,9 @@ button:active {
   min-width: 200px;
 }
 
-/* ========================================
-   上級モード - セットアップエリア
-======================================== */
+/* セットアップエリア */
 .setup-area {
-  background: rgba(232, 245, 233, 0.8);
+  background: rgba(104, 136, 136, 0.95);
   padding: 30px;
   border-radius: 12px;
   margin: 20px 0;
@@ -302,15 +301,15 @@ button:active {
 }
 
 .setup-area label {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
-  color: #2d5016;
+  color: #f0f0f0;
   margin-right: 15px;
 }
 
 .setup-area select {
   padding: 12px 20px;
-  font-size: 16px;
+  font-size: 18px;
   border: 2px solid #4a7c59;
   border-radius: 8px;
   background: white;
@@ -323,6 +322,29 @@ button:active {
   gap: 20px;
   justify-content: center;
   margin-top: 25px;
+  flex-wrap: wrap;
+}
+
+.question-count-selector {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.question-count-selector label {
+  font-size: 18px;
+  color: #f0f0f0;
+  margin-right: 10px;
+}
+
+.question-count-selector select {
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #4a7c59;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
 }
 
 .start-button,
@@ -359,9 +381,7 @@ button:active {
   box-shadow: 0 6px 12px rgba(33, 150, 243, 0.4);
 }
 
-/* ========================================
-   警告ボックス
-======================================== */
+/* 警告ボックス */
 .warning-box {
   background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
   border: 2px solid #fbc02d;
@@ -374,7 +394,7 @@ button:active {
 .warning-box p {
   margin: 10px 0;
   color: #333;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .warning-box a {
@@ -383,13 +403,11 @@ button:active {
   text-decoration: underline;
 }
 
-/* ========================================
-   右サイドパネル（上級モード）
-======================================== */
+/* 右サイドパネル */
 .side-panel {
   width: 350px;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(104, 136, 136, 0.95);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   position: sticky;
@@ -399,9 +417,8 @@ button:active {
   overflow-y: auto;
 }
 
-/* 統計サマリー */
 .stats-summary {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  background: linear-gradient(135deg, #5a8c69 0%, #4a7c59 100%);
   padding: 20px;
   border-radius: 12px 12px 0 0;
   text-align: center;
@@ -409,25 +426,38 @@ button:active {
 
 .stats-summary h3 {
   margin: 0 0 15px 0;
-  color: #2d5016;
+  color: #f0f0f0;
   font-size: 22px;
-  text-shadow: none;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .progress-info {
   font-size: 32px;
   font-weight: bold;
-  color: #4a7c59;
+  color: #f0f0f0;
   margin: 10px 0;
 }
 
 .accuracy-display {
-  font-size: 16px;
-  color: #2d5016;
+  font-size: 18px;
+  color: #f0f0f0;
   margin-top: 10px;
 }
 
-/* 問題リスト */
+.timer-display {
+  font-size: 48px !important;
+  font-weight: bold;
+  color: #ff6b6b;
+  background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 15px 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: 'Courier New', monospace;
+  letter-spacing: 3px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
 .question-list {
   padding: 15px;
 }
@@ -437,7 +467,7 @@ button:active {
   align-items: flex-start;
   padding: 12px;
   margin-bottom: 10px;
-  background: #f5f5f5;
+  background: rgba(90, 140, 105, 0.3);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -445,24 +475,24 @@ button:active {
 }
 
 .question-item:hover {
-  background: #eeeeee;
+  background: rgba(90, 140, 105, 0.5);
   transform: translateX(3px);
 }
 
 .question-item.current {
-  background: #fff9c4;
+  background: rgba(255, 249, 196, 0.8);
   border-left-color: #fbc02d;
   font-weight: bold;
 }
 
 .question-item.correct {
-  background: #e8f5e9;
-  border-left-color: #4caf50;
+  background: rgba(76, 175, 80, 0.4);
+  border-left-color: #2e7d32;
 }
 
 .question-item.incorrect {
-  background: #ffebee;
-  border-left-color: #f44336;
+  background: rgba(255, 205, 210, 0.8);
+  border-left-color: #c62828;
 }
 
 .q-number {
@@ -486,11 +516,11 @@ button:active {
 }
 
 .question-item.correct .q-number {
-  background: #66bb6a;
+  background: #2e7d32;
 }
 
 .question-item.incorrect .q-number {
-  background: #ef5350;
+  background: #c62828;
 }
 
 .q-content {
@@ -500,9 +530,9 @@ button:active {
 }
 
 .q-text {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.4;
-  color: #333;
+  color: #f0f0f0;
   margin-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -512,35 +542,32 @@ button:active {
 }
 
 .q-stats {
-  font-size: 11px;
-  color: #666;
+  font-size: 12px;
+  color: #d0d0d0;
   display: flex;
   gap: 10px;
 }
 
 .q-achievement {
   font-size: 16px;
+  color: #f0f0f0;
 }
 
-/* ========================================
-   スコア表示
-======================================== */
+/* スコア表示 */
 .score-display {
-  background: rgba(232, 245, 233, 0.9);
+  background: rgba(104, 136, 136, 0.95);
   padding: 15px;
   border-radius: 10px;
   text-align: center;
   margin: 20px 0;
   font-weight: bold;
-  color: #2d5016;
-  font-size: 18px;
+  color: #f0f0f0;
+  font-size: 20px;
 }
 
-/* ========================================
-   問題ボックス
-======================================== */
+/* 問題ボックス */
 .question-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(104, 136, 136, 0.95);
   padding: 30px;
   border-radius: 12px;
   margin: 20px 0;
@@ -548,68 +575,98 @@ button:active {
 }
 
 .question-box h3 {
-  color: #2d5016;
-  text-shadow: none;
+  color: #f0f0f0;
+  font-size: 24px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.question-box p {
+  color: #f0f0f0;
+  font-size: 18px;
+  line-height: 1.8;
 }
 
 /* ========================================
-   学習ボックス
+   学習ボックス - 選択肢は全て白のまま
 ======================================== */
 .learning-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(104, 136, 136, 0.95);
   padding: 30px;
   border-radius: 12px;
   margin: 20px auto;
   max-width: 800px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  color: #333;
+  color: #f0f0f0;
   line-height: 1.8;
+  font-size: 18px;
+}
+
+.learning-box h3,
+.learning-box h4 {
+  color: #f0f0f0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* 学習モードの選択肢リスト - 全て白 */
+.learning-box ul li {
+  margin: 10px 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #f0f0f0;  /* 全て白 */
+}
+
+/* 選択肢内の太字も白のまま */
+.learning-box ul li strong,
+.learning-box ul li b {
+  color: #f0f0f0;  /* 白のまま */
+  font-weight: bold;
 }
 
 /* ========================================
-   フィードバック
+   練習モード - フィードバックは緑色
 ======================================== */
 .feedback {
   padding: 20px;
   margin: 20px 0;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   text-align: center;
 }
 
 .feedback.correct {
-  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
   color: #1b5e20;
+  border: 3px solid #2e7d32;
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
 }
 
 .feedback.incorrect {
-  background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+  background: linear-gradient(135deg, #ef9a9a 0%, #e57373 100%);
   color: #b71c1c;
+  border: 3px solid #c62828;
+  box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
 }
 
-/* ========================================
-   解説ボックス
-======================================== */
+/* 解説ボックス */
 .explanation-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(104, 136, 136, 0.95);
   padding: 25px;
   border-radius: 12px;
   margin: 20px 0;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  color: #333;
+  color: #f0f0f0;
   line-height: 1.8;
+  font-size: 18px;
 }
 
 .explanation-box h3,
 .explanation-box h4 {
-  color: #2d5016;
-  text-shadow: none;
+  color: #f0f0f0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* ========================================
-   次へボタンエリア
-======================================== */
+/* 次へボタンエリア */
 .next-button-area {
   text-align: center;
   margin: 30px 0;
@@ -628,11 +685,9 @@ button:active {
   background: linear-gradient(135deg, #5a8c69 0%, #6a9c79 100%);
 }
 
-/* ========================================
-   結果表示
-======================================== */
+/* 結果表示 */
 .result-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(104, 136, 136, 0.95);
   padding: 40px;
   border-radius: 12px;
   margin: 20px auto;
@@ -642,22 +697,22 @@ button:active {
 }
 
 .result-box h2 {
-  color: #2d5016;
-  text-shadow: none;
+  color: #f0f0f0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .result-stats {
   margin: 30px 0;
   padding: 20px;
-  background: rgba(232, 245, 233, 0.5);
+  background: rgba(90, 140, 105, 0.5);
   border-radius: 10px;
 }
 
 .result-stats p {
   margin: 15px 0;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
-  color: #2d5016;
+  color: #f0f0f0;
 }
 
 .result-buttons {
@@ -676,13 +731,11 @@ button:active {
   background: linear-gradient(135deg, #5a8c69 0%, #6a9c79 100%);
 }
 
-/* ========================================
-   フォーム
-======================================== */
+/* フォーム */
 .form-container {
   max-width: 500px;
   margin: 40px auto;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(104, 136, 136, 0.95);
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.2);
@@ -696,14 +749,14 @@ button:active {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
-  color: #2d5016;
-  font-size: 16px;
+  color: #f0f0f0;
+  font-size: 18px;
 }
 
 .form-group input {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
+  font-size: 18px;
   border: 2px solid #4a7c59;
   border-radius: 8px;
   transition: border-color 0.3s;
@@ -733,24 +786,24 @@ button:active {
 .form-footer {
   text-align: center;
   margin-top: 20px;
-  color: #2d5016;
+  color: #f0f0f0;
+  font-size: 16px;
 }
 
 .form-footer a {
-  color: #1976d2;
+  color: #90c695;
   font-weight: bold;
   text-decoration: underline;
 }
 
-/* ========================================
-   フラッシュメッセージ
-======================================== */
+/* フラッシュメッセージ */
 .flash-message {
   padding: 15px 20px;
   margin: 20px 0;
   border-radius: 8px;
   font-weight: bold;
   text-align: center;
+  font-size: 18px;
 }
 
 .flash-success {
@@ -771,21 +824,19 @@ button:active {
   border: 2px solid #2196f3;
 }
 
-/* ========================================
-   テストアカウント情報
-======================================== */
+/* テストアカウント情報 */
 .test-account-info {
   margin-top: 30px;
   padding: 20px;
-  background: rgba(232, 245, 233, 0.8);
+  background: rgba(104, 136, 136, 0.95);
   border-radius: 10px;
   text-align: center;
 }
 
 .test-account-info h3 {
-  color: #2d5016;
+  color: #f0f0f0;
   margin-top: 0;
-  text-shadow: none;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
 .test-account-info code {
@@ -796,9 +847,7 @@ button:active {
   color: #d32f2f;
 }
 
-/* ========================================
-   レスポンシブ
-======================================== */
+/* レスポンシブ */
 @media (max-width: 1400px) {
   .content-wrapper {
     margin-left: 220px;
@@ -847,6 +896,10 @@ button:active {
   .logo-title {
     font-size: 2.5em;
   }
+  
+  .timer-display {
+    font-size: 36px !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -889,11 +942,16 @@ button:active {
     padding: 15px;
     font-size: 16px;
   }
+  
+  .timer-display {
+    font-size: 32px !important;
+  }
+  
+  body {
+    font-size: 16px;
+  }
 }
 
-/* ========================================
-   スクロールバー（上級モード右パネル）
-======================================== */
 .side-panel::-webkit-scrollbar {
   width: 8px;
 }
