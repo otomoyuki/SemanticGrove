@@ -4,6 +4,5 @@ Flask-Login==0.6.3
 python-dotenv==1.0.0
 gunicorn==21.2.0
 Werkzeug==3.0.0
-
-# Render用（本番環境のみ）
-# psycopg2-binary==2.9.9
+psycopg2-binary==2.9.9
+markdown==3.10
