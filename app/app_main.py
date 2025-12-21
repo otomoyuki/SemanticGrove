@@ -347,11 +347,6 @@ def logout():
     flash('ログアウトしました', 'success')
     return redirect(url_for('main'))
 
-@app.route("/readme")
-def readme():
-    """README"""
-    return render_template("readme.html")
-
 # ==================== API（既存） ====================
 
 @app.route("/api/learn")
@@ -730,6 +725,26 @@ def internal_error(e):
     traceback.print_exc()
     return jsonify({"error": "Internal server error"}), 500
 
+# ==================== README表示 ====================
+
+@app.route('/readme')
+def readme():
+    import os
+    try:
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        readme_path = os.path.join(base_dir, 'README.md')
+          
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        html = markdown.markdown(content, extensions=['fenced_code', 'tables'])
+        
+        return render_template('readme.html', readme_html=html)
+    except Exception as e:
+        return f"Error: {str(e)}", 500
+
+# ==================== アプリ起動 ====================
+
 if __name__ == "__main__":
     print("\nStarting Flask development server...")
     print("Access the app at: http://localhost:5000")
@@ -737,12 +752,3 @@ if __name__ == "__main__":
     
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=(env == 'development'))
-    @app.route('/readme')
-def readme():
-    try:
-        with open('README.md', 'r', encoding='utf-8') as f:
-            content = f.read()
-        html = markdown.markdown(content, extensions=['fenced_code', 'tables'])
-        return render_template('readme.html', readme_html=html)
-    except:
-        return "README not found", 404
