@@ -1,3 +1,4 @@
+import markdown
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -736,3 +737,12 @@ if __name__ == "__main__":
     
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=(env == 'development'))
+    @app.route('/readme')
+def readme():
+    try:
+        with open('README.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+        html = markdown.markdown(content, extensions=['fenced_code', 'tables'])
+        return render_template('readme.html', readme_html=html)
+    except:
+        return "README not found", 404
