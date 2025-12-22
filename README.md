@@ -246,9 +246,9 @@ MIT License - 自由に使用・改変・配布できます
 
 ## 📞 お問い合わせ
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-- アプリ内「ご意見・ご要望」フォームからも受付中
+ご質問・ご要望は、アプリ内の「ご意見」ボタンからお送りください。
+
+バグ報告や機能リクエストは、[GitHub Issues](https://github.com/otomoyuki/SemanticGrove/issues)でも受け付けています。
 
 ---
 
