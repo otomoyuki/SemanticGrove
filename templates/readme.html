@@ -9,10 +9,10 @@
     .readme-container {
       background-color: #465;
       color: #f0f0f0;
-      padding: 30px;
+      padding: 40px;
       margin: 20px auto;
       width: 90%;
-      max-width: 900px;
+      max-width: 1000px;
       border-radius: 15px;
       text-align: left;
       line-height: 1.8;
@@ -21,6 +21,7 @@
       color: #8fa;
       border-bottom: 3px solid #8fa;
       padding-bottom: 10px;
+      margin-top: 30px;
     }
     .readme-container h2 {
       color: #acd;
@@ -31,6 +32,18 @@
     .readme-container h3 {
       color: #8fa;
       margin-top: 20px;
+    }
+    .readme-container h4 {
+      color: #9bd;
+      margin-top: 15px;
+    }
+    .readme-container p {
+      margin: 12px 0;
+      color: #f0f0f0;
+    }
+    .readme-container strong {
+      color: #4f4;
+      font-weight: bold;
     }
     .readme-container table {
       width: 100%;
@@ -54,6 +67,7 @@
       border-radius: 4px;
       color: #4f4;
       font-family: 'Courier New', monospace;
+      font-size: 0.95em;
     }
     .readme-container pre {
       background-color: #354;
@@ -61,13 +75,16 @@
       border-radius: 8px;
       overflow-x: auto;
       border-left: 4px solid #8fa;
+      margin: 15px 0;
     }
     .readme-container pre code {
       background-color: transparent;
       padding: 0;
+      color: #f0f0f0;
     }
     .readme-container ul, .readme-container ol {
       margin-left: 25px;
+      margin-bottom: 15px;
     }
     .readme-container li {
       margin: 8px 0;
@@ -75,6 +92,27 @@
     .readme-container a {
       color: #4f4;
       text-decoration: underline;
+    }
+    .readme-container a:hover {
+      color: #8fa;
+    }
+    .readme-container hr {
+      border: none;
+      border-top: 2px solid rgba(255,255,255,0.3);
+      margin: 30px 0;
+    }
+    .readme-container blockquote {
+      border-left: 4px solid #8fa;
+      padding-left: 20px;
+      margin: 20px 0;
+      font-style: italic;
+      color: #ddd;
+    }
+    /* バッジ画像 */
+    .readme-container img {
+      max-width: 100%;
+      height: auto;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -109,113 +147,7 @@
   <h1 class="logo-title">SemanticGrove</h1>
   
   <div class="readme-container">
-    <h1>🌳 SemanticGrove</h1>
-    <p><strong>SemanticGrove</strong>は、「意味の森」をコンセプトにしたプログラミング学習支援Webアプリケーションです。<br>
-    ユーザーが知識を探索し、段階的に理解を深める体験を提供します。</p>
-
-    <h2>📌 機能概要</h2>
-    <h3>🎓 4つの学習モード</h3>
-    <table>
-      <tr>
-        <th>モード</th>
-        <th>特徴</th>
-        <th>対象</th>
-      </tr>
-      <tr>
-        <td><strong>学習モード</strong></td>
-        <td>解説を見ながら学べる</td>
-        <td>初学者</td>
-      </tr>
-      <tr>
-        <td><strong>初級モード</strong></td>
-        <td>正解と解説が最初から表示</td>
-        <td>練習したい人</td>
-      </tr>
-      <tr>
-        <td><strong>中級モード</strong></td>
-        <td>クイズ形式で正答率を記録</td>
-        <td>実践したい人</td>
-      </tr>
-      <tr>
-        <td><strong>上級モード</strong></td>
-        <td>タイマー付き＋ランキング</td>
-        <td>腕試ししたい人</td>
-      </tr>
-    </table>
-
-    <h3>✨ 主要機能</h3>
-    <ul>
-      <li>✅ 4段階の学習モード（学習→初級→中級→上級）</li>
-      <li>✅ ユーザー認証システム（登録・ログイン）</li>
-      <li>✅ スコア保存＆ランキング（上級モード）</li>
-      <li>✅ タイマー機能（上級モード）</li>
-      <li>✅ 120問以上の問題（PHP, その他の言語）</li>
-      <li>✅ レスポンシブデザイン（PC・タブレット・スマホ対応）</li>
-    </ul>
-
-    <h2>🛠️ 技術スタック</h2>
-    <ul>
-      <li><strong>Python 3.x</strong></li>
-      <li><strong>Flask 3.x</strong> - Webフレームワーク</li>
-      <li><strong>Flask-Login</strong> - ユーザー認証</li>
-      <li><strong>SQLite3</strong> - データベース</li>
-      <li><strong>HTML5 / CSS3 / JavaScript</strong></li>
-    </ul>
-
-    <h2>🚀 セットアップ＆起動方法</h2>
-    <h3>1. 必要なライブラリをインストール</h3>
-    <pre><code>pip install flask flask-login werkzeug</code></pre>
-
-    <h3>2. データベースを初期化</h3>
-    <pre><code>cd SemanticGrove
-python init_database.py</code></pre>
-    <p>テストユーザーが自動作成されます：</p>
-    <ul>
-      <li><strong>ユーザー名</strong>: <code>testuser</code> / <strong>パスワード</strong>: <code>password123</code></li>
-      <li><strong>ユーザー名</strong>: <code>demo</code> / <strong>パスワード</strong>: <code>demo123</code></li>
-    </ul>
-
-    <h3>3. アプリを起動</h3>
-    <pre><code>cd app
-python app_main.py</code></pre>
-
-    <h3>4. ブラウザでアクセス</h3>
-    <pre><code>http://localhost:5000</code></pre>
-
-    <h2>🎮 使い方</h2>
-    <h3>学習の流れ</h3>
-    <pre>学習モード（解説付き）
-    ↓
-初級モード（練習）
-    ↓
-中級モード（クイズ形式）
-    ↓
-上級モード（本番・ランキング）</pre>
-
-    <h3>ユーザー登録（上級モード用）</h3>
-    <ol>
-      <li>画面右上の「ログイン」をクリック</li>
-      <li>「新規登録」リンクから登録</li>
-      <li>上級モードでスコアが保存されます</li>
-    </ol>
-
-    <h2>🌐 将来の拡張予定</h2>
-    <ul>
-      <li>問題追加機能（管理者画面）</li>
-      <li>グラフ機能（学習履歴の可視化）</li>
-      <li>MySQL移行（スケール時）</li>
-      <li>モバイルアプリ化</li>
-    </ul>
-
-    <h2>🙏 謝辞</h2>
-    <p>このプロジェクトは、プログラミング学習の一環として作成されました。<br>
-    <strong>Copilot</strong>と<strong>Claude</strong>のサポートにより実現しました。</p>
-
-    <hr style="border: 1px solid rgba(255,255,255,0.2); margin: 30px 0;">
-    
-    <p style="text-align: center; font-size: 1.2em; color: #8fa;">
-      <strong>SemanticGrove</strong> - 意味の森で、知識を育てよう 🌱
-    </p>
+    {{ readme_html|safe }}
   </div>
 </body>
 </html>
