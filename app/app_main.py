@@ -267,8 +267,8 @@ def games():
 
 @app.route("/feedback")
 def feedback():
-    """フィードバックページ（Coming Soon）"""
-    return render_template("coming-soon.html", page_title="ご意見")
+    """フィードバックページ"""
+    return render_template("feedback.html")
 
 # ====================================================================================
 
