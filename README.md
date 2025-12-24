@@ -222,7 +222,6 @@ git push heroku main
 - 2025年12月: SemanticGrove v1.0 完成
 - 学習期間: 約半年
 
-「年齢は関係ない。始めるのに遅すぎることはない」
 
 ---
 
@@ -250,6 +249,7 @@ MIT License - 自由に使用・改変・配布できます
 
 バグ報告や機能リクエストは、[GitHub Issues](https://github.com/otomoyuki/SemanticGrove/issues)でも受け付けています。
 
+｛デプロイを急ぎすぎて、問題が間違っているところが多数あると思います。ご連絡お待ちしています。｝
 ---
 
 ## 🙏 謝辞
