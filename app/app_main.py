@@ -200,13 +200,14 @@ def record_answer(user_id, question_id, language, category, difficulty, mode, is
         )
         db.session.add(history)
     
-    history.total_count += 1
+    # Noneチェック付きでカウント更新
+    history.total_count = (history.total_count or 0) + 1
     if is_correct:
-        history.correct_count += 1
+        history.correct_count = (history.correct_count or 0) + 1
         # ✨ ポイント付与を追加！
         add_sg_points(user_id, 1, f'correct_{mode}_{language}')
     else:
-        history.wrong_count += 1
+        history.wrong_count = (history.wrong_count or 0) + 1
     history.last_attempted = datetime.utcnow()
     
     # UserStats の更新
@@ -224,11 +225,12 @@ def record_answer(user_id, question_id, language, category, difficulty, mode, is
         )
         db.session.add(stats)
     
-    stats.total_questions_attempted += 1
+    # Noneチェック付きでカウント更新
+    stats.total_questions_attempted = (stats.total_questions_attempted or 0) + 1
     if is_correct:
-        stats.total_correct += 1
+        stats.total_correct = (stats.total_correct or 0) + 1
     else:
-        stats.total_wrong += 1
+        stats.total_wrong = (stats.total_wrong or 0) + 1
     stats.update_stats()
     
     db.session.commit()

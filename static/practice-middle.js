@@ -4,6 +4,7 @@ let currentIndex = 0;
 let correctCount = 0;
 let answered = false;
 let selectedAnswer = null;
+let selectedLanguage = '';
 
 // HTMLエスケープ関数
 function escapeHtml(text) {
@@ -50,6 +51,7 @@ function shuffleOptions(question) {
 
 function startMiddleMode() {
   const lang = document.getElementById("language").value;
+  selectedLanguage = lang;
   const questionCount = document.getElementById("questionCount") ? 
     document.getElementById("questionCount").value : "10";
   
@@ -144,6 +146,8 @@ function selectAnswer(selectedIndex) {
   const question = middleQuestions[currentIndex];
   const correctIndex = question.answer[0];
   const isCorrect = selectedIndex === correctIndex;
+
+  recordAnswer(question.id, isCorrect, question);
   
   if (isCorrect) {
     correctCount++;
@@ -220,4 +224,44 @@ function showMiddleResult() {
 
 function restartMiddle() {
   location.reload();
+}
+
+// ==================== SGポイント連携 ====================
+
+async function recordAnswer(questionId, isCorrect, question) {
+  try {
+    const language = selectedLanguage || 'Unknown';
+    const mode = getModeFromPage();
+    
+    const response = await fetch('/api/answer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        question_id: questionId,
+        language: language,
+        category: question.category || '',
+        difficulty: question.difficulty || '1',
+        mode: mode,
+        is_correct: isCorrect
+      })
+    });
+    
+    if (response.ok && isCorrect) {
+      if (typeof updateSGBalance === 'function') {
+        setTimeout(() => updateSGBalance(), 500);
+      }
+    }
+  } catch (error) {
+    console.error('Answer recording error:', error);
+  }
+}
+
+function getModeFromPage() {
+  const path = window.location.pathname;
+  if (path.includes('/low')) return 'beginner';
+  if (path.includes('/middle')) return 'intermediate';
+  if (path.includes('/high')) return 'advanced';
+  return 'practice';
 }
