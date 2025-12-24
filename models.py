@@ -13,7 +13,10 @@ class User(db.Model):
     session_id = db.Column(db.String(200), unique=True)  # 一時的なセッションID
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_active = db.Column(db.DateTime, default=datetime.utcnow)
-    
+    sg_points = db.Column(db.Integer, default=0)
+    last_login_date = db.Column(db.Date, nullable=True)
+    total_logins = db.Column(db.Integer, default=0)
+
     # リレーション
     history = db.relationship('QuestionHistory', backref='user', lazy=True, cascade='all, delete-orphan')
     stats = db.relationship('UserStats', backref='user', lazy=True, cascade='all, delete-orphan')
@@ -97,3 +100,35 @@ class UserStats(db.Model):
     
     def __repr__(self):
         return f'<UserStats user={self.user_id} {self.language} {self.mode}>'
+    
+     # ユニーク制約
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'language', 'mode', name='unique_user_language_mode'),
+        db.Index('idx_user_stats', 'user_id', 'language', 'mode'),
+    )
+    
+    def update_stats(self):
+        """統計を再計算"""
+        if self.total_questions_attempted > 0:
+            self.accuracy_rate = round((self.total_correct / self.total_questions_attempted) * 100, 1)
+        else:
+            self.accuracy_rate = 0.0
+
+    def __repr__(self):        
+        return f'<UserStats user={self.user_id} {self.language} {self.mode}>'
+
+class PointHistory(db.Model):
+    """SGポイント履歴"""
+    __tablename__ = 'point_history'
+    __bind_key__ = 'postgres'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    points = db.Column(db.Integer, nullable=False)  # +10, -5 など
+    reason = db.Column(db.String(100), nullable=False)  # 'question_correct', 'feedback', etc
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<PointHistory {self.user_id}: {self.points} ({self.reason})>'
+
+        return f'<UserStats user={self.user_id} {self.language} {self.mode}>'   

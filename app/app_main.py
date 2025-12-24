@@ -18,7 +18,7 @@ sys.path.insert(0, PARENT_DIR)
 
 # 新しいPostgreSQL用のインポート
 from app_config import config
-from models import db, User as PostgresUser, QuestionHistory, UserStats
+from models import db, User as PostgresUser, QuestionHistory, UserStats,PointHistory
 
 # パス設定
 TEMPLATE_DIR = os.path.join(PARENT_DIR, "templates")
@@ -203,6 +203,8 @@ def record_answer(user_id, question_id, language, category, difficulty, mode, is
     history.total_count += 1
     if is_correct:
         history.correct_count += 1
+        # ✨ ポイント付与を追加！
+        add_sg_points(user_id, 1, f'correct_{mode}_{language}')
     else:
         history.wrong_count += 1
     history.last_attempted = datetime.utcnow()
@@ -230,6 +232,66 @@ def record_answer(user_id, question_id, language, category, difficulty, mode, is
     stats.update_stats()
     
     db.session.commit()
+
+# ==================== SGポイントシステム ====================
+
+def add_sg_points(user_id, points, reason):
+    """SGポイントを付与"""
+    try:
+        user = PostgresUser.query.get(user_id)
+        if not user:
+            return False
+        
+        # ポイント追加
+        user.sg_points += points
+        
+        # 履歴記録
+        history = PointHistory(
+            user_id=user_id,
+            points=points,
+            reason=reason
+        )
+        db.session.add(history)
+        db.session.commit()
+        
+        print(f"✅ {user.username} に {points} SG を付与: {reason}")
+        return True
+        
+    except Exception as e:
+        print(f"❌ ポイント付与エラー: {e}")
+        db.session.rollback()
+        return False
+
+def check_login_bonus(user_id):
+    """ログインボーナスをチェック"""
+    try:
+        user = PostgresUser.query.get(user_id)
+        if not user:
+            return 0
+        
+        today = datetime.utcnow().date()
+        
+        # 初回ログイン
+        if user.total_logins == 0:
+            add_sg_points(user_id, 10, 'first_login')
+            user.total_logins = 1
+            user.last_login_date = today
+            db.session.commit()
+            return 10
+        
+        # 連続ログイン
+        if user.last_login_date != today:
+            add_sg_points(user_id, 5, 'daily_login')
+            user.total_logins += 1
+            user.last_login_date = today
+            db.session.commit()
+            return 5
+        
+        return 0
+        
+    except Exception as e:
+        print(f"❌ ログインボーナスエラー: {e}")
+        return 0
 
 # ==================== ルーティング（既存） ====================
 
@@ -713,6 +775,55 @@ def api_stats(language, mode):
         'accuracy': stats.accuracy_rate
     })
 
+@app.route('/api/feedback', methods=['POST'])
+def api_feedback():
+    """フィードバックを保存"""
+    try:
+        data = request.json
+        
+        feedback = Feedback(
+            category=data['category'],
+            message=data['message']
+        )
+        
+        db.session.add(feedback)
+        db.session.commit()
+        
+        # フィードバック投稿で10 SG付与
+        stats_user = get_or_create_stats_user()
+        add_sg_points(stats_user.id, 10, 'feedback')
+        
+        return jsonify({
+            'success': True, 
+            'message': 'フィードバックを受け付けました',
+            'sg_bonus': 10
+        })
+        
+    except Exception as e:
+        print(f"Feedback error: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/sg/balance', methods=['GET'])
+def api_sg_balance():
+    """SGポイント残高を取得"""
+    try:
+        stats_user = get_or_create_stats_user()
+        
+        # ログインボーナスチェック
+        bonus = check_login_bonus(stats_user.id)
+        
+        db.session.refresh(stats_user)
+        
+        return jsonify({
+            'success': True,
+            'balance': stats_user.sg_points,
+            'bonus': bonus
+        })
+        
+    except Exception as e:
+        print(f"SG balance error: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+        
 # ==================== エラーハンドラ ====================
 
 @app.errorhandler(404)
