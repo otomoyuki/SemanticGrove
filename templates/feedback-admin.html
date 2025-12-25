@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フィードバック管理 - SemanticGrove</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #4a7c59 0%, #5a8c69 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+
+        .admin-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #4a7c59;
+            background: white;
+            color: #4a7c59;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #f0f7f3;
+        }
+
+        .filter-btn.active {
+            background: #4a7c59;
+            color: white;
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4a7c59;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .feedback-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .feedback-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .feedback-item:hover {
+            background: #f9f9f9;
+        }
+
+        .feedback-item:last-child {
+            border-bottom: none;
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .feedback-category {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .category-bug {
+            background: #fee;
+            color: #c33;
+        }
+
+        .category-feature {
+            background: #eef;
+            color: #33c;
+        }
+
+        .category-other {
+            background: #ffe;
+            color: #cc3;
+        }
+
+        .feedback-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-new {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-reviewed {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-resolved {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .feedback-date {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .feedback-message {
+            color: #333;
+            line-height: 1.6;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+
+        .feedback-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-review {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-review:hover {
+            background: #f57c00;
+        }
+
+        .btn-resolve {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-resolve:hover {
+            background: #388e3c;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+
+        .no-feedback {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-feedback i {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- メニューバー -->
+    <div id="menuBar">
+        <a href="/main">🏠 ホーム</a>
+        <a href="/learn">📖 学習</a>
+        <a href="/practice-low">🎯 初級</a>
+        <a href="/practice-middle">⚡ 中級</a>
+        <a href="/practice-high">🔥 上級</a>
+        <a href="/feedback">💬 ご意見</a>
+        <a href="/admin/feedback" class="active">⚙️ 管理</a>
+        <a href="/admin/logout" style="margin-left: auto; color: #ff6b6b;">🚪 ログアウト</a>
+    </div>
+
+    <div class="admin-container">
+        <!-- ヘッダー -->
+        <div class="admin-header">
+            <h1>📬 フィードバック管理</h1>
+            <p>ユーザーから送信されたフィードバックを確認・管理できます</p>
+        </div>
+
+        <!-- 統計 -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-label">総フィードバック数</div>
+                <div class="stat-number" id="totalCount">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">バグ報告</div>
+                <div class="stat-number" id="bugCount" style="color: #c33;">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">機能要望</div>
+                <div class="stat-number" id="featureCount" style="color: #33c;">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">その他</div>
+                <div class="stat-number" id="otherCount" style="color: #cc3;">--</div>
+            </div>
+        </div>
+
+        <!-- フィルター -->
+        <div class="filter-section">
+            <h3 style="margin: 0 0 15px 0;">🔍 フィルター</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">すべて</button>
+                <button class="filter-btn" data-filter="bug">🐛 バグ報告</button>
+                <button class="filter-btn" data-filter="feature">💡 機能要望</button>
+                <button class="filter-btn" data-filter="other">📝 その他</button>
+                <button class="filter-btn" data-filter="new">🆕 新規のみ</button>
+            </div>
+        </div>
+
+        <!-- フィードバックリスト -->
+        <div class="feedback-list" id="feedbackList">
+            <div class="loading">📡 フィードバックを読み込み中...</div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='sg-balance.js') }}"></script>
+    <script>
+        let allFeedbacks = [];
+        let currentFilter = 'all';
+
+        // フィードバック読み込み
+        async function loadFeedbacks() {
+            try {
+                const response = await fetch('/api/admin/feedback');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allFeedbacks = data.feedbacks;
+                    updateStats();
+                    renderFeedbacks();
+                } else {
+                    document.getElementById('feedbackList').innerHTML = 
+                        '<div class="no-feedback">❌ フィードバックの読み込みに失敗しました</div>';
+                }
+            } catch (error) {
+                console.error('Error loading feedbacks:', error);
+                document.getElementById('feedbackList').innerHTML = 
+                    '<div class="no-feedback">❌ エラーが発生しました</div>';
+            }
+        }
+
+        // 統計更新
+        function updateStats() {
+            const total = allFeedbacks.length;
+            const bug = allFeedbacks.filter(f => f.category === 'bug').length;
+            const feature = allFeedbacks.filter(f => f.category === 'feature').length;
+            const other = allFeedbacks.filter(f => f.category === 'other').length;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('bugCount').textContent = bug;
+            document.getElementById('featureCount').textContent = feature;
+            document.getElementById('otherCount').textContent = other;
+        }
+
+        // フィードバック表示
+        function renderFeedbacks() {
+            const filtered = allFeedbacks.filter(feedback => {
+                if (currentFilter === 'all') return true;
+                if (currentFilter === 'new') return feedback.status === 'new';
+                return feedback.category === currentFilter;
+            });
+
+            if (filtered.length === 0) {
+                document.getElementById('feedbackList').innerHTML = 
+                    '<div class="no-feedback">📭 該当するフィードバックはありません</div>';
+                return;
+            }
+
+            const html = filtered.map(feedback => {
+                const categoryClass = `category-${feedback.category}`;
+                const categoryLabel = {
+                    'bug': '🐛 バグ報告',
+                    'feature': '💡 機能要望',
+                    'other': '📝 その他'
+                }[feedback.category];
+
+                const statusClass = `status-${feedback.status}`;
+                const statusLabel = {
+                    'new': '🆕 新規',
+                    'reviewed': '👀 確認済み',
+                    'resolved': '✅ 解決済み'
+                }[feedback.status];
+
+                const date = new Date(feedback.created_at).toLocaleString('ja-JP');
+
+                return `
+                    <div class="feedback-item" data-id="${feedback.id}">
+                        <div class="feedback-header">
+                            <div>
+                                <span class="feedback-category ${categoryClass}">${categoryLabel}</span>
+                                <span class="feedback-status ${statusClass}">${statusLabel}</span>
+                            </div>
+                            <div class="feedback-date">${date}</div>
+                        </div>
+                        <div class="feedback-message">${escapeHtml(feedback.message)}</div>
+                        <div class="feedback-actions">
+                            ${feedback.status === 'new' ? 
+                                `<button class="action-btn btn-review" onclick="updateStatus(${feedback.id}, 'reviewed')">確認済みにする</button>` : 
+                                ''}
+                            ${feedback.status !== 'resolved' ? 
+                                `<button class="action-btn btn-resolve" onclick="updateStatus(${feedback.id}, 'resolved')">解決済みにする</button>` : 
+                                ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('feedbackList').innerHTML = html;
+        }
+
+        // ステータス更新
+        async function updateStatus(id, status) {
+            try {
+                const response = await fetch('/api/admin/feedback/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, status })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // ローカルデータを更新
+                    const feedback = allFeedbacks.find(f => f.id === id);
+                    if (feedback) {
+                        feedback.status = status;
+                        renderFeedbacks();
+                    }
+                } else {
+                    alert('更新に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('エラーが発生しました');
+            }
+        }
+
+        // HTMLエスケープ
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        // フィルターボタン
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderFeedbacks();
+            });
+        });
+
+        // 初期読み込み
+        loadFeedbacks();
+    </script>
+</body>
+</html>

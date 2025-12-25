@@ -18,7 +18,7 @@ sys.path.insert(0, PARENT_DIR)
 
 # 新しいPostgreSQL用のインポート
 from app_config import config
-from models import db, User as PostgresUser, QuestionHistory, UserStats,PointHistory
+from models import db, User as PostgresUser, QuestionHistory, UserStats, PointHistory, Feedback
 
 # パス設定
 TEMPLATE_DIR = os.path.join(PARENT_DIR, "templates")
@@ -204,8 +204,16 @@ def record_answer(user_id, question_id, language, category, difficulty, mode, is
     history.total_count = (history.total_count or 0) + 1
     if is_correct:
         history.correct_count = (history.correct_count or 0) + 1
-        # ✨ ポイント付与を追加！
-        add_sg_points(user_id, 1, f'correct_{mode}_{language}')
+        # ✨ モード別ポイント付与
+        point_map = {
+            'practice': 0,      # 学習モード
+            'beginner': 1,      # 初級モード
+            'intermediate': 2,  # 中級モード
+            'advanced': 3       # 上級モード
+        }
+        points = point_map.get(mode, 0)
+        if points > 0:
+            add_sg_points(user_id, points, f'correct_{mode}_{language}')
     else:
         history.wrong_count = (history.wrong_count or 0) + 1
     history.last_attempted = datetime.utcnow()
@@ -490,6 +498,22 @@ def save_score():
         
         conn.commit()
         conn.close()
+        
+        # ✨ 上級モードの終了時ボーナス計算
+        if data.get('mode') == 'high':
+            try:
+                stats_user = get_or_create_stats_user()
+                correct = data.get('correct', 0)
+                total = data.get('total', 1)
+                
+                # (正解数²/問題数²)×20 を計算して四捨五入
+                bonus = round((correct ** 2 / total ** 2) * 20)
+                
+                if bonus > 0:
+                    add_sg_points(stats_user.id, bonus, f'advanced_completion_bonus_{correct}/{total}')
+                    print(f"✅ 上級モード完了ボーナス: {bonus} SG ({correct}/{total}問正解)")
+            except Exception as e:
+                print(f"⚠️ ボーナス計算エラー: {e}")
         
         return jsonify({"success": True, "message": "スコアを保存しました"})
         
@@ -838,6 +862,84 @@ def internal_error(e):
     traceback.print_exc()
     return jsonify({"error": "Internal server error"}), 500
 
+
+# ==================== フィードバック管理 ====================
+
+@app.route('/admin/feedback')
+def admin_feedback():
+    """フィードバック管理画面（パスワード保護）"""
+    # セッションチェック
+    if not session.get('admin_authenticated'):
+        return redirect(url_for('admin_login'))
+    return render_template('feedback-admin.html')
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """管理画面ログイン"""
+    if request.method == 'POST':
+        password = request.form.get('password')
+        # ここでパスワードを設定（環境変数推奨、今回は直接記述）
+        ADMIN_PASSWORD = 'semantic2024'  # ← お好きなパスワードに変更してください
+        
+        if password == ADMIN_PASSWORD:
+            session['admin_authenticated'] = True
+            return redirect(url_for('admin_feedback'))
+        else:
+            flash('パスワードが正しくありません', 'error')
+    
+    return render_template('admin-login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    """管理画面ログアウト"""
+    session.pop('admin_authenticated', None)
+    flash('ログアウトしました', 'success')
+    return redirect(url_for('admin_login'))
+
+@app.route('/api/admin/feedback', methods=['GET'])
+def api_admin_feedback():
+    """フィードバック一覧を取得（認証必須）"""
+    if not session.get('admin_authenticated'):
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+    
+    try:
+        feedbacks = Feedback.query.order_by(Feedback.created_at.desc()).all()
+        
+        return jsonify({
+            'success': True,
+            'feedbacks': [{
+                'id': f.id,
+                'category': f.category,
+                'message': f.message,
+                'created_at': f.created_at.isoformat(),
+                'status': f.status
+            } for f in feedbacks]
+        })
+    except Exception as e:
+        print(f"Admin feedback error: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/admin/feedback/update', methods=['POST'])
+def api_admin_feedback_update():
+    """フィードバックのステータスを更新（認証必須）"""
+    if not session.get('admin_authenticated'):
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.json
+        feedback = Feedback.query.get(data['id'])
+        
+        if not feedback:
+            return jsonify({'success': False, 'error': 'Feedback not found'}), 404
+        
+        feedback.status = data['status']
+        db.session.commit()
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Update feedback error: {e}")
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 # ==================== README表示 ====================
 
 @app.route('/readme')

@@ -101,21 +101,6 @@ class UserStats(db.Model):
     def __repr__(self):
         return f'<UserStats user={self.user_id} {self.language} {self.mode}>'
     
-     # ユニーク制約
-    __table_args__ = (
-        db.UniqueConstraint('user_id', 'language', 'mode', name='unique_user_language_mode'),
-        db.Index('idx_user_stats', 'user_id', 'language', 'mode'),
-    )
-    
-    def update_stats(self):
-        """統計を再計算"""
-        if self.total_questions_attempted > 0:
-            self.accuracy_rate = round((self.total_correct / self.total_questions_attempted) * 100, 1)
-        else:
-            self.accuracy_rate = 0.0
-
-    def __repr__(self):        
-        return f'<UserStats user={self.user_id} {self.language} {self.mode}>'
 
 class PointHistory(db.Model):
     """SGポイント履歴"""
@@ -131,4 +116,17 @@ class PointHistory(db.Model):
     def __repr__(self):
         return f'<PointHistory {self.user_id}: {self.points} ({self.reason})>'
 
-        return f'<UserStats user={self.user_id} {self.language} {self.mode}>'   
+
+class Feedback(db.Model):
+    """フィードバック（ご意見）"""
+    __tablename__ = 'feedback'
+    __bind_key__ = 'postgres'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50), nullable=False)  # 'bug', 'feature', 'other'
+    message = db.Column(db.Text, nullable=False)
+    status = db.Column(db.String(20), default='new')  # 'new', 'reviewed', 'resolved'
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<Feedback {self.id}: {self.category} ({self.status})>'
