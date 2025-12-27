@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゲーム広場 - SemanticField</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .game-hub-container {
+            max-width: 900px;
+            margin: 80px auto 40px;
+            padding: 20px;
+        }
+
+        .game-hub-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+        }
+
+        .game-hub-header h1 {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+        }
+
+        .game-hub-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-card {
+            background: white;
+            border: 3px solid #4a7c59;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .game-card.new::before {
+            content: '🆕 NEW!';
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .game-card.coming-soon {
+            opacity: 0.7;
+            border-color: #ccc;
+        }
+
+        .game-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .game-icon {
+            font-size: 3em;
+            margin-right: 20px;
+        }
+
+        .game-name h2 {
+            margin: 0;
+            font-size: 2em;
+            color: #333;
+        }
+
+        .game-name p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .game-description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+            margin: 20px 0;
+        }
+
+        .game-meta {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .game-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-meta-item strong {
+            color: #4a7c59;
+        }
+
+        .play-button {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #4a7c59 0%, #5a8c69 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .play-button:hover {
+            background: linear-gradient(135deg, #5a8c69 0%, #6a9c79 100%);
+            transform: scale(1.02);
+        }
+
+        .play-button.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .play-button.disabled:hover {
+            transform: none;
+        }
+
+        .difficulty-stars {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+ <!-- ツールバー -->
+  <header class="toolbar">   
+    <nav class="toolbar-buttons">
+      {% if current_user.is_authenticated %}
+        <span class="user-info">
+          {{ current_user.display_name }}さん
+          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+        </span>
+      {% endif %}
+      
+      <a href="/" class="toolbar-button">ホーム</a>
+      <a href="/readme" class="toolbar-button">README</a>
+      <a href="/learn" class="toolbar-button active">学習モード</a>
+      <a href="/practice/low" class="toolbar-button">初級モード</a>
+      <a href="/practice/middle" class="toolbar-button">中級モード</a>
+      <a href="/practice/high" class="toolbar-button">上級モード</a>
+      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/feedback" class="toolbar-button">ご意見</a>
+      
+      {% if current_user.is_authenticated %}
+        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
+      {% else %}
+        <a href="/login" class="toolbar-button">ログイン</a>
+      {% endif %}
+    </nav>
+  </header>
+
+    <div class="game-hub-container">
+        <!-- ヘッダー -->
+        <div class="game-hub-header">
+            <h1>🎮 ゲーム広場</h1>
+            <p>学んだ知識を活かして遊ぼう！勝利でSGポイント獲得！</p>
+        </div>
+
+        <!-- 新作ゲーム -->
+        <div class="game-card new">
+            <div class="game-title">
+                <div class="game-icon">🌀</div>
+                <div class="game-name">
+                    <h2>独楽戦場</h2>
+                    <p>Spinner Battle Arena</p>
+                </div>
+            </div>
+
+            <div class="game-description">
+                プログラミング問題に答えて独楽を強化！<br>
+                リアルタイムバトルで相手の独楽を倒そう。<br>
+                正解するたびに攻撃力が1.5倍にアップ！
+            </div>
+
+            <div class="game-meta">
+                <div class="game-meta-item">
+                    <span>💎</span>
+                    <strong>報酬:</strong> 勝利で +20 SG
+                </div>
+                <div class="game-meta-item">
+                    <span>🎯</span>
+                    <strong>難易度:</strong> <span class="difficulty-stars">★★☆☆☆</span>
+                </div>
+                <div class="game-meta-item">
+                    <span>👥</span>
+                    <strong>1対1バトル</strong>
+                </div>
+            </div>
+
+            <a href="/games/spinner" class="play-button disabled">
+                🚧 準備中... (2025年1月リリース予定)
+            </a>
+        </div>
+
+        <!-- 既存ゲーム -->
+        <div class="game-card">
+            <div class="game-title">
+                <div class="game-icon">🪲</div>
+                <div class="game-name">
+                    <h2>甲虫戦争</h2>
+                    <p>Beetle War Game</p>
+                </div>
+            </div>
+
+            <div class="game-description">
+                SemanticGroveの森で繰り広げられる樹液争奪戦！ヘラクレス、アトラス...17種の甲虫を集め、育成し、
+                3分間のリアルタイムバトルで勝利を掴め！<br>
+                キャラクターをクリックで戦略的な位置に配置
+            </div>
+
+            <div class="game-meta">
+                <div class="game-meta-item">
+                    <span>💎</span>
+                    <strong>報酬:</strong> 勝利で +10 SG
+                </div>
+                <div class="game-meta-item">
+                    <span>🎯</span>
+                    <strong>難易度:</strong> <span class="difficulty-stars">★★★☆☆</span>
+                </div>
+                <div class="game-meta-item">
+                    <span>🎴</span>
+                    <strong>デッキ構築</strong>
+                </div>
+            </div>
+
+            <a href="https://beetlewargame.onrender.com" target="_blank" class="play-button">
+                🎮 プレイ開始
+            </a>
+        </div>
+
+        <!-- Coming Soon ゲーム -->
+        <div class="game-card coming-soon">
+            <div class="game-title">
+                <div class="game-icon">🪁</div>
+                <div class="game-name">
+                    <h2>凧あげ競争</h2>
+                    <p>Kite Flying Contest</p>
+                </div>
+            </div>
+
+            <div class="game-description">
+                問題に正解して凧を上昇させよう！<br>
+                最高記録を目指してランキング上位を狙え。<br>
+                週間ランキングで豪華報酬！
+            </div>
+
+            <div class="game-meta">
+                <div class="game-meta-item">
+                    <span>💎</span>
+                    <strong>報酬:</strong> 記録 × 0.1 SG
+                </div>
+                <div class="game-meta-item">
+                    <span>🎯</span>
+                    <strong>難易度:</strong> <span class="difficulty-stars">★☆☆☆☆</span>
+                </div>
+                <div class="game-meta-item">
+                    <span>🏆</span>
+                    <strong>ランキング</strong>
+                </div>
+            </div>
+
+            <button class="play-button disabled">
+                🚧 Coming Soon...
+            </button>
+        </div>
+
+        <!-- その他のゲーム... -->
+        
+    </div>
+
+    <script src="{{ url_for('static', filename='sg-balance.js') }}"></script>
+</body>
+</html>

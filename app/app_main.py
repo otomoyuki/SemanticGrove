@@ -115,9 +115,74 @@ def get_or_create_stats_user():
     
     return stats_user
 
+# app_main.py に追加する関数
+
+
+
+# 既存のAPIルートを修正
+
+@app.route("/api/practice/<mode>")
+def api_practice_weighted(mode):
+    """重み付き問題出題（学習・初級・中級）"""
+    try:
+        language = request.args.get("lang", "すべて")
+        limit = int(request.args.get("limit", 10))
+        
+        # ユーザーIDを取得
+        stats_user = get_or_create_stats_user()
+        user_id = stats_user.id
+        
+        # モードマッピング
+        mode_map = {
+            'practice': 'practice',
+            'low': 'beginner',
+            'middle': 'intermediate'
+        }
+        db_mode = mode_map.get(mode, 'practice')
+        
+        # 重み付き出題
+        questions = get_weighted_questions(user_id, language, db_mode, limit)
+        
+        if not questions:
+            return jsonify({"error": "No questions available"}), 404
+        
+        return jsonify(questions)
+        
+    except Exception as e:
+        print(f"Error in weighted practice: {e}")
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/practice/high")
+def api_high_weighted():
+    """重み付き問題出題（上級）"""
+    try:
+        language = request.args.get("lang", "すべて")
+        limit = int(request.args.get("limit", 10))
+        
+        stats_user = get_or_create_stats_user()
+        user_id = stats_user.id
+        
+        # 重み付き出題
+        questions = get_weighted_questions(user_id, language, 'advanced', limit)
+        
+        if not questions:
+            return jsonify({"error": "No questions available"}), 404
+        
+        return jsonify(questions)
+        
+    except Exception as e:
+        print(f"Error in high practice: {e}")
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500    
+
 def get_weighted_questions(user_id, language, mode, limit=10):
     """正答率に基づいて重み付けした問題を取得"""
     conn = get_db_connection()
+    # limitを整数に変換（文字列で渡される場合に備えて）
+    limit = int(limit)
+
     cursor = conn.cursor()
     
     # 難易度マッピング
@@ -155,11 +220,11 @@ def get_weighted_questions(user_id, language, mode, limit=10):
         ).first()
         
         if history is None:
-            weight = 10.0  # 未回答の問題
+            weight = 100.0  # 未回答の問題
         else:
             accuracy = history.accuracy_rate
             if accuracy == 0:
-                weight = 10.0
+                weight = 25.0
             elif accuracy < 30:
                 weight = 8.0
             elif accuracy < 50:
@@ -179,7 +244,27 @@ def get_weighted_questions(user_id, language, mode, limit=10):
     sample_size = min(limit, len(questions))
     selected = random.choices(questions, weights=weights, k=sample_size)
     
-    return selected
+  # RowオブジェクトをJSON化可能な辞書に変換し、question_jsonをパース
+    result = []
+    for row in selected:
+        # question_jsonをパースしてJSONオブジェクトに変換
+        question_data = json.loads(row['question_json'])
+        
+        # JavaScriptが期待する形式に整形
+        result.append({
+            'id': row['id'],
+            'question': question_data.get('question', ''),
+            'options': question_data.get('options', []),
+            'answer': question_data.get('answer', []),
+            'category': row['category'],
+            'difficulty': row['difficulty'],
+            'score': row['score'],
+            'explanation': row['meaning'], 
+            'learning_point': row['usage']
+        })
+    
+    return result
+
 
 def record_answer(user_id, question_id, language, category, difficulty, mode, is_correct):
     """回答を記録し、統計を更新"""
@@ -334,8 +419,8 @@ def practice_high():
 
 @app.route("/games")
 def games():
-    """ゲームページ（Coming Soon）"""
-    return render_template("coming-soon.html", page_title="ゲーム")
+    """ゲーム広場ページ"""
+    return render_template("game-hub.html")
 
 @app.route("/feedback")
 def feedback():

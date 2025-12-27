@@ -1,108 +1,151 @@
 # 🌲 SemanticGrove
 
-**60歳からプログラミングを学び、半年で開発した無料学習アプリ**
+**無料で使える！17言語2240問のプログラミング学習アプリ**
 
-17言語、2240問の実践的なプログラミング問題で、あなたのスキルを磨きましょう！
+60歳からプログラミングを学び、半年で開発した学習サイトです。  
+登録不要、完全無料で今すぐ使えます。
+
+🌐 **今すぐ試す** → https://semanticgrove.onrender.com
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Flask](https://img.shields.io/badge/flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
 
 ---
 
-## 🎯 特徴
+## 🎮 使い方（3ステップ）
 
-### 📚 豊富な問題数
-- **2240問**の実践的な問題
-- **17のプログラミング言語**に対応
-- 基礎から応用まで幅広くカバー
+### 1. サイトにアクセス
+[https://semanticgrove.onrender.com](https://semanticgrove.onrender.com) を開く
 
-### 🎮 4つの学習モード
+### 2. 好きなモードと言語を選ぶ
+- 学習モード / 初級 / 中級 / 上級 から選択
+- Python、JavaScript など17種類の言語から選択
 
-#### 📖 学習モード
+### 3. 問題を解く
+- 10/20/30/50問から選べる
+- 選択肢はランダム表示（真の理解が試される！）
+- 間違えても解説で学べる
+
+**それだけ！** 登録不要、完全無料です。
+
+---
+
+## ✨ 何ができる？
+
+### 📖 学習モード
 - 問題と解説を同時に表示
 - じっくり理解しながら学習
 - 初心者におすすめ
 
-#### 🌱 初級モード
-- 選択肢あり
-- 解説を最初から表示
+### 🌱 初級モード
+- 基礎問題を解説付きで
 - 基礎固めに最適
+- プログラミング始めたての人向け
 
-#### 🌿 中級モード
-- 選択肢あり
+### 🌿 中級モード
 - 正答率を記録
 - 実力テストに
+- 基礎を固めた人向け
 
-#### 🌲 上級モード
-- 選択肢あり
+### 🌲 上級モード
 - タイマー付き
-- 誤答率で出題頻度を調整
+- 苦手な問題を自動的に多く出題
 - 本格的な実力試し
 
-### ✨ 独自機能
-
-- **選択肢ランダム表示**: ラベル（A, B, C, D）なしで真の理解度をチェック
-- **問題数カスタマイズ**: 10/20/30/50問から選択可能
-- **画像問題対応**: 図形パターンなど視覚的な問題
-- **SGポイントシステム**: 学習でポイントを獲得（将来の機能拡張に使用）
+### 🎁 特典
+- 学習でSGポイント獲得
+- フィードバック投稿で+10 SG
+- 将来のゲーム機能で使えます
 
 ---
 
-## 💻 対応言語
+## 🚀 今後の予定
 
-### フロントエンド
-- HTML (80問)
-- CSS (100問)
-- JavaScript (104問)
-- React (80問)
-- TypeScript (80問)
+### 近日実装予定
+- ✅ **ゲーム広場** - 遊びながら学べる8種類のゲーム
+- ✅ **記憶の巨大樹** - ユーザー投稿＋公式ストーリー
+- 🔜 **甲虫戦争ゲーム統合** - SGポイントでバトル！
 
-### バックエンド
-- Python (314問) - 試験対策200問含む
-- PHP (203問) - PHP8試験対策100問含む
-- Java (150問)
-- C# (150問)
-- Ruby (80問)
-- Go (80問)
+### 将来の展望
+- 📱 スマホアプリ化
+- 🏆 ランキング・実績システム
+- 👥 ユーザー同士の交流機能
+- 🤖 AI学習アシスタント
 
-### その他
-- IQ問題 (350問) - 数列、論理パズルなど
-- SQL
-- VBA
-- COBOL
+---
+
+## 💻 対応言語（17種類・2240問）
+
+### フロントエンド（544問）
+- **HTML** (80問) - Webページの骨組み
+- **CSS** (100問) - デザイン・レイアウト
+- **JavaScript** (104問) - Webの動き
+- **React** (80問) - 人気のフレームワーク
+- **TypeScript** (80問) - 型付きJavaScript
+
+### バックエンド（1231問）
+- **Python** (314問) ⭐ 試験対策200問含む
+- **PHP** (203問) ⭐ PHP8試験対策100問含む
+- **Java** (150問)
+- **C#** (150問)
+- **Ruby** (80問)
+- **Go** (80問)
+
+### その他（465問）
+- **IQ問題** (350問) - 数列、論理パズルなど
+- **SQL** - データベース
+- **VBA** - Excel自動化
+- **COBOL** - レガシーシステム
 - その他多数
 
 ---
 
-## 🚀 クイックスタート
+## 👨‍💻 作った人について
 
-### 前提条件
-- Python 3.8以上
-- pip
+**60歳からプログラミングを始めました。**
 
-### インストール
+- 📅 2025年5月: プログラミング学習開始
+- 🎉 2025年12月: SemanticGrove v1.0 完成
+- ⏱️ 学習期間: 約半年
+- 🎯 2025年12月: 再就職決定！
 
-```bash
-# リポジトリをクローン
-git clone https://github.com/yourusername/SemanticGrove.git
-cd SemanticGrove
 
-# 仮想環境を作成（推奨）
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+---
 
-# 依存パッケージをインストール
-pip install -r requirements.txt
+## 🙏 お願い
 
-# データベース初期化（初回のみ）
-python init_database.py
+### ⭐ GitHubスター
+役に立ったら、ぜひスターをお願いします！
 
-# アプリを起動
-python run.py
-```
+### 🐛 バグ報告
+- アプリ内の「ご意見」ボタン
+- または [GitHub Issues](https://github.com/otomoyuki/SemanticGrove/issues)
 
-ブラウザで `http://localhost:5000` を開く
+**問題が間違っているところが多数あると思います。ご連絡お待ちしています。**
+
+### 💬 フィードバック
+アプリ内からフィードバック送信で **+10 SG** 獲得！
+
+---
+
+## 📞 お問い合わせ
+
+- アプリ内「ご意見」ボタン
+- GitHub Issues
+- Twitter（準備中）
+
+---
+
+## 🌟 スクリーンショット
+
+（後で追加予定）
+
+---
+
+---
+
+## 🔧 技術者向け情報
+
+**↓ ここから下は開発者・技術者向けの情報です ↓**
 
 ---
 
@@ -111,123 +154,202 @@ python run.py
 ```
 SemanticGrove/
 ├── app/
-│   └── app_main.py          # メインアプリケーション
+│   └── app_main.py          # メインアプリケーション（Flask）
 ├── static/
 │   ├── style.css            # スタイルシート
 │   ├── practice-low.js      # 初級モード
 │   ├── practice-middle.js   # 中級モード
-│   ├── practice-high.js     # 上級モード
-│   └── images/              # 画像問題
+│   ├── practice-high.js     # 上級モード（重み付き出題）
+│   └── images/              # 画像問題（IQ問題など）
 ├── templates/
 │   ├── main.html            # ホームページ
 │   ├── learn.html           # 学習モード
 │   ├── practice-*.html      # 各練習モード
-│   └── ...
-├── SemanticGrove.db         # SQLiteデータベース
+│   ├── game-hub.html        # ゲーム広場
+│   └── feedback.html        # フィードバックフォーム
+├── models.py                # データベースモデル
+├── app_config.py            # 設定ファイル
+├── SemanticGrove.db         # SQLiteデータベース（問題データ）
 ├── requirements.txt         # Python依存パッケージ
 └── README.md               # このファイル
 ```
 
 ---
 
-## 🎨 使い方
+## 🛠️ 技術スタック
 
-### 1. ホーム画面からモードを選択
+### Backend
+- **Python 3.8+**
+- **Flask 3.0.0** - Webフレームワーク
+- **SQLAlchemy** - ORM
 
-### 2. 言語を選択
-17種類のプログラミング言語から選択
+### Frontend
+- **HTML5**
+- **CSS3** - レスポンシブデザイン
+- **Vanilla JavaScript** - フレームワーク不使用
 
-### 3. 問題数を選択
-10/20/30/50問から選択（上級モードは100問も可能）
+### Database
+- **SQLite** - 問題データ（読み取り専用）
+- **PostgreSQL** - ユーザーデータ（本番環境）
+  - Renderで自動プロビジョニング
+  - ユーザー情報、学習履歴、SGポイント
 
-### 4. 学習開始！
-- 選択肢はランダム表示（ラベルなし）
-- 真の理解が求められる
-- 間違えても解説で学べる
-
----
-
-## 🗄️ データベース
-
-### 問題データ
-- **SQLite**: 問題データ（読み取り専用）
-- スマホアプリ化を見据えた設計
-- オフラインでも動作可能
-
-### ユーザーデータ（予定）
-- **PostgreSQL**: ユーザー情報、学習履歴
-- Renderデプロイ時に自動で使用
-- 複数デバイスで同期
+### Deployment
+- **Render** - 本番環境
+- **Gunicorn** - WSGIサーバー
 
 ---
 
-## 🌐 デプロイ
+## 💿 ローカル環境セットアップ
 
-### Render（推奨）
+### 前提条件
+- Python 3.8以上
+- pip
+
+### インストール手順
 
 ```bash
-# requirements.txtに記載
+# 1. リポジトリをクローン
+git clone https://github.com/otomoyuki/SemanticGrove.git
+cd SemanticGrove
+
+# 2. 仮想環境を作成（推奨）
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# macOS/Linux
+source venv/bin/activate
+
+# 3. 依存パッケージをインストール
+pip install -r requirements.txt
+
+# 4. 環境変数を設定（.envファイル作成）
+# FLASK_APP=app/app_main.py
+# FLASK_ENV=development
+# SECRET_KEY=your-secret-key
+# DATABASE_URL=postgresql://localhost/semanticgrove_users
+
+# 5. データベース初期化（初回のみ）
+# 問題データ（SemanticGrove.db）は既に含まれています
+# PostgreSQLは自動で初期化されます
+
+# 6. アプリを起動
+python app/app_main.py
+```
+
+ブラウザで `http://localhost:5000` を開く
+
+---
+
+## 🗄️ データベース設計
+
+### SQLite（問題データ）
+```sql
+questions テーブル
+├─ id: INTEGER PRIMARY KEY
+├─ language: TEXT (言語名)
+├─ question_json: TEXT (問題・選択肢・正解のJSON)
+├─ category: TEXT (カテゴリ)
+├─ difficulty: TEXT (難易度 1-10)
+├─ meaning: TEXT (解説)
+└─ usage: TEXT (学習ポイント)
+```
+
+### PostgreSQL（ユーザーデータ）
+```sql
+users テーブル
+├─ id: SERIAL PRIMARY KEY
+├─ username: VARCHAR(80)
+├─ session_id: VARCHAR(36) UNIQUE
+├─ sg_points: INTEGER (SGポイント残高)
+└─ created_at: TIMESTAMP
+
+question_history テーブル
+├─ id: SERIAL PRIMARY KEY
+├─ user_id: INTEGER (外部キー)
+├─ question_id: INTEGER
+├─ correct_count: INTEGER (正解数)
+├─ wrong_count: INTEGER (不正解数)
+├─ total_count: INTEGER (回答数)
+└─ mode: VARCHAR(20) (モード)
+
+point_history テーブル
+├─ id: SERIAL PRIMARY KEY
+├─ user_id: INTEGER (外部キー)
+├─ points: INTEGER (獲得ポイント)
+├─ reason: VARCHAR(100) (獲得理由)
+└─ created_at: TIMESTAMP
+```
+
+---
+
+## 🎯 主要機能の実装
+
+### 重み付き出題システム
+ユーザーの回答履歴から苦手な問題を自動的に多く出題：
+
+```python
+def get_weighted_questions(user_id, language, mode, limit=10):
+    # 未出題問題: weight=15（最優先）
+    # 全問不正解: weight=10
+    # 正解率<30%: weight=8
+    # 正解率<50%: weight=6
+    # ...
+```
+
+### SGポイントシステム
+学習活動でポイント獲得：
+
+- 学習モード: +1 SG/問
+- 初級モード: +2 SG/問
+- 中級モード: +3 SG/問
+- 上級モード: +5 SG/問
+- フィードバック投稿: +10 SG
+
+---
+
+## 🌐 デプロイ（Render）
+
+### 1. requirements.txt
+```txt
 Flask==3.0.0
 gunicorn==21.2.0
+SQLAlchemy==2.0.23
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
+Flask-Login==0.6.3
+```
 
-# Procfile作成
-web: gunicorn app.app_main:app
+### 2. Procfile（不要）
+Renderは自動検出します
 
-# Renderにプッシュ
+### 3. 環境変数（Renderダッシュボード）
+```
+FLASK_ENV=production
+SECRET_KEY=ランダムな文字列
+DATABASE_URL=（Renderが自動設定）
+```
+
+### 4. デプロイ
+```bash
 git push origin main
 ```
 
-### Heroku
+Renderが自動でビルド・デプロイします
+
+---
+
+## 🧪 テスト
 
 ```bash
-# Procfile作成
-web: gunicorn app.app_main:app
+# ユニットテスト（準備中）
+python -m pytest tests/
 
-# デプロイ
-git push heroku main
+# 手動テスト
+# 各モードで問題を解いて動作確認
 ```
-
----
-
-## 🛠️ 技術スタック
-
-- **Backend**: Python, Flask
-- **Frontend**: HTML, CSS, JavaScript
-- **Database**: SQLite (開発), PostgreSQL (本番)
-- **Deployment**: Render / Heroku
-
----
-
-## 📊 今後の予定
-
-### 近日実装予定
-- ✅ フィードバック機能（投稿で10 SG獲得）
-- ✅ ランキング機能
-- ✅ IQ問題の画像選択肢（150問追加）
-
-### 将来の展望
-- 🎮 甲虫戦争ゲーム統合（SGポイント活用）
-- 📱 スマホアプリ化
-- 🏆 実績システム
-- 👥 ソーシャル機能
-- 🤖 AI学習アシスタント
-
----
-
-## 🎓 開発者について
-
-**60歳からプログラミングを始めました。**
-
-- 2025年5月: プログラミング学習開始
-- 2025年12月: SemanticGrove v1.0 完成
-- 学習期間: 約半年
-
-
----
-
-## 📝 ライセンス
-
-MIT License - 自由に使用・改変・配布できます
 
 ---
 
@@ -235,31 +357,67 @@ MIT License - 自由に使用・改変・配布できます
 
 プルリクエスト、バグ報告、機能要望を歓迎します！
 
+### 貢献方法
+
 1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/amazing-feature`)
-3. 変更をコミット (`git commit -m 'Add amazing feature'`)
-4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+2. 機能ブランチを作成
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. 変更をコミット
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+4. ブランチにプッシュ
+   ```bash
+   git push origin feature/amazing-feature
+   ```
 5. プルリクエストを作成
+
+### 開発ガイドライン
+
+- コードは読みやすく、コメント付きで
+- 新機能にはテストを追加
+- READMEを更新（必要な場合）
 
 ---
 
-## 📞 お問い合わせ
+## 📝 ライセンス
 
-ご質問・ご要望は、アプリ内の「ご意見」ボタンからお送りください。
+MIT License - 自由に使用・改変・配布できます
 
-バグ報告や機能リクエストは、[GitHub Issues](https://github.com/otomoyuki/SemanticGrove/issues)でも受け付けています。
+詳細は [LICENSE](LICENSE) ファイルを参照してください。
 
-｛デプロイを急ぎすぎて、問題が間違っているところが多数あると思います。ご連絡お待ちしています。｝
 ---
 
 ## 🙏 謝辞
 
-このプロジェクトは多くの方々の支援と、オープンソースコミュニティの助けによって実現しました。
+このプロジェクトは多くの方々の支援によって実現しました：
 
-特に：
-- Anthropic Claude - 開発サポート
-- Flask - Webフレームワーク
-- すべてのテスターとフィードバック提供者
+- **Anthropic Claude** - 開発サポート・ペアプログラミング
+- **Flask** - 素晴らしいWebフレームワーク
+- **Render** - 簡単なデプロイ環境
+- **すべてのテスター** - フィードバックと励まし
+- **家族** - 理解と応援
+
+---
+
+## 📚 参考資料
+
+- [Flask公式ドキュメント](https://flask.palletsprojects.com/)
+- [SQLAlchemy](https://www.sqlalchemy.org/)
+- [PostgreSQL](https://www.postgresql.org/)
+
+---
+
+## 🎓 学習リソース
+
+SemanticGroveで学習した後のステップアップ：
+
+- **公式ドキュメント** - 各言語の公式サイト
+- **MDN Web Docs** - Web技術のリファレンス
+- **GitHub** - オープンソースプロジェクトで実践
+- **LeetCode / HackerRank** - コーディング練習
 
 ---
 
