@@ -164,11 +164,11 @@
       
       <a href="/" class="toolbar-button">ホーム</a>
       <a href="/readme" class="toolbar-button">README</a>
-      <a href="/learn" class="toolbar-button active">学習モード</a>
+      <a href="/learn" class="toolbar-button">学習モード</a>
       <a href="/practice/low" class="toolbar-button">初級モード</a>
       <a href="/practice/middle" class="toolbar-button">中級モード</a>
       <a href="/practice/high" class="toolbar-button">上級モード</a>
-      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+      <a href="/games" class="toolbar-button game-button active">🎮ゲーム</a>
       <a href="/feedback" class="toolbar-button">ご意見</a>
       
       {% if current_user.is_authenticated %}
@@ -186,7 +186,7 @@
             <p>学んだ知識を活かして遊ぼう！勝利でSGポイント獲得！</p>
         </div>
 
-        <!-- 新作ゲーム -->
+        <!-- 🆕 独楽戦場（新規追加） -->
         <div class="game-card new">
             <div class="game-title">
                 <div class="game-icon">🌀</div>
@@ -197,29 +197,35 @@
             </div>
 
             <div class="game-description">
-                プログラミング問題に答えて独楽を強化！<br>
-                リアルタイムバトルで相手の独楽を倒そう。<br>
-                正解するたびに攻撃力が1.5倍にアップ！
+                プログラミング知識で独楽を回せ！<br>
+                正解するほど強力な攻撃が繰り出される！<br>
+                💻 プログラミングモード（50 SG）or 🎮 カジュアルモード（10 SG）
             </div>
 
             <div class="game-meta">
                 <div class="game-meta-item">
                     <span>💎</span>
-                    <strong>報酬:</strong> 勝利で +20 SG
+                    <strong>報酬:</strong> 勝利で +50 SG (プログラミング)
                 </div>
                 <div class="game-meta-item">
                     <span>🎯</span>
                     <strong>難易度:</strong> <span class="difficulty-stars">★★☆☆☆</span>
                 </div>
                 <div class="game-meta-item">
-                    <span>👥</span>
+                    <span>💥</span>
                     <strong>1対1バトル</strong>
                 </div>
             </div>
 
-            <a href="/games/spinner" class="play-button disabled">
-                🚧 準備中... (2025年1月リリース予定)
+            <!-- 開発中はlocalhost、本番はRenderのURL -->
+            <a href="http://localhost:5173/spinner-battle" target="_blank" class="play-button">
+                🎮 プレイ開始（開発版）
             </a>
+            <!-- 本番環境用（コメント解除して使用）
+            <a href="https://beetlewargame.onrender.com/spinner-battle" target="_blank" class="play-button">
+                🎮 プレイ開始
+            </a>
+            -->
         </div>
 
         <!-- 既存ゲーム -->
@@ -293,8 +299,6 @@
                 🚧 Coming Soon...
             </button>
         </div>
-
-        <!-- その他のゲーム... -->
         
     </div>
 
