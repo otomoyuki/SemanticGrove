@@ -1,0 +1,205 @@
+# create_memory_table.py
+# このスクリプトを実行してテーブルを作成してください
+
+import sqlite3
+import os
+
+# データベースパス
+DB_PATH = 'SemanticGrove.db'
+
+def create_memory_posts_table():
+    """memory_postsテーブルを作成"""
+    
+    if not os.path.exists(DB_PATH):
+        print(f"❌ データベースが見つかりません: {DB_PATH}")
+        return False
+    
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # テーブル作成
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS memory_posts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                category TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                likes INTEGER DEFAULT 0,
+                status TEXT DEFAULT 'approved',
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        """)
+        
+        # インデックス作成
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_memory_posts_user_id 
+            ON memory_posts(user_id)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_memory_posts_status 
+            ON memory_posts(status)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_memory_posts_created_at 
+            ON memory_posts(created_at DESC)
+        """)
+        
+        conn.commit()
+        
+        # 確認
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='memory_posts'")
+        result = cursor.fetchone()
+        
+        conn.close()
+        
+        if result:
+            print("✅ memory_postsテーブルを作成しました")
+            print("\nテーブル構造:")
+            print("  - id: INTEGER PRIMARY KEY")
+            print("  - user_id: INTEGER (投稿者ID)")
+            print("  - title: TEXT (タイトル)")
+            print("  - content: TEXT (内容)")
+            print("  - category: TEXT (カテゴリー)")
+            print("  - created_at: TIMESTAMP (作成日時)")
+            print("  - likes: INTEGER (いいね数)")
+            print("  - status: TEXT (承認状態)")
+            return True
+        else:
+            print("❌ テーブル作成に失敗しました")
+            return False
+            
+    except Exception as e:
+        print(f"❌ エラー: {e}")
+        return False
+
+if __name__ == '__main__':
+    print("=" * 60)
+    print("記憶の巨大樹 - データベーステーブル作成")
+    print("=" * 60)
+    print()
+    
+    success = create_memory_posts_table()
+    
+    print()
+    if success:
+        print("🎉 セットアップ完了！")
+        print()
+        print("次のステップ:")
+        print("1. app_main.py にルートを追加")
+        print("2. サーバーを起動: python app/app_main.py")
+        print("3. ブラウザで http://localhost:5000/memory-tree にアクセス")
+    else:
+        print("❌ セットアップ失敗")
+        print()
+        print("確認事項:")
+        print("1. SemanticGrove.db が存在するか")
+        print("2. データベースファイルの権限")
+    
+    print("=" * 60)# create_memory_table.py
+# このスクリプトを実行してテーブルを作成してください
+
+import sqlite3
+import os
+
+# データベースパス
+DB_PATH = 'SemanticGrove.db'
+
+def create_memory_posts_table():
+    """memory_postsテーブルを作成"""
+    
+    if not os.path.exists(DB_PATH):
+        print(f"❌ データベースが見つかりません: {DB_PATH}")
+        return False
+    
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # テーブル作成
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS memory_posts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                content TEXT NOT NULL,
+                category TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                likes INTEGER DEFAULT 0,
+                status TEXT DEFAULT 'approved',
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        """)
+        
+        # インデックス作成
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_memory_posts_user_id 
+            ON memory_posts(user_id)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_memory_posts_status 
+            ON memory_posts(status)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_memory_posts_created_at 
+            ON memory_posts(created_at DESC)
+        """)
+        
+        conn.commit()
+        
+        # 確認
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='memory_posts'")
+        result = cursor.fetchone()
+        
+        conn.close()
+        
+        if result:
+            print("✅ memory_postsテーブルを作成しました")
+            print("\nテーブル構造:")
+            print("  - id: INTEGER PRIMARY KEY")
+            print("  - user_id: INTEGER (投稿者ID)")
+            print("  - title: TEXT (タイトル)")
+            print("  - content: TEXT (内容)")
+            print("  - category: TEXT (カテゴリー)")
+            print("  - created_at: TIMESTAMP (作成日時)")
+            print("  - likes: INTEGER (いいね数)")
+            print("  - status: TEXT (承認状態)")
+            return True
+        else:
+            print("❌ テーブル作成に失敗しました")
+            return False
+            
+    except Exception as e:
+        print(f"❌ エラー: {e}")
+        return False
+
+if __name__ == '__main__':
+    print("=" * 60)
+    print("記憶の巨大樹 - データベーステーブル作成")
+    print("=" * 60)
+    print()
+    
+    success = create_memory_posts_table()
+    
+    print()
+    if success:
+        print("🎉 セットアップ完了！")
+        print()
+        print("次のステップ:")
+        print("1. app_main.py にルートを追加")
+        print("2. サーバーを起動: python app/app_main.py")
+        print("3. ブラウザで http://localhost:5000/memory-tree にアクセス")
+    else:
+        print("❌ セットアップ失敗")
+        print()
+        print("確認事項:")
+        print("1. SemanticGrove.db が存在するか")
+        print("2. データベースファイルの権限")
+    
+    print("=" * 60)

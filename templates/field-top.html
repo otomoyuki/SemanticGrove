@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SemanticField - 意味の平原</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='field-top.css') }}">
+</head>
+<body>
+    <!-- タイトル -->
+    <h1 class="title">🌿 SemanticField 意味の平原</h1>
+
+    <!-- メインコンテナ -->
+    <div class="field-container" id="fieldContainer">
+        
+        <!-- 2Dマップビュー -->
+        <div class="view view-2d active" id="view2d">
+            <div class="area-row">
+                <!-- SemanticGrove -->
+                <a href="/main" class="area-card">
+                    <div class="area-icon">🌲</div>
+                    <div class="area-name">SemanticGrove</div>
+                    <div class="area-description">意味の森で学ぶ</div>
+                </a>
+                
+                <!-- ゲーム広場 -->
+                <a href="/games" class="area-card">
+                    <div class="area-icon">🎮</div>
+                    <div class="area-name">ゲーム広場</div>
+                    <div class="area-description">遊びながら学ぶ</div>
+                </a>
+                
+                <!-- 記憶の巨大樹 -->
+                <a href="/memory-tree" class="area-card coming-soon">
+                    <div class="area-icon">🌳</div>
+                    <div class="area-name">記憶の巨大樹</div>
+                    <div class="area-description">創作と共有</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+            </div>
+            
+            <div class="area-row">
+                <!-- 競恐竜場 -->
+                <a href="/dino-race" class="area-card coming-soon">
+                    <div class="area-icon">🦖</div>
+                    <div class="area-name">競恐竜場</div>
+                    <div class="area-description">恐竜レースバトル</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+                
+                <!-- ワイルドライフ -->
+                <a href="/wildlife" class="area-card coming-soon">
+                    <div class="area-icon">🦁</div>
+                    <div class="area-name">ワイルドライフ</div>
+                    <div class="area-description">動物の一生を体験</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+                
+                <!-- 店舗シミュレーター -->
+                <a href="/shop-sim" class="area-card coming-soon">
+                    <div class="area-icon">🏪</div>
+                    <div class="area-name">店舗経営</div>
+                    <div class="area-description">お店を育てよう</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3D鳥瞰図ビュー -->
+        <div class="view view-3d" id="view3d">
+            <!-- 奥の列 -->
+            <div class="area-row-3d area-far">
+                <a href="/memory-tree" class="area-card coming-soon">
+                    <div class="area-icon">🌳</div>
+                    <div class="area-name">記憶の巨大樹</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+                <a href="/wildlife" class="area-card coming-soon">
+                    <div class="area-icon">🦁</div>
+                    <div class="area-name">ワイルドライフ</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+            </div>
+            
+            <!-- 中央の列 -->
+            <div class="area-row-3d area-mid">
+                <a href="/games" class="area-card">
+                    <div class="area-icon">🎮</div>
+                    <div class="area-name">ゲーム広場</div>
+                </a>
+                <a href="/shop-sim" class="area-card coming-soon">
+                    <div class="area-icon">🏪</div>
+                    <div class="area-name">店舗経営</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+            </div>
+            
+            <!-- 手前の列 -->
+            <div class="area-row-3d area-near">
+                <a href="/main" class="area-card">
+                    <div class="area-icon">🌲</div>
+                    <div class="area-name">SemanticGrove</div>
+                </a>
+                <a href="/dino-race" class="area-card coming-soon">
+                    <div class="area-icon">🦖</div>
+                    <div class="area-name">競恐竜場</div>
+                    <div class="coming-badge">Coming Soon</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 切り替えボタン（画面下部中央） -->
+    <div class="view-toggle">
+        <button class="toggle-btn" id="btn2d" onclick="switchTo2D()">＜</button>
+        <span class="view-name" id="viewName">2Dマップ</span>
+        <button class="toggle-btn" id="btn3d" onclick="switchTo3D()">＞</button>
+    </div>
+
+    <!-- スワイプヒント -->
+    <div class="swipe-hint" id="swipeHint">← スワイプで切り替え →</div>
+
+    <script src="{{ url_for('static', filename='field-top.js') }}"></script>
+</body>
+</html>

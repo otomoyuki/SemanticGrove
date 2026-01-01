@@ -10,6 +10,8 @@ import traceback
 from datetime import datetime
 import random
 import uuid
+from werkzeug.utils import secure_filename
+from PIL import Image
 
 # 親ディレクトリをパスに追加
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -115,11 +117,7 @@ def get_or_create_stats_user():
     
     return stats_user
 
-# app_main.py に追加する関数
-
-
-
-# 既存のAPIルートを修正
+# ==================== 重み付き出題システム ====================
 
 @app.route("/api/practice/<mode>")
 def api_practice_weighted(mode):
@@ -152,7 +150,6 @@ def api_practice_weighted(mode):
         print(f"Error in weighted practice: {e}")
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/api/practice/high")
 def api_high_weighted():
@@ -244,7 +241,7 @@ def get_weighted_questions(user_id, language, mode, limit=10):
     sample_size = min(limit, len(questions))
     selected = random.choices(questions, weights=weights, k=sample_size)
     
-  # RowオブジェクトをJSON化可能な辞書に変換し、question_jsonをパース
+    # RowオブジェクトをJSON化可能な辞書に変換し、question_jsonをパース
     result = []
     for row in selected:
         # question_jsonをパースしてJSONオブジェクトに変換
@@ -264,7 +261,6 @@ def get_weighted_questions(user_id, language, mode, limit=10):
         })
     
     return result
-
 
 def record_answer(user_id, question_id, language, category, difficulty, mode, is_correct):
     """回答を記録し、統計を更新"""
@@ -388,9 +384,16 @@ def check_login_bonus(user_id):
         print(f"❌ ログインボーナスエラー: {e}")
         return 0
 
-# ==================== ルーティング（既存） ====================
+# ==================== ルーティング ====================
 
+# 🌿 SemanticField トップページ
 @app.route("/")
+def field_top():
+    """SemanticField トップページ（2D/3D切り替え可能）"""
+    return render_template('field-top.html')
+
+# 🌲 SemanticGrove（学習エリア）
+@app.route("/main")
 def main():
     """ホームページ"""
     return render_template("main.html")
@@ -415,19 +418,49 @@ def practice_high():
     """上級モード"""
     return render_template("practice-high.html")
 
-# ==================== 新規追加：ゲームとフィードバックページ ====================
-
+# 🎮 ゲーム広場
 @app.route("/games")
 def games():
     """ゲーム広場ページ"""
     return render_template("game-hub.html")
 
+# 📝 フィードバック
 @app.route("/feedback")
 def feedback():
     """フィードバックページ"""
     return render_template("feedback.html")
 
-# ====================================================================================
+# 🌳 記憶の巨大樹（実装済み）
+@app.route('/memory-tree')
+def memory_tree():
+    """記憶の巨大樹メインページ"""
+    return render_template('memory-tree.html')
+
+@app.route('/dino-race')
+def dino_race():
+    """競恐竜場（Coming Soon）"""
+    return render_template('coming-soon.html', 
+                         title='競恐竜場',
+                         icon='🦖',
+                         description='恐竜レースバトル。開発中です。')
+
+@app.route('/wildlife')
+def wildlife():
+    """ワイルドライフ（Coming Soon）"""
+    return render_template('coming-soon.html', 
+                         title='ワイルドライフ',
+                         icon='🦁',
+                         description='動物の一生を体験。準備中です。')
+
+@app.route('/shop-sim')
+def shop_sim():
+    """店舗シミュレーター（Coming Soon）"""
+    return render_template('coming-soon.html', 
+                         title='店舗経営シミュレーター',
+                         icon='🏪',
+                         description='お店を育てるシミュレーション。開発予定です。')
+
+# ==================== ユーザー認証 ====================
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -502,9 +535,17 @@ def logout():
     """ログアウト"""
     logout_user()
     flash('ログアウトしました', 'success')
-    return redirect(url_for('main'))
+    return redirect(url_for('field_top'))
 
-# ==================== API（既存） ====================
+
+# ==================== Phase 1.5: 利用規約 ====================
+
+@app.route('/terms')
+def terms():
+    """利用規約ページ"""
+    return render_template('terms.html')
+
+# ==================== API ====================
 
 @app.route("/api/learn")
 def get_learning_content():
@@ -658,7 +699,7 @@ def get_ranking():
 def get_practice_low():
     """初級モード用API - 問題数をカスタマイズ可能"""
     lang = request.args.get("lang", "JavaScript")
-    limit = request.args.get("limit", "10")  # デフォルト10問
+    limit = request.args.get("limit", "10")
     
     try:
         limit = int(limit)
@@ -671,7 +712,6 @@ def get_practice_low():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 難易度1-2の問題を取得
         query = f"""
             SELECT id, language, question_json, category, difficulty, score, meaning, usage
             FROM questions
@@ -733,7 +773,6 @@ def get_practice_middle():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 難易度3-4の問題を取得
         query = f"""
             SELECT id, language, question_json, category, difficulty, score, meaning, usage
             FROM questions
@@ -795,7 +834,6 @@ def get_practice_high():
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # 難易度5以上の問題を取得
         query = f"""
             SELECT id, language, question_json, category, difficulty, score, meaning, usage
             FROM questions
@@ -840,11 +878,11 @@ def get_practice_high():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-# ==================== 新API（統計機能） ====================
+# ==================== 統計API ====================
 
 @app.route('/api/answer', methods=['POST'])
 def api_answer():
-    """回答を記録（新機能）"""
+    """回答を記録"""
     stats_user = get_or_create_stats_user()
     data = request.json
     
@@ -862,7 +900,7 @@ def api_answer():
 
 @app.route('/api/stats/<language>/<mode>')
 def api_stats(language, mode):
-    """ユーザーの統計を取得（新機能）"""
+    """ユーザーの統計を取得"""
     stats_user = get_or_create_stats_user()
     
     stats = UserStats.query.filter_by(
@@ -934,26 +972,318 @@ def api_sg_balance():
     except Exception as e:
         print(f"SG balance error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# ==================== 管理画面 ====================
+
+# ==================== 記憶の巨大樹 API ====================
+# app_main.py に追加するコード（Phase 1対応）
+# 既存の記憶の巨大樹APIを以下に置き換えてください
+
+# 画像アップロード設定
+UPLOAD_FOLDER = os.path.join(STATIC_DIR, 'uploads', 'memory-tree')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+
+# アップロードフォルダを作成
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    """許可されたファイル拡張子かチェック"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def create_thumbnail(image_path, thumbnail_path, size=(800, 800)):
+    """サムネイル画像を作成"""
+    try:
+        with Image.open(image_path) as img:
+            # EXIF情報を保持しつつリサイズ
+            img.thumbnail(size, Image.Resampling.LANCZOS)
+            # RGBに変換（PNG透過対応）
+            if img.mode in ('RGBA', 'LA', 'P'):
+                background = Image.new('RGB', img.size, (255, 255, 255))
+                if img.mode == 'P':
+                    img = img.convert('RGBA')
+                background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                img = background
+            img.save(thumbnail_path, 'JPEG', quality=85, optimize=True)
+        return True
+    except Exception as e:
+        print(f"サムネイル作成エラー: {e}")
+        return False
+
+# ==================== 記憶の巨大樹 API (Phase 1対応) ====================
+
+@app.route('/api/memory-tree/posts', methods=['GET'])
+def api_memory_posts():
+    """投稿一覧を取得"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
         
-# ==================== エラーハンドラ ====================
+        cursor.execute("""
+            SELECT id, user_id, title, content, category, post_type, image_path, 
+                   created_at, likes, status
+            FROM memory_posts
+            WHERE status = 'approved'
+            ORDER BY created_at DESC
+            LIMIT 100
+        """)
+        
+        rows = cursor.fetchall()
+        conn.close()
+        
+        posts = []
+        for row in rows:
+            posts.append({
+                'id': row['id'],
+                'user_id': row['user_id'],
+                'title': row['title'],
+                'content': row['content'] or '',
+                'category': row['category'],
+                'post_type': row['post_type'],
+                'image_path': row['image_path'],
+                'created_at': row['created_at'],
+                'likes': row['likes'],
+                'status': row['status']
+            })
+        
+        return jsonify({
+            'success': True,
+            'posts': posts
+        })
+        
+    except Exception as e:
+        print(f"投稿一覧取得エラー: {e}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return jsonify({"error": "Page not found"}), 404
+@app.route('/api/memory-tree/posts/<int:post_id>', methods=['GET'])
+def api_memory_post_detail(post_id):
+    """投稿詳細を取得"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT id, user_id, title, content, category, post_type, image_path,
+                   created_at, likes, status
+            FROM memory_posts
+            WHERE id = ? AND status = 'approved'
+        """, (post_id,))
+        
+        row = cursor.fetchone()
+        conn.close()
+        
+        if row:
+            post = {
+                'id': row['id'],
+                'user_id': row['user_id'],
+                'title': row['title'],
+                'content': row['content'] or '',
+                'category': row['category'],
+                'post_type': row['post_type'],
+                'image_path': row['image_path'],
+                'created_at': row['created_at'],
+                'likes': row['likes'],
+                'status': row['status']
+            }
+            
+            return jsonify({
+                'success': True,
+                'post': post
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Post not found'
+            }), 404
+        
+    except Exception as e:
+        print(f"投稿詳細取得エラー: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
-@app.errorhandler(500)
-def internal_error(e):
-    print(f"500 Error: {e}")
-    traceback.print_exc()
-    return jsonify({"error": "Internal server error"}), 500
+@app.route('/api/memory-tree/post', methods=['POST'])
+def api_memory_post_create():
+    """新しい投稿を作成（画像対応）"""
+    try:
+        # フォームデータ取得
+        title = request.form.get('title')
+        category = request.form.get('category')
+        post_type = request.form.get('postType')
+        content = request.form.get('content', '')
+        image_description = request.form.get('imageDescription', '')
+        
+        # バリデーション
+        if not title or not category or not post_type:
+            return jsonify({
+                'success': False,
+                'error': 'タイトル、カテゴリー、投稿タイプは必須です'
+            }), 400
+        
+        if len(title) > 100:
+            return jsonify({
+                'success': False,
+                'error': 'タイトルは100文字以内にしてください'
+            }), 400
+        
+        # テキストのみ・両方の場合は本文必須
+        if post_type in ['text', 'both'] and not content:
+            return jsonify({
+                'success': False,
+                'error': '本文を入力してください'
+            }), 400
+        
+        if len(content) > 2000:
+            return jsonify({
+                'success': False,
+                'error': '本文は2000文字以内にしてください'
+            }), 400
+        
+        # 画像処理
+        image_path = None
+        if post_type in ['image', 'both']:
+            if 'image' not in request.files:
+                return jsonify({
+                    'success': False,
+                    'error': '画像をアップロードしてください'
+                }), 400
+            
+            file = request.files['image']
+            
+            if file.filename == '':
+                return jsonify({
+                    'success': False,
+                    'error': '画像をアップロードしてください'
+                }), 400
+            
+            if not allowed_file(file.filename):
+                return jsonify({
+                    'success': False,
+                    'error': 'PNG, JPG形式のみ対応しています。CADデータをお持ちの方は、レンダリング画像やスクリーンショットに変換してから投稿してください。'
+                }), 400
+            
+            # ファイルサイズチェック
+            file.seek(0, os.SEEK_END)
+            file_size = file.tell()
+            file.seek(0)
+            
+            if file_size > MAX_FILE_SIZE:
+                return jsonify({
+                    'success': False,
+                    'error': '画像サイズは5MB以内にしてください'
+                }), 400
+            
+            # ファイル名を生成（タイムスタンプ + ユーザーID）
+            import time
+            timestamp = int(time.time() * 1000)
+            stats_user = get_or_create_stats_user()
+            filename = secure_filename(f"{stats_user.id}_{timestamp}_{file.filename}")
+            
+            # 保存
+            filepath = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(filepath)
+            
+            # サムネイル作成
+            thumbnail_filename = f"thumb_{filename}"
+            thumbnail_path = os.path.join(UPLOAD_FOLDER, thumbnail_filename)
+            
+            if create_thumbnail(filepath, thumbnail_path):
+                # サムネイルをメインとして使用
+                os.remove(filepath)
+                os.rename(thumbnail_path, filepath)
+            
+            # 相対パスを保存
+            image_path = f"/static/uploads/memory-tree/{filename}"
+        
+        # 画像のみの場合は説明文を本文として保存
+        if post_type == 'image' and image_description:
+            content = image_description
+        
+        # ユーザーIDを取得
+        stats_user = get_or_create_stats_user()
+        user_id = stats_user.id
+        
+        # データベースに保存
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            INSERT INTO memory_posts 
+            (user_id, title, content, category, post_type, image_path, created_at, likes, status)
+            VALUES (?, ?, ?, ?, ?, ?, datetime('now'), 0, 'approved')
+        """, (user_id, title, content, category, post_type, image_path))
+        
+        post_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        
+        # SGポイント付与
+        sg_bonus = 1  # Phase 1: スパム防止
+        add_sg_points(user_id, sg_bonus, 'memory_tree_post')
+        
+        print(f"✅ 記憶の巨大樹投稿: {title} (タイプ: {post_type}) (+{sg_bonus} SG)")
+        
+        return jsonify({
+            'success': True,
+            'post_id': post_id,
+            'sg_bonus': sg_bonus,
+            'message': '投稿が完了しました！'
+        })
+        
+    except Exception as e:
+        print(f"投稿作成エラー: {e}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
-
-# ==================== フィードバック管理 ====================
+@app.route('/api/memory-tree/like/<int:post_id>', methods=['POST'])
+def api_memory_post_like(post_id):
+    """投稿にいいねする"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            UPDATE memory_posts
+            SET likes = likes + 1
+            WHERE id = ?
+        """, (post_id,))
+        
+        cursor.execute("SELECT likes FROM memory_posts WHERE id = ?", (post_id,))
+        row = cursor.fetchone()
+        
+        conn.commit()
+        conn.close()
+        
+        if row:
+            return jsonify({
+                'success': True,
+                'likes': row['likes']
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Post not found'
+            }), 404
+        
+    except Exception as e:
+        print(f"いいねエラー: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+# ==================== 管理画面 ====================
 
 @app.route('/admin/feedback')
 def admin_feedback():
     """フィードバック管理画面（パスワード保護）"""
-    # セッションチェック
     if not session.get('admin_authenticated'):
         return redirect(url_for('admin_login'))
     return render_template('feedback-admin.html')
@@ -963,8 +1293,7 @@ def admin_login():
     """管理画面ログイン"""
     if request.method == 'POST':
         password = request.form.get('password')
-        # ここでパスワードを設定（環境変数推奨、今回は直接記述）
-        ADMIN_PASSWORD = 'semantic2024'  # ← お好きなパスワードに変更してください
+        ADMIN_PASSWORD = 'semantic2024'
         
         if password == ADMIN_PASSWORD:
             session['admin_authenticated'] = True
@@ -1025,7 +1354,8 @@ def api_admin_feedback_update():
         print(f"Update feedback error: {e}")
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 500
-# ==================== README表示 ====================
+
+# ==================== README ====================
 
 @app.route('/readme')
 def readme():
@@ -1043,11 +1373,29 @@ def readme():
     except Exception as e:
         return f"Error: {str(e)}", 500
 
+# ==================== エラーハンドラ ====================
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return jsonify({"error": "Page not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(e):
+    print(f"500 Error: {e}")
+    traceback.print_exc()
+    return jsonify({"error": "Internal server error"}), 500
+
 # ==================== アプリ起動 ====================
 
 if __name__ == "__main__":
-    print("\nStarting Flask development server...")
-    print("Access the app at: http://localhost:5000")
+    print("\n" + "=" * 60)
+    print("🌿 SemanticField Starting...")
+    print("=" * 60)
+    print("📍 Access URLs:")
+    print("   - トップページ:     http://localhost:5000/")
+    print("   - SemanticGrove:   http://localhost:5000/main")
+    print("   - ゲーム広場:       http://localhost:5000/games")
+    print("   - フィードバック:   http://localhost:5000/feedback")
     print("=" * 60 + "\n")
     
     port = int(os.environ.get('PORT', 5000))

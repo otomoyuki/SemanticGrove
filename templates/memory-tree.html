@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記憶の巨大樹 - SemanticField</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='memory-tree.css') }}">
+</head>
+<body>
+    <!-- 背景：巨大な樹のシルエット -->
+    <div class="tree-background"></div>
+    
+    <!-- ヘッダー -->
+    <header class="header">
+        <a href="/" class="back-btn">← SemanticFieldに戻る</a>
+        <h1 class="title">🌳 記憶の巨大樹</h1>
+        <div class="sg-balance">
+            <span id="sgPoints">0</span> SG
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container">
+        
+        <!-- 説明セクション -->
+        <section class="intro-section">
+            <p class="intro-text">
+                みんなの創造が集まる場所。あなたの作品を樹に刻みましょう。<br>
+                投稿すると <strong>+1 SG</strong> を獲得できます！
+            </p>
+        </section>
+
+        <!-- タブ切り替え -->
+        <div class="tabs">
+            <button class="tab active" data-tab="posts">みんなの作品</button>
+            <button class="tab" data-tab="official">公式ストーリー</button>
+            <button class="tab" data-tab="new">新しい作品を投稿</button>
+        </div>
+
+        <!-- タブコンテンツ：みんなの作品 -->
+        <section id="posts-tab" class="tab-content active">
+            <!-- フィルター -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>カテゴリー:</label>
+                    <select id="categoryFilter" onchange="filterPosts()">
+                        <option value="">すべて</option>
+                        <optgroup label="📝 テキスト系">
+                            <option value="novel">小説</option>
+                            <option value="poem">詩</option>
+                            <option value="haiku">俳句・短歌</option>
+                            <option value="tweet">つぶやき</option>
+                            <option value="essay">エッセイ</option>
+                        </optgroup>
+                        <optgroup label="🎨 ビジュアル系">
+                            <option value="illustration">イラスト</option>
+                            <option value="car_design">車デザイン</option>
+                            <option value="architecture">建築デザイン</option>
+                            <option value="fashion">ファッション</option>
+                            <option value="game_idea">ゲームアイデア</option>
+                        </optgroup>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>タイプ:</label>
+                    <select id="typeFilter" onchange="filterPosts()">
+                        <option value="">すべて</option>
+                        <option value="text">テキスト</option>
+                        <option value="image">画像</option>
+                        <option value="both">テキスト+画像</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="posts-grid" id="postsGrid">
+                <div class="loading">読み込み中...</div>
+            </div>
+        </section>
+
+        <!-- タブコンテンツ：公式ストーリー -->
+        <section id="official-tab" class="tab-content">
+            <div class="official-stories">
+                <article class="story-card official">
+                    <div class="story-badge">公式</div>
+                    <h3>始まりの記憶</h3>
+                    <p class="story-preview">
+                        遥か昔、言葉が生まれる前の時代。人々は意味を探し求めていた。
+                        そして、一本の巨大な樹が芽吹いた。それが、記憶の巨大樹の始まりだった...
+                    </p>
+                    <button class="read-more" onclick="showOfficialStory('beginning')">続きを読む</button>
+                </article>
+
+                <article class="story-card official">
+                    <div class="story-badge">公式</div>
+                    <h3>意味の探求者</h3>
+                    <p class="story-preview">
+                        SemanticFieldには、かつて一人の探求者がいた。
+                        彼は言葉の意味を追い求め、この平原にたどり着いた...
+                    </p>
+                    <button class="read-more" onclick="showOfficialStory('seeker')">続きを読む</button>
+                </article>
+
+                <article class="story-card official">
+                    <div class="story-badge">公式</div>
+                    <h3>樹の守護者</h3>
+                    <p class="story-preview">
+                        記憶の巨大樹を守る者たちの物語。
+                        彼らは世代を超えて、記憶を守り続けている...
+                    </p>
+                    <button class="read-more" onclick="showOfficialStory('guardian')">続きを読む</button>
+                </article>
+            </div>
+        </section>
+
+        <!-- タブコンテンツ：新しい作品を投稿 -->
+        <section id="new-tab" class="tab-content">
+            <form class="post-form" id="postForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">タイトル</label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="title" 
+                        placeholder="あなたの作品のタイトル"
+                        required
+                        maxlength="100"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="category">カテゴリー</label>
+                    <select id="category" name="category" required onchange="updatePostTypeOptions()">
+                        <option value="">選択してください</option>
+                        <optgroup label="📝 テキスト系">
+                            <option value="novel">小説</option>
+                            <option value="poem">詩</option>
+                            <option value="haiku">俳句・短歌</option>
+                            <option value="tweet">つぶやき</option>
+                            <option value="essay">エッセイ</option>
+                        </optgroup>
+                        <optgroup label="🎨 ビジュアル系">
+                            <option value="illustration">イラスト</option>
+                            <option value="car_design">車デザイン</option>
+                            <option value="architecture">建築デザイン</option>
+                            <option value="fashion">ファッション</option>
+                            <option value="game_idea">ゲームアイデア</option>
+                        </optgroup>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="postType">投稿タイプ</label>
+                    <select id="postType" name="postType" required onchange="toggleContentFields()">
+                        <option value="text">テキストのみ</option>
+                        <option value="image">画像のみ</option>
+                        <option value="both">テキスト+画像</option>
+                    </select>
+                </div>
+
+                <!-- テキスト入力エリア -->
+                <div class="form-group" id="textGroup">
+                    <label for="content">本文（最大2000文字）</label>
+                    <textarea 
+                        id="content" 
+                        name="content" 
+                        rows="12"
+                        placeholder="あなたの作品を投稿してください..."
+                        maxlength="2000"
+                    ></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> / 2000文字
+                    </div>
+                </div>
+
+                <!-- 画像アップロードエリア -->
+                <div class="form-group" id="imageGroup" style="display: none;">
+                    <label for="image">画像アップロード</label>
+                    <div class="image-upload-area">
+                        <input 
+                            type="file" 
+                            id="image" 
+                            name="image" 
+                            accept="image/png,image/jpeg,image/jpg"
+                            onchange="previewImage(event)"
+                        >
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <div class="upload-icon">📷</div>
+                            <p>クリックして画像を選択</p>
+                            <p class="upload-note">PNG, JPG形式のみ（最大5MB）</p>
+                            <p class="upload-note-small">※CADデータはレンダリング画像に変換してください</p>
+                        </div>
+                        <div class="image-preview" id="imagePreview" style="display: none;">
+                            <img id="previewImg" src="" alt="プレビュー">
+                            <button type="button" class="remove-image" onclick="removeImage()">✕ 削除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 画像の説明（画像投稿の場合） -->
+                <div class="form-group" id="descriptionGroup" style="display: none;">
+                    <label for="imageDescription">画像の説明（任意）</label>
+                    <textarea 
+                        id="imageDescription" 
+                        name="imageDescription" 
+                        rows="4"
+                        placeholder="作品の説明、使用ツール、コンセプトなど..."
+                        maxlength="500"
+                    ></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        🌳 作品を投稿する (+1 SG)
+                    </button>
+                </div>
+
+                <div class="form-note">
+                    ※ 投稿された内容は公開されます。<br>
+                    ※ 不適切な内容は削除される場合があります。<br>
+                    ※ 画像は5MB以内、PNG/JPG形式のみ対応しています。<br>
+                    ※ CADデータ（.ai、.iges等）は対応していません。<br>
+                    　 レンダリング画像やスクリーンショットに変換してから投稿してください。
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- モーダル：投稿詳細 -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePostModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- モーダル：公式ストーリー詳細 -->
+    <div id="storyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeStoryModal()">&times;</span>
+            <div id="storyContent"></div>
+        </div>
+    </div>
+
+    <!-- 成功メッセージ -->
+    <div id="successMessage" class="success-message">
+        ✅ 作品を投稿しました！+1 SG を獲得！
+    </div>
+
+    <script src="{{ url_for('static', filename='memory-tree.js') }}"></script>
+</body>
+</html>

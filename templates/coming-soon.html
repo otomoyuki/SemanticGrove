@@ -1,137 +1,163 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>{{ page_title }} - SemanticGrove</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <style>
-    .coming-soon-container {
-      margin-left: 280px;
-      padding: 60px 40px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Coming Soon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .coming-soon-box {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 20px;
-      padding: 60px;
-      max-width: 600px;
-      text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
 
-    .coming-soon-icon {
-      font-size: 80px;
-      margin-bottom: 30px;
-    }
+        .container {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            max-width: 600px;
+        }
 
-    .coming-soon-title {
-      font-size: 2.5em;
-      color: #2d5016;
-      margin-bottom: 20px;
-      font-family: 'Dancing Script', cursive;
-    }
+        .icon {
+            font-size: 8rem;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
 
-    .coming-soon-message {
-      font-size: 1.2em;
-      color: #555;
-      margin-bottom: 40px;
-      line-height: 1.8;
-    }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
 
-    .back-button {
-      display: inline-block;
-      padding: 15px 40px;
-      background: linear-gradient(135deg, #4a7c2c, #6a9c3d);
-      color: white;
-      text-decoration: none;
-      border-radius: 30px;
-      font-size: 1.1em;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(74, 124, 44, 0.3);
-    }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
 
-    .back-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(74, 124, 44, 0.4);
-      background: linear-gradient(135deg, #5a8c3c, #7aac4d);
-    }
+        .description {
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
 
-    @media (max-width: 768px) {
-      .coming-soon-container {
-        margin-left: 0;
-        padding: 40px 20px;
-      }
+        .coming-soon-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
 
-      .coming-soon-box {
-        padding: 40px 30px;
-      }
+        .back-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
 
-      .coming-soon-title {
-        font-size: 2em;
-      }
-    }
-  </style>
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 40px auto;
+            max-width: 400px;
+        }
+
+        .feature-item {
+            padding: 12px 0;
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+
+        .feature-item::before {
+            content: "✓ ";
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .icon {
+                font-size: 5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .description {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 40px 30px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- 左サイドバー -->
-  <header class="toolbar">   
-    <nav class="toolbar-buttons">
-      {% if current_user.is_authenticated %}
-        <span class="user-info">
-          {{ current_user.display_name }}さん
-          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
-        </span>
-      {% endif %}
-      
-      <a href="/" class="toolbar-button">ホーム</a>
-      <a href="/readme" class="toolbar-button">README</a>
-      <a href="/learn" class="toolbar-button">学習モード</a>
-      <a href="/practice/low" class="toolbar-button">初級モード</a>
-      <a href="/practice/middle" class="toolbar-button">中級モード</a>
-      <a href="/practice/high" class="toolbar-button">上級モード</a>
-      <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
-      <a href="/feedback" class="toolbar-button">ご意見</a>
-      
-      {% if current_user.is_authenticated %}
-        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
-      {% else %}
-        <a href="/login" class="toolbar-button">ログイン</a>
-      {% endif %}
-    </nav>
-  </header>
-
-  <!-- メインコンテンツ -->
-  <div class="coming-soon-container">
-    <div class="coming-soon-box">
-      <div class="coming-soon-icon">
-        {% if page_title == 'ゲーム' %}
-          🎮
-        {% elif page_title == 'ご意見' %}
-          💭
-        {% else %}
-          🚧
+    <div class="container">
+        <div class="icon">{{ icon }}</div>
+        <h1>{{ title }}</h1>
+        <p class="description">{{ description }}</p>
+        <div class="coming-soon-badge">🚧 Coming Soon 🚧</div>
+        
+        {% if title == '記憶の巨大樹' %}
+        <div class="feature-list">
+            <div class="feature-item">ユーザー投稿機能</div>
+            <div class="feature-item">AI検閲システム</div>
+            <div class="feature-item">公式ストーリー</div>
+            <div class="feature-item">投稿でSGポイント獲得</div>
+        </div>
+        {% elif title == '競恐竜場' %}
+        <div class="feature-list">
+            <div class="feature-item">恐竜レースバトル</div>
+            <div class="feature-item">恐竜育成システム</div>
+            <div class="feature-item">マルチプレイヤー対戦</div>
+            <div class="feature-item">SGポイント報酬</div>
+        </div>
+        {% elif title == 'ワイルドライフ' %}
+        <div class="feature-list">
+            <div class="feature-item">動物の一生を体験</div>
+            <div class="feature-item">生態系シミュレーション</div>
+            <div class="feature-item">サバイバル要素</div>
+            <div class="feature-item">学習コンテンツ統合</div>
+        </div>
+        {% elif title == '店舗経営シミュレーター' %}
+        <div class="feature-list">
+            <div class="feature-item">お店を経営</div>
+            <div class="feature-item">在庫管理・価格設定</div>
+            <div class="feature-item">顧客満足度システム</div>
+            <div class="feature-item">経営学習要素</div>
+        </div>
         {% endif %}
-      </div>
-      
-      <h1 class="coming-soon-title">{{ page_title }}</h1>
-      
-      <p class="coming-soon-message">
-        この機能は現在開発中です。<br>
-        近日公開予定ですので、もうしばらくお待ちください！<br>
-        <br>
-        楽しみにしていてくださいね 🌱
-      </p>
-      
-      <a href="/" class="back-button">ホームに戻る</a>
+        
+        <a href="/" class="back-button">← SemanticFieldに戻る</a>
     </div>
-  </div>
-
 </body>
 </html>

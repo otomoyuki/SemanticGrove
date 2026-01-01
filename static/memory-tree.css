@@ -1,0 +1,660 @@
+/* 記憶の巨大樹 - スタイル (Phase 1対応) */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #2c5f4d 0%, #1a3a2e 100%);
+    color: #e8f5e9;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* 背景：巨大な樹のシルエット */
+.tree-background {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100vh;
+    background: 
+        radial-gradient(ellipse at bottom, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300"><path d="M100 250 L100 150 Q80 140 70 120 Q60 100 65 80 Q70 60 85 50 L100 40 L115 50 Q130 60 135 80 Q140 100 130 120 Q120 140 100 150 L100 250 M100 150 Q110 145 120 140 M100 150 Q90 145 80 140" fill="none" stroke="rgba(139, 195, 74, 0.15)" stroke-width="3"/></svg>') no-repeat center bottom;
+    background-size: 600px 800px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ヘッダー */
+.header {
+    position: sticky;
+    top: 0;
+    background: rgba(26, 58, 46, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.back-btn {
+    color: #a5d6a7;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.back-btn:hover {
+    color: #81c784;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #c8e6c9;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.sg-balance {
+    background: rgba(255, 235, 59, 0.2);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #fff59d;
+    font-size: 1.1rem;
+}
+
+/* コンテナ */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* イントロセクション */
+.intro-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.intro-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #c8e6c9;
+}
+
+.intro-text strong {
+    color: #fff59d;
+    font-weight: bold;
+}
+
+/* タブ */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.tab {
+    flex: 1;
+    min-width: 150px;
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 10px;
+    color: #a5d6a7;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tab:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tab.active {
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* タブコンテンツ */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* フィルター */
+.filters {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-group label {
+    color: #c8e6c9;
+    font-weight: bold;
+}
+
+.filter-group select {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(129, 199, 132, 0.3);
+    border-radius: 8px;
+    color: #e8f5e9;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #81c784;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-group select option {
+    background: #1a3a2e;
+    color: #e8f5e9;
+}
+
+/* 投稿グリッド */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px;
+    font-size: 1.2rem;
+    color: #a5d6a7;
+}
+
+/* 投稿カード */
+.post-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+    border-color: rgba(129, 199, 132, 0.5);
+}
+
+.post-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.post-content {
+    padding: 25px;
+}
+
+.post-type-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    background: rgba(33, 150, 243, 0.3);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #bbdefb;
+    margin-bottom: 10px;
+}
+
+.post-category {
+    display: inline-block;
+    padding: 5px 15px;
+    background: rgba(76, 175, 80, 0.3);
+    border-radius: 15px;
+    font-size: 0.85rem;
+    color: #c8e6c9;
+    margin-bottom: 15px;
+    margin-left: 8px;
+}
+
+.post-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #c8e6c9;
+    margin-bottom: 15px;
+}
+
+.post-preview {
+    color: #a5d6a7;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #81c784;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(129, 199, 132, 0.2);
+}
+
+.post-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.post-likes {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* 公式ストーリー */
+.official-stories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+.story-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 25px;
+    position: relative;
+}
+
+.story-card.official {
+    border: 2px solid rgba(255, 193, 7, 0.5);
+}
+
+.story-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #ffd54f 0%, #ffb300 100%);
+    color: #1a3a2e;
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.story-card h3 {
+    font-size: 1.5rem;
+    color: #fff9c4;
+    margin-bottom: 15px;
+}
+
+.story-preview {
+    color: #a5d6a7;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.read-more {
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.read-more:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
+}
+
+/* 投稿フォーム */
+.post-form {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    color: #c8e6c9;
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(129, 199, 132, 0.3);
+    border-radius: 10px;
+    color: #e8f5e9;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #81c784;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 200px;
+}
+
+.char-count {
+    text-align: right;
+    color: #a5d6a7;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* 画像アップロードエリア */
+.image-upload-area {
+    position: relative;
+}
+
+.image-upload-area input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.upload-placeholder {
+    border: 3px dashed rgba(129, 199, 132, 0.5);
+    border-radius: 10px;
+    padding: 60px 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s;
+}
+
+.upload-placeholder:hover {
+    border-color: #81c784;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.upload-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+}
+
+.upload-placeholder p {
+    color: #c8e6c9;
+    margin: 5px 0;
+}
+
+.upload-note {
+    font-size: 0.85rem;
+    color: #a5d6a7;
+}
+
+.upload-note-small {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 5px;
+}
+
+.image-preview {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.remove-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.remove-image:hover {
+    background: #f44336;
+    transform: scale(1.05);
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px rgba(76, 175, 80, 0.6);
+}
+
+.submit-btn:active {
+    transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.form-note {
+    text-align: center;
+    color: #a5d6a7;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    line-height: 1.6;
+}
+
+/* モーダル */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2c5f4d 0%, #1a3a2e 100%);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 900px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 2rem;
+    color: #a5d6a7;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #81c784;
+}
+
+.modal-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#modalContent h2,
+#storyContent h2 {
+    color: #c8e6c9;
+    margin-bottom: 20px;
+}
+
+#modalContent p,
+#storyContent p {
+    color: #a5d6a7;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+/* 成功メッセージ */
+.success-message {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 8px 32px rgba(76, 175, 80, 0.6);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.success-message.show {
+    opacity: 1;
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 20px;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .posts-grid,
+    .official-stories {
+        grid-template-columns: 1fr;
+    }
+
+    .post-form {
+        padding: 25px;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+}
