@@ -938,14 +938,14 @@ def api_feedback():
         db.session.add(feedback)
         db.session.commit()
         
-        # フィードバック投稿で10 SG付与
+        # フィードバック投稿で1 SG付与
         stats_user = get_or_create_stats_user()
-        add_sg_points(stats_user.id, 10, 'feedback')
-        
+        add_sg_points(stats_user.id, 1, 'feedback')
+
         return jsonify({
             'success': True, 
             'message': 'フィードバックを受け付けました',
-            'sg_bonus': 10
+            'sg_bonus': 1
         })
         
     except Exception as e:
@@ -973,6 +973,84 @@ def api_sg_balance():
         print(f"SG balance error: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
+# ==================== 🆕 ゲーム統合用 SG API ====================
+
+@app.route('/api/sg/add', methods=['POST'])
+def api_sg_add():
+    """SGポイントを追加（ゲーム報酬用）"""
+    try:
+        data = request.json
+        amount = data.get('amount', 0)
+        reason = data.get('reason', 'game_reward')
+        
+        if amount <= 0:
+            return jsonify({
+                'success': False,
+                'error': '無効な金額です'
+            }), 400
+        
+        stats_user = get_or_create_stats_user()
+        add_sg_points(stats_user.id, amount, reason)
+        
+        db.session.refresh(stats_user)
+        
+        print(f"✅ SG追加: {amount} SG ({reason})")
+        
+        return jsonify({
+            'success': True,
+            'added': amount,
+            'new_balance': stats_user.sg_points,
+            'reason': reason
+        })
+        
+    except Exception as e:
+        print(f"SG add error: {e}")
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/sg/spend', methods=['POST'])
+def api_sg_spend():
+    """SGポイントを消費（ガチャ・購入用）"""
+    try:
+        data = request.json
+        amount = data.get('amount', 0)
+        reason = data.get('reason', 'game_purchase')
+        
+        if amount <= 0:
+            return jsonify({
+                'success': False,
+                'error': '無効な金額です'
+            }), 400
+        
+        stats_user = get_or_create_stats_user()
+        
+        # 残高チェック
+        if stats_user.sg_points < amount:
+            return jsonify({
+                'success': False,
+                'error': 'SG不足',
+                'current_balance': stats_user.sg_points,
+                'required': amount
+            }), 400
+        
+        # SG消費（負の値で追加）
+        add_sg_points(stats_user.id, -amount, reason)
+        
+        db.session.refresh(stats_user)
+        
+        print(f"✅ SG消費: {amount} SG ({reason})")
+        
+        return jsonify({
+            'success': True,
+            'spent': amount,
+            'new_balance': stats_user.sg_points,
+            'reason': reason
+        })
+        
+    except Exception as e:
+        print(f"SG spend error: {e}")
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
 # ==================== 管理画面 ====================
 
 # ==================== 記憶の巨大樹 API ====================
