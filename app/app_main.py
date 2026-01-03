@@ -354,35 +354,41 @@ def add_sg_points(user_id, points, reason):
         return False
 
 def check_login_bonus(user_id):
-    """ログインボーナスをチェック"""
+    """ログインボーナスをチェック（修正版）"""
     try:
         user = PostgresUser.query.get(user_id)
         if not user:
             return 0
         
-        today = datetime.utcnow().date()
+        from datetime import date
+        today = date.today()
         
-        # 初回ログイン
-        if user.total_logins == 0:
+        # 今日既にボーナスを受け取っているか確認
+        if user.last_login_date == today:
+            return 0  # 既に受け取り済み
+        
+        # 初回ログイン（total_logins == 0 または last_login_date が None）
+        if user.total_logins == 0 or user.last_login_date is None:
             add_sg_points(user_id, 10, 'first_login')
             user.total_logins = 1
             user.last_login_date = today
             db.session.commit()
+            print(f"🎁 初回ログインボーナス: {user.username} +10 SG")
             return 10
         
-        # 連続ログイン
-        if user.last_login_date != today:
-            add_sg_points(user_id, 5, 'daily_login')
-            user.total_logins += 1
-            user.last_login_date = today
-            db.session.commit()
-            return 5
-        
-        return 0
+        # 連続ログイン（2回目以降）
+        add_sg_points(user_id, 5, 'daily_login')
+        user.total_logins += 1
+        user.last_login_date = today
+        db.session.commit()
+        print(f"🎁 デイリーログインボーナス: {user.username} +5 SG")
+        return 5
         
     except Exception as e:
         print(f"❌ ログインボーナスエラー: {e}")
+        db.session.rollback()
         return 0
+
 
 # ==================== ルーティング ====================
 
@@ -1051,6 +1057,26 @@ def api_sg_spend():
         print(f"SG spend error: {e}")
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/user/verify', methods=['GET'])
+def api_user_verify():
+    """ユーザー認証確認（ゲーム連携用）"""
+    try:
+        stats_user = get_or_create_stats_user()
+        
+        return jsonify({
+            'authenticated': True,
+            'user_id': stats_user.id,
+            'username': stats_user.username,
+            'sg_balance': stats_user.sg_points
+        })
+        
+    except Exception as e:
+        print(f"User verify error: {e}")
+        return jsonify({
+            'authenticated': False
+        }), 500
+
 # ==================== 管理画面 ====================
 
 # ==================== 記憶の巨大樹 API ====================
