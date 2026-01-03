@@ -116,6 +116,23 @@
 
         <!-- タブコンテンツ：新しい作品を投稿 -->
         <section id="new-tab" class="tab-content">
+            
+            <!-- ⚠️ 警告ボックス（新規追加） -->
+            <div class="warning-box">
+                <div class="warning-header">
+                    <span class="warning-icon">⚠️</span>
+                    <h3>投稿前に必ずお読みください</h3>
+                </div>
+                <ul class="warning-list">
+                    <li>📢 投稿された内容は<strong>公開</strong>されます</li>
+                    <li>🚫 不適切な内容は削除される場合があります</li>
+                    <li>🖼️ 画像は<strong>5MB以内</strong>、PNG/JPG形式のみ対応しています</li>
+                    <li>📐 CADデータ（.ai、.iges等）は対応していません<br>
+                        <small>→ レンダリング画像やスクリーンショットに変換してから投稿してください</small>
+                    </li>
+                </ul>
+            </div>
+
             <form class="post-form" id="postForm" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="title">タイトル</label>
@@ -215,14 +232,6 @@
                     <button type="submit" class="submit-btn" id="submitBtn">
                         🌳 作品を投稿する (+1 SG)
                     </button>
-                </div>
-
-                <div class="form-note">
-                    ※ 投稿された内容は公開されます。<br>
-                    ※ 不適切な内容は削除される場合があります。<br>
-                    ※ 画像は5MB以内、PNG/JPG形式のみ対応しています。<br>
-                    ※ CADデータ（.ai、.iges等）は対応していません。<br>
-                    　 レンダリング画像やスクリーンショットに変換してから投稿してください。
                 </div>
             </form>
         </section>

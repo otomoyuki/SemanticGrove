@@ -114,7 +114,7 @@ body {
     border: none;
     border-radius: 10px;
     color: #a5d6a7;
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
@@ -770,5 +770,127 @@ body {
     .modal-content {
         padding: 30px 20px;
         margin: 20px;
+    }
+}
+
+/* ===== ⚠️ 警告ボックス（Phase 1.5追加） ===== */
+
+.warning-box {
+    background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+    border: 3px solid #ffc107;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 16px rgba(255, 193, 7, 0.3);
+    animation: fadeInDown 0.5s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.warning-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+}
+
+.warning-icon {
+    font-size: 2.5em;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.warning-header h3 {
+    color: #f57c00;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.warning-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.warning-list li {
+    padding: 12px 0;
+    color: #5d4037;
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    border-bottom: 1px solid rgba(255, 193, 7, 0.15);
+    transition: all 0.3s;
+}
+
+.warning-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.warning-list li:hover {
+    padding-left: 10px;
+    color: #3e2723;
+}
+
+.warning-list li strong {
+    color: #d84315;
+    font-weight: bold;
+    background: rgba(255, 87, 34, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.warning-list li small {
+    display: block;
+    margin-top: 8px;
+    margin-left: 20px;
+    color: #795548;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .warning-box {
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .warning-icon {
+        font-size: 2em;
+    }
+
+    .warning-header h3 {
+        font-size: 1.1em;
+    }
+
+    .warning-list li {
+        font-size: 0.95rem;
+        padding: 10px 0;
+    }
+
+    .warning-list li small {
+        margin-left: 15px;
+        font-size: 0.85em;
     }
 }
