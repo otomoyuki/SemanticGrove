@@ -4,13 +4,15 @@ from datetime import datetime
 db = SQLAlchemy()
 
 class User(db.Model):
-    """ユーザーテーブル（将来の認証機能用）"""
+    """ユーザーテーブル（JWT認証対応版）"""
     __tablename__ = 'users'
     __bind_key__ = 'postgres'
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    session_id = db.Column(db.String(200), unique=True)  # 一時的なセッションID
+    email = db.Column(db.String(120), unique=True, nullable=True)  # 追加
+    password_hash = db.Column(db.String(255), nullable=True)  # 追加
+    session_id = db.Column(db.String(200), unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_active = db.Column(db.DateTime, default=datetime.utcnow)
     sg_points = db.Column(db.Integer, default=0)
