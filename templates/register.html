@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規登録 - SemanticField</title>
     <link rel="stylesheet" href="/static/register.css">
+    <style>
+        /* 既存のCSSがない場合の基本スタイル */
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="register-container">
@@ -14,6 +33,7 @@
             <h1>🌿 SemanticField</h1>
             <h2>新規登録</h2>
             <p>学び、創造し、交流しよう</p>
+            <div class="bonus-badge">🎁 登録ボーナス: 10 SG プレゼント！</div>
         </div>
 
         <!-- 登録フォーム -->
@@ -169,8 +189,9 @@
                 </div>
             </div>
 
-            <!-- エラーメッセージ -->
-            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <!-- メッセージ -->
+            <div id="successMessage" class="success-message"></div>
+            <div id="errorMessage" class="error-message"></div>
 
             <!-- 登録ボタン -->
             <button type="submit" id="submitBtn" class="submit-btn" disabled>
@@ -190,6 +211,6 @@
         </div>
     </div>
 
-    <script src="/static/register.js"></script>
+    <script src="/static/register-enhanced.js"></script>
 </body>
 </html>

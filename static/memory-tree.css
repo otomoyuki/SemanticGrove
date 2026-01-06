@@ -1,5 +1,19 @@
 /* 記憶の巨大樹 - スタイル (Phase 1対応) */
+body {
+    margin-left: 200px;
+}
 
+@media (max-width: 1024px) {
+    body {
+        margin-left: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-left: 60px;
+    }
+}
 * {
     margin: 0;
     padding: 0;
@@ -806,7 +820,7 @@ body {
 }
 
 .warning-icon {
-    font-size: 2.5em;
+    font-size: 2.0em;
     animation: pulse 2s ease-in-out infinite;
 }
 

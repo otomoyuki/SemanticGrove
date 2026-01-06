@@ -6,6 +6,20 @@
     <title>ゲーム広場 - SemanticField</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        body {
+            margin-left: 200px;
+        }
+
+    @media (max-width: 1024px) {
+        body {
+            margin-left: 80px;
+            }
+        }
+    @media (max-width: 768px) {
+        body {
+            margin-left: 60px;
+            }
+        }
         .game-hub-container {
             max-width: 900px;
             margin: 80px auto 40px;

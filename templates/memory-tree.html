@@ -4,9 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>記憶の巨大樹 - SemanticField</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='memory-tree.css') }}">
 </head>
 <body>
+<header class="toolbar">
+  <nav class="toolbar-buttons">
+    <!-- ログイン済みユーザー情報（最初は非表示） -->
+    <span class="user-info" id="userInfo" style="display: none;">
+      <span id="userName"></span>さん
+      <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+    </span>
+    
+    <a href="/" class="toolbar-button">ホーム</a>
+    <a href="/main" class="toolbar-button">メイン</a>
+    <a href="/readme" class="toolbar-button">README</a>
+    <a href="/learn" class="toolbar-button">学習モード</a>
+    <a href="/practice/low" class="toolbar-button">初級モード</a>
+    <a href="/practice/middle" class="toolbar-button">中級モード</a>
+    <a href="/practice/high" class="toolbar-button">上級モード</a>
+    <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
+    <a href="/feedback" class="toolbar-button">ご意見</a>
+    
+    <!-- 認証ボタン -->
+    <a href="/login" class="toolbar-button" id="loginBtn">🔐 ログイン</a>
+    <a href="/register" class="toolbar-button" id="registerBtn">✨ 新規登録</a>
+    <a href="#" class="toolbar-button logout-button" id="logoutBtn" style="display: none;">ログアウト</a>
+  </nav>
+</header>
+
+<script>
+// ログイン状態確認
+document.addEventListener('DOMContentLoaded', function() {
+  const token = localStorage.getItem('access_token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
+  if (token && user.username) {
+    // ログイン済み
+    document.getElementById('userInfo').style.display = 'inline';
+    document.getElementById('userName').textContent = user.username;
+    document.getElementById('sgBalance').textContent = user.sg_points || 0;
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('registerBtn').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+  }
+  
+  // ログアウト
+  document.getElementById('logoutBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    localStorage.clear();
+    window.location.href = '/login?logout=success';
+  });
+});
+</script>
     <!-- 背景：巨大な樹のシルエット -->
     <div class="tree-background"></div>
     

@@ -391,6 +391,13 @@ def check_login_bonus(user_id):
 
 
 # ==================== ルーティング ====================
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/register')
+def register_page():
+    return render_template('register.html')
 
 # 🌿 SemanticField トップページ
 @app.route("/")
