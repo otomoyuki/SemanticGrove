@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン - SemanticField</title>
-    <link rel="stylesheet" href="/static/login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - SemanticGrove</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
         /* 基本スタイル（login.cssがない場合） */
         .error-message {
@@ -145,7 +145,7 @@
             <!-- パスワード -->
             <div class="form-group">
                 <label for="password">
-                    <span class="label-icon">🔒</span>
+                    <span class="label-icon">🔑</span>
                     パスワード
                 </label>
                 <div class="password-input-wrapper">
@@ -169,7 +169,7 @@
 
             <!-- ログインボタン -->
             <button type="submit" id="submitBtn" class="submit-btn">
-                🔐 ログイン
+                🔓 ログイン
             </button>
 
             <!-- パスワード忘れ -->
@@ -190,6 +190,6 @@
         </div>
     </div>
 
-    <script src="/static/login-enhanced.js"></script>
+    <script src="{{ url_for('static', filename='login.js') }}"></script>
 </body>
 </html>
