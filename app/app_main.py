@@ -1,13 +1,15 @@
 import markdown
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash, session
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import json
 import os
 import sys
 import traceback
-from datetime import datetime
+from datetime import datetime,date
 import random
 import uuid
 from werkzeug.utils import secure_filename
@@ -52,6 +54,19 @@ login_manager.login_message = 'このページにアクセスするにはログ�
 
 # PostgreSQLデータベースの初期化（新機能用）
 db.init_app(app)
+
+# JWT設定
+jwt = JWTManager(app)
+
+# CORS設定
+CORS(app, resources={
+    r"/api/*": {
+        "origins": ["http://localhost:5173", "https://beetle-war-game.vercel.app", "*"],
+        "supports_credentials": True,
+        "allow_headers": ["Content-Type", "Authorization"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    }
+})
 
 # データベーステーブルの作成
 with app.app_context():
@@ -117,6 +132,326 @@ def get_or_create_stats_user():
     
     return stats_user
 
+# ==================== SGポイント管理 ====================
+
+def add_sg_points(user_id, points, reason):
+    """SGポイントを加算"""
+    try:
+        user = PostgresUser.query.get(user_id)
+        if not user:
+            print(f"❌ ユーザーが見つかりません: {user_id}")
+            return False
+        
+        user.sg_points += points
+        
+        # 履歴を記録
+        history = PointHistory(
+            user_id=user_id,
+            points=points,
+            reason=reason
+        )
+        db.session.add(history)
+        db.session.commit()
+        
+        print(f"✅ SG加算: user_id={user_id}, +{points} SG ({reason})")
+        return True
+        
+    except Exception as e:
+        print(f"❌ SG加算エラー: {e}")
+        db.session.rollback()
+        return False
+
+# ↓↓↓ ここから追加 ↓↓↓
+
+def check_login_bonus(user_id):
+    """ログインボーナスをチェック"""
+    try:
+        user = PostgresUser.query.get(user_id)
+        if not user:
+            return 0
+        
+        today = date.today()
+        
+        # 今日既にボーナスを受け取っているか確認
+        if user.last_login_date == today:
+            return 0  # 既に受け取り済み
+        
+        # 初回ログイン
+        if user.total_logins == 0 or user.last_login_date is None:
+            add_sg_points(user_id, 10, 'first_login')
+            user.total_logins = 1
+            user.last_login_date = today
+            db.session.commit()
+            return 10
+        
+        # 連続ログイン（2回目以降）
+        add_sg_points(user_id, 5, 'daily_login')
+        user.total_logins += 1
+        user.last_login_date = today
+        db.session.commit()
+        return 5
+        
+    except Exception as e:
+        print(f"❌ ログインボーナスエラー: {e}")
+        db.session.rollback()
+        return 0
+
+# ==================== JWT認証API ====================
+
+@app.route('/api/auth/register', methods=['POST'])
+def api_auth_register():
+    """ユーザー登録API"""
+    try:
+        data = request.get_json()
+        
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+        
+        # バリデーション
+        if not username or not email or not password:
+            return jsonify({
+                'success': False,
+                'error': 'すべてのフィールドを入力してください'
+            }), 400
+        
+        # ユーザー名の重複チェック
+        if PostgresUser.query.filter_by(username=username).first():
+            return jsonify({
+                'success': False,
+                'error': 'このユーザー名は既に使用されています'
+            }), 400
+        
+        # メールの重複チェック
+        if PostgresUser.query.filter_by(email=email).first():
+            return jsonify({
+                'success': False,
+                'error': 'このメールアドレスは既に使用されています'
+            }), 400
+        
+        # パスワードハッシュ化
+        password_hash = generate_password_hash(password)
+        
+        # 新規ユーザー作成
+        new_user = PostgresUser(
+            username=username,
+            email=email,
+            password_hash=password_hash,
+            sg_points=10  # 登録ボーナス
+        )
+        
+        db.session.add(new_user)
+        db.session.commit()
+        
+        # SGポイント履歴
+        history = PointHistory(
+            user_id=new_user.id,
+            points=10,
+            reason='registration_bonus'
+        )
+        db.session.add(history)
+        db.session.commit()
+        
+        # JWTトークン生成
+        access_token = create_access_token(identity=new_user.id)
+        refresh_token = create_refresh_token(identity=new_user.id)
+        
+        print(f"✅ 新規登録: {username} (ID: {new_user.id})")
+        
+        return jsonify({
+            'success': True,
+            'message': '登録が完了しました',
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user': {
+                'id': new_user.id,
+                'username': new_user.username,
+                'email': new_user.email,
+                'sg_points': new_user.sg_points
+            }
+        }), 201
+        
+    except Exception as e:
+        print(f"❌ 登録エラー: {e}")
+        db.session.rollback()
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': 'サーバーエラーが発生しました'
+        }), 500
+
+@app.route('/api/auth/login', methods=['POST'])
+def api_auth_login():
+    """ログインAPI"""
+    try:
+        data = request.get_json()
+        
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return jsonify({
+                'success': False,
+                'error': 'ユーザー名とパスワードを入力してください'
+            }), 400
+        
+        # ユーザー検索
+        user = PostgresUser.query.filter_by(username=username).first()
+        
+        if not user or not user.password_hash or not check_password_hash(user.password_hash, password):
+            return jsonify({
+                'success': False,
+                'error': 'ユーザー名またはパスワードが正しくありません'
+            }), 401
+        
+        # ログインボーナス
+        login_bonus = check_login_bonus(user.id)
+        
+        # JWTトークン生成
+        access_token = create_access_token(identity=user.id)
+        refresh_token = create_refresh_token(identity=user.id)
+        
+        print(f"✅ ログイン: {username} (ボーナス: {login_bonus} SG)")
+        
+        return jsonify({
+            'success': True,
+            'message': 'ログインしました',
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'login_bonus': login_bonus,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'sg_points': user.sg_points,
+                'total_logins': user.total_logins
+            }
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ ログインエラー: {e}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': 'サーバーエラーが発生しました'
+        }), 500
+
+@app.route('/api/auth/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def api_auth_refresh():
+    """トークン更新API"""
+    try:
+        current_user_id = get_jwt_identity()
+        access_token = create_access_token(identity=current_user_id)
+        
+        return jsonify({
+            'success': True,
+            'access_token': access_token
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ トークン更新エラー: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'トークン更新に失敗しました'
+        }), 500
+
+@app.route('/api/auth/me', methods=['GET'])
+@jwt_required()
+def api_auth_me():
+    """ユーザー情報取得API"""
+    try:
+        current_user_id = get_jwt_identity()
+        user = PostgresUser.query.get(current_user_id)
+        
+        if not user:
+            return jsonify({
+                'success': False,
+                'error': 'ユーザーが見つかりません'
+            }), 404
+        
+        return jsonify({
+            'success': True,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'sg_points': user.sg_points,
+                'total_logins': user.total_logins,
+                'created_at': user.created_at.isoformat() if user.created_at else None
+            }
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ ユーザー情報取得エラー: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'ユーザー情報の取得に失敗しました'
+        }), 500
+
+@app.route('/api/sg/balance-jwt', methods=['GET'])
+@jwt_required()
+def api_sg_balance_jwt():
+    """SG残高取得API（JWT認証）"""
+    try:
+        current_user_id = get_jwt_identity()
+        user = PostgresUser.query.get(current_user_id)
+        
+        if not user:
+            return jsonify({
+                'success': False,
+                'error': 'ユーザーが見つかりません'
+            }), 404
+        
+        return jsonify({
+            'success': True,
+            'balance': user.sg_points
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ SG残高取得エラー: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'SG残高の取得に失敗しました'
+        }), 500
+
+@app.route('/api/sg/add-jwt', methods=['POST'])
+@jwt_required()
+def api_sg_add_jwt():
+    """SG加算API（JWT認証）"""
+    try:
+        current_user_id = get_jwt_identity()
+        data = request.get_json()
+        
+        amount = data.get('amount', 0)
+        reason = data.get('reason', 'unknown')
+        
+        if amount <= 0:
+            return jsonify({
+                'success': False,
+                'error': '加算額は1以上である必要があります'
+            }), 400
+        
+        # SG加算
+        add_sg_points(current_user_id, amount, reason)
+        
+        # 更新後の残高取得
+        user = PostgresUser.query.get(current_user_id)
+        
+        return jsonify({
+            'success': True,
+            'new_balance': user.sg_points,
+            'added': amount
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ SG加算エラー: {e}")
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': 'SG加算に失敗しました'
+        }), 500
+        
 # ==================== 重み付き出題システム ====================
 
 @app.route("/api/practice/<mode>")

@@ -4,6 +4,7 @@
 本番環境: SQLite(問題) + PostgreSQL(ユーザー)
 """
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,6 +13,11 @@ class Config:
     """基本設定"""
     
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
+    
+    # JWT設定（追加）
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret-key-change-in-production'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
     
     # SQLite（問題データ - 読み取り専用）
     SQLALCHEMY_DATABASE_URI = 'sqlite:///SemanticGrove.db'
