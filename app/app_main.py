@@ -178,18 +178,18 @@ def check_login_bonus(user_id):
         
         # 初回ログイン
         if user.total_logins == 0 or user.last_login_date is None:
-            add_sg_points(user_id, 10, 'first_login')
+            add_sg_points(user_id, 500, 'first_login')  # 500SGに増額
             user.total_logins = 1
             user.last_login_date = today
             db.session.commit()
-            return 10
+            return 500
         
         # 連続ログイン（2回目以降）
-        add_sg_points(user_id, 5, 'daily_login')
+        add_sg_points(user_id, 10, 'daily_login')  # 10SGに増額
         user.total_logins += 1
         user.last_login_date = today
         db.session.commit()
-        return 5
+        return 10
         
     except Exception as e:
         print(f"❌ ログインボーナスエラー: {e}")
@@ -237,18 +237,19 @@ def api_auth_register():
             username=username,
             email=email,
             password_hash=password_hash,
-            sg_points=10  # 登録ボーナス
+            sg_points=500  # 登録ボーナス 500SGに増額
         )
-        
+
         db.session.add(new_user)
         db.session.commit()
-        
+
         # SGポイント履歴
         history = PointHistory(
             user_id=new_user.id,
-            points=10,
+            points=500,  # 500SGに増額
             reason='registration_bonus'
         )
+
         db.session.add(history)
         db.session.commit()
         
@@ -451,7 +452,7 @@ def api_sg_add_jwt():
             'success': False,
             'error': 'SG加算に失敗しました'
         }), 500
-        
+
 # ==================== 重み付き出題システム ====================
 
 @app.route("/api/practice/<mode>")
