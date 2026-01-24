@@ -4,9 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新規登録 - SemanticField</title>
-    <link rel="stylesheet" href="/static/register.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
     <style>
-        /* 既存のCSSがない場合の基本スタイル */
+        /* 基本スタイル（auth.cssがない場合） */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
         .error-message {
             background: #fee;
             color: #c33;
@@ -23,6 +31,180 @@
             margin: 20px 0;
             display: none;
         }
+        .register-container {
+            max-width: 600px;
+            width: 90%;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .register-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .register-header h2 {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .register-header p {
+            color: #666;
+        }
+        .bonus-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        .required {
+            color: #ff4444;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .help-text {
+            display: block;
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 5px;
+        }
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-input-wrapper input {
+            padding-right: 45px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .register-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .terms-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .terms-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .terms-box {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .terms-scroll {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .terms-summary {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .terms-summary ul {
+            padding-left: 20px;
+        }
+        .terms-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #667eea;
+            text-decoration: none;
+        }
+        .terms-checkbox {
+            margin: 20px 0;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
+            width: auto;
+        }
+        .checkbox-text {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -33,7 +215,7 @@
             <h1>🌿 SemanticField</h1>
             <h2>新規登録</h2>
             <p>学び、創造し、交流しよう</p>
-            <div class="bonus-badge">🎁 登録ボーナス: 10 SG プレゼント！</div>
+            <div class="bonus-badge">🎁 登録ボーナス: 500 SG プレゼント！</div>
         </div>
 
         <!-- 登録フォーム -->
@@ -72,23 +254,6 @@
                     autocomplete="email"
                 >
                 <small class="help-text">パスワード再設定に使用します</small>
-            </div>
-
-            <!-- 表示名 -->
-            <div class="form-group">
-                <label for="displayName">
-                    <span class="label-icon">✨</span>
-                    表示名 <span class="required">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    id="displayName" 
-                    name="displayName" 
-                    required
-                    maxlength="30"
-                    placeholder="他のユーザーに表示される名前"
-                >
-                <small class="help-text">日本語OK、30文字まで</small>
             </div>
 
             <!-- パスワード -->
@@ -180,7 +345,6 @@
                             name="agreeTerms" 
                             required
                         >
-                        <span class="checkmark"></span>
                         <span class="checkbox-text">
                             <strong>利用規約とコミュニティガイドラインに同意します</strong>
                             <small>（必須）</small>

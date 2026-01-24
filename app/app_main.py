@@ -809,82 +809,83 @@ def shop_sim():
                          icon='🏪',
                          description='お店を育てるシミュレーション。開発予定です。')
 
-# ==================== ユーザー認証 ====================
+# ==================== ユーザー認証（旧Flask-Login - 無効化） ====================
+# JWT認証に移行したため無効化。必要に応じて復元可能。
 
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    """ログイン"""
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-        user_data = cursor.fetchone()
-        
-        if user_data and check_password_hash(user_data['password_hash'], password):
-            user = User(user_data['id'], user_data['username'], user_data['email'], user_data['display_name'])
-            login_user(user)
-            
-            cursor.execute("UPDATE users SET last_login = ? WHERE id = ?", (datetime.now(), user.id))
-            conn.commit()
-            conn.close()
-            
-            flash('ログインしました！', 'success')
-            return redirect(url_for('main'))
-        else:
-            conn.close()
-            flash('ユーザー名またはパスワードが間違っています', 'error')
-    
-    return render_template("login.html")
+# @app.route("/login", methods=['GET', 'POST'])
+# def login():
+#     """ログイン"""
+#     if request.method == 'POST':
+#         username = request.form.get('username')
+#         password = request.form.get('password')
+#         
+#         conn = get_db_connection()
+#         cursor = conn.cursor()
+#         cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+#         user_data = cursor.fetchone()
+#         
+#         if user_data and check_password_hash(user_data['password_hash'], password):
+#             user = User(user_data['id'], user_data['username'], user_data['email'], user_data['display_name'])
+#             login_user(user)
+#             
+#             cursor.execute("UPDATE users SET last_login = ? WHERE id = ?", (datetime.now(), user.id))
+#             conn.commit()
+#             conn.close()
+#             
+#             flash('ログインしました！', 'success')
+#             return redirect(url_for('main'))
+#         else:
+#             conn.close()
+#             flash('ユーザー名またはパスワードが間違っています', 'error')
+#     
+#     return render_template("login.html")
 
-@app.route("/register", methods=['GET', 'POST'])
-def register():
-    """ユーザー登録"""
-    if request.method == 'POST':
-        username = request.form.get('username')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        display_name = request.form.get('display_name') or username
-        
-        if not username or not email or not password:
-            flash('すべての項目を入力してください', 'error')
-            return render_template("register.html")
-        
-        if len(password) < 6:
-            flash('パスワードは6文字以上にしてください', 'error')
-            return render_template("register.html")
-        
-        try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            
-            password_hash = generate_password_hash(password)
-            cursor.execute("""
-                INSERT INTO users (username, email, password_hash, display_name)
-                VALUES (?, ?, ?, ?)
-            """, (username, email, password_hash, display_name))
-            
-            conn.commit()
-            conn.close()
-            
-            flash('登録が完了しました！ログインしてください', 'success')
-            return redirect(url_for('login'))
-            
-        except sqlite3.IntegrityError:
-            flash('そのユーザー名またはメールアドレスは既に使用されています', 'error')
-            return render_template("register.html")
-    
-    return render_template("register.html")
+# @app.route("/register", methods=['GET', 'POST'])
+# def register():
+#     """ユーザー登録"""
+#     if request.method == 'POST':
+#         username = request.form.get('username')
+#         email = request.form.get('email')
+#         password = request.form.get('password')
+#         display_name = request.form.get('display_name') or username
+#         
+#         if not username or not email or not password:
+#             flash('すべての項目を入力してください', 'error')
+#             return render_template("register.html")
+#         
+#         if len(password) < 6:
+#             flash('パスワードは6文字以上にしてください', 'error')
+#             return render_template("register.html")
+#         
+#         try:
+#             conn = get_db_connection()
+#             cursor = conn.cursor()
+#             
+#             password_hash = generate_password_hash(password)
+#             cursor.execute("""
+#                 INSERT INTO users (username, email, password_hash, display_name)
+#                 VALUES (?, ?, ?, ?)
+#             """, (username, email, password_hash, display_name))
+#             
+#             conn.commit()
+#             conn.close()
+#             
+#             flash('登録が完了しました！ログインしてください', 'success')
+#             return redirect(url_for('login'))
+#             
+#         except sqlite3.IntegrityError:
+#             flash('そのユーザー名またはメールアドレスは既に使用されています', 'error')
+#             return render_template("register.html")
+#     
+#     return render_template("register.html")
 
-@app.route("/logout")
-@login_required
-def logout():
-    """ログアウト"""
-    logout_user()
-    flash('ログアウトしました', 'success')
-    return redirect(url_for('field_top'))
+# @app.route("/logout")
+# @login_required
+# def logout():
+#     """ログアウト"""
+#     logout_user()
+#     flash('ログアウトしました', 'success')
+#     return redirect(url_for('field_top'))
 
 
 # ==================== Phase 1.5: 利用規約 ====================

@@ -1,5 +1,5 @@
-// static/login-enhanced.js
-// 既存のUI機能 + JWT認証統合版
+// static/login.js
+// JWT認証統合版
 
 // DOM要素
 const form = document.getElementById('loginForm');
@@ -58,8 +58,8 @@ form.addEventListener('submit', async (e) => {
             
             // 成功メッセージ
             let message = `ログイン成功！ようこそ ${data.user.username} さん`;
-            if (data.user.bonus > 0) {
-                message += `\n🎁 ログインボーナス: +${data.user.bonus} SG`;
+            if (data.login_bonus > 0) {
+                message += `\n🎁 ログインボーナス: +${data.login_bonus} SG`;
             }
             showSuccess(message);
             

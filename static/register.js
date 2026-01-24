@@ -1,11 +1,10 @@
-// static/register-enhanced.js
-// 既存のUI機能 + JWT認証統合版
+// static/register.js
+// JWT認証統合版
 
 // DOM要素
 const form = document.getElementById('registerForm');
 const usernameInput = document.getElementById('username');
 const emailInput = document.getElementById('email');
-const displayNameInput = document.getElementById('displayName');
 const passwordInput = document.getElementById('password');
 const passwordConfirmInput = document.getElementById('passwordConfirm');
 const agreeTermsCheckbox = document.getElementById('agreeTerms');
@@ -106,13 +105,12 @@ form.addEventListener('submit', async (e) => {
     // フォームデータ取得
     const username = usernameInput.value.trim();
     const email = emailInput.value.trim();
-    const displayName = displayNameInput.value.trim();
     const password = passwordInput.value;
     const passwordConfirm = passwordConfirmInput.value;
     const agreeTerms = agreeTermsCheckbox.checked;
     
     // バリデーション
-    if (!username || !email || !displayName || !password || !passwordConfirm) {
+    if (!username || !email || !password || !passwordConfirm) {
         showError('すべてのフィールドを入力してください');
         return;
     }
@@ -156,8 +154,7 @@ form.addEventListener('submit', async (e) => {
             body: JSON.stringify({
                 username,
                 email,
-                password,
-                display_name: displayName  // 表示名も送信
+                password
             })
         });
         
@@ -167,13 +164,10 @@ form.addEventListener('submit', async (e) => {
             // トークンをlocalStorageに保存
             localStorage.setItem('access_token', data.access_token);
             localStorage.setItem('refresh_token', data.refresh_token);
-            localStorage.setItem('user', JSON.stringify({
-                ...data.user,
-                display_name: displayName
-            }));
+            localStorage.setItem('user', JSON.stringify(data.user));
             
             // 成功メッセージ
-            showSuccess(`🎉 登録成功！ようこそ ${displayName} さん！\n登録ボーナス: 10 SG を獲得しました！`);
+            showSuccess(`🎉 登録成功！ようこそ ${data.user.username} さん！\n登録ボーナス: 500 SG を獲得しました！`);
             
             // リダイレクト
             setTimeout(() => {
