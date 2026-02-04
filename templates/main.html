@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,12 +11,11 @@
   <!-- 左サイドバー -->
   <header class="toolbar">   
     <nav class="toolbar-buttons">
-      {% if current_user.is_authenticated %}
-        <span class="user-info">
-          {{ current_user.display_name }}さん
-          <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
-        </span>
-      {% endif %}
+      <!-- ログイン済みユーザー情報（最初は非表示） -->
+      <span class="user-info" id="userInfo" style="display: none;">
+        <span id="userName"></span>さん
+        <span class="sg-display">💎 <span id="sgBalance">0</span> SG</span>
+      </span>
       
       <a href="/" class="toolbar-button">ホーム</a>
       <a href="/main" class="toolbar-button active">メイン</a>
@@ -29,13 +27,37 @@
       <a href="/games" class="toolbar-button game-button">🎮ゲーム</a>
       <a href="/feedback" class="toolbar-button">ご意見</a>
       
-      {% if current_user.is_authenticated %}
-        <a href="/logout" class="toolbar-button logout-button">ログアウト</a>
-      {% else %}
-        <a href="/login" class="toolbar-button">ログイン</a>
-      {% endif %}
+      <!-- 認証ボタン -->
+      <a href="/login" class="toolbar-button" id="loginBtn">🔐 ログイン</a>
+      <a href="/register" class="toolbar-button" id="registerBtn">✨ 新規登録</a>
+      <a href="#" class="toolbar-button logout-button" id="logoutBtn" style="display: none;">ログアウト</a>
     </nav>
   </header>
+
+  <script>
+  // ログイン状態確認
+  document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('access_token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (token && user.username) {
+      // ログイン済み
+      document.getElementById('userInfo').style.display = 'inline';
+      document.getElementById('userName').textContent = user.username;
+      document.getElementById('sgBalance').textContent = user.sg_points || 0;
+      document.getElementById('loginBtn').style.display = 'none';
+      document.getElementById('registerBtn').style.display = 'none';
+      document.getElementById('logoutBtn').style.display = 'inline-block';
+    }
+    
+    // ログアウト
+    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = '/login?logout=success';
+    });
+  });
+  </script>
 
   <!-- メインコンテンツ -->
   <div class="main-content">
