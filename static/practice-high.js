@@ -219,7 +219,8 @@ function selectAnswer(selectedIndex) {
   selectedAnswer = selectedIndex;
   
   const question = highQuestions[currentIndex];
-  const correctIndex = question.answer[0];
+  const correctAnswerId = question.answer;
+  const correctIndex = question.options.findIndex(opt => opt.id   === correctAnswerId);
   const isCorrect = selectedIndex === correctIndex;
   
   recordAnswer(question.id, isCorrect, question);
