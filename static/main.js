@@ -61,7 +61,7 @@ function showLearningQuestion() {
   
   // answerは配列で、[2]のような形式
   // optionsは [{"id":"A","text":"赤"}, ...] の配列
-  const correctIndex = data.answer[0]; // 例: 2
+  const correctIndex = data.options.findIndex(opt => opt.id === data.answer);
   const correctOption = data.options[correctIndex];
   const correctText = correctOption ? correctOption.text : "不明";
   

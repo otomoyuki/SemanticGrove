@@ -24,7 +24,7 @@ function escapeHtml(text) {
 // 選択肢の中身だけをシャッフルする関数
 function shuffleOptions(question) {
   const originalOptions = [...question.options];
-  const originalCorrectIndex = question.answer[0];
+  const originalCorrectIndex = originalOptions.findIndex(opt => opt.id === question.answer);
   
   const labels = ['A', 'B', 'C', 'D'];
   const indices = originalOptions.map((_, index) => index);
@@ -46,7 +46,7 @@ function shuffleOptions(question) {
   return {
     ...question,
     options: shuffledOptions,
-    answer: [newCorrectIndex],
+    answer: labels[newCorrectIndex],
     originalOptions: originalOptions,
     originalAnswer: [originalCorrectIndex]
   };
@@ -641,58 +641,6 @@ function showQuestion(index) {
   
   const nextButtonArea = document.getElementById("nextButtonArea");
   if (nextButtonArea) nextButtonArea.style.display = "none";
-}
-
-function selectAnswer(selectedIndex) {
-  if (answered) return;
-  
-  answered = true;
-  selectedAnswer = selectedIndex;
-  
-  const question = highQuestions[currentIndex];
-  const correctIndex = question.answer[0];
-  const isCorrect = selectedIndex === correctIndex;
-  
-  recordAnswer(question.id, isCorrect, question);
-
-  if (isCorrect) {
-    correctCount++;
-    currentScore += question.score || 1;
-  }
-  
-  markQuestionResult(currentIndex, isCorrect);
-  
-  const buttons = document.querySelectorAll("#choicesArea button");
-  buttons.forEach(function(btn, idx) {
-    btn.disabled = true;
-    if (idx === correctIndex) {
-      btn.classList.add("correct");
-    } else if (idx === selectedIndex && !isCorrect) {
-      btn.classList.add("incorrect");
-    }
-  });
-  
-  const feedbackArea = document.getElementById("feedbackArea");
-  feedbackArea.style.display = "block";
-  
-  if (isCorrect) {
-    feedbackArea.className = "feedback correct";
-    feedbackArea.innerHTML = "<h3>✓ 正解！</h3><p>+" + (question.score || 1) + "点</p>";
-  } else {
-    const correctOption = question.options[correctIndex];
-    feedbackArea.className = "feedback incorrect";
-    feedbackArea.innerHTML = "<h3>✗ 不正解</h3><p>正解は <strong>" + escapeHtml(correctOption.text) + "</strong> です</p>";  // ラベル削除
-  }
-  
-  const explanationArea = document.getElementById("explanationArea");
-  explanationArea.style.display = "block";
-  document.getElementById("explanationText").textContent = question.explanation || "解説はありません";
-  document.getElementById("learningPointText").textContent = question.learning_point || "学習ポイントはありません";
-  
-  document.getElementById("nextButtonArea").style.display = "block";
-  
-  const accuracy = Math.round((correctCount / (currentIndex + 1)) * 100);
-  document.getElementById("accuracyRate").textContent = accuracy + "%";
 }
 
 function markQuestionResult(index, isCorrect) {

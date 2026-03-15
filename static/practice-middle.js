@@ -21,8 +21,8 @@ function escapeHtml(text) {
 // 選択肢の中身だけをシャッフルする関数
 function shuffleOptions(question) {
   const originalOptions = [...question.options];
-  const originalCorrectIndex = question.answer[0];
-  
+  const originalCorrectIndex = originalOptions.findIndex(opt => opt.id === question.answer);
+
   const labels = ['A', 'B', 'C', 'D'];
   const indices = originalOptions.map((_, index) => index);
   
@@ -43,7 +43,7 @@ function shuffleOptions(question) {
   return {
     ...question,
     options: shuffledOptions,
-    answer: [newCorrectIndex],
+    answer: labels[newCorrectIndex],
     originalOptions: originalOptions,
     originalAnswer: [originalCorrectIndex]
   };
@@ -143,7 +143,7 @@ function selectAnswer(selectedIndex) {
   answered = true;
   selectedAnswer = selectedIndex;
   
-  const question = highQuestions[currentIndex];
+  const question = middleQuestions[currentIndex];
   const correctAnswerId = question.answer;
   const correctIndex = question.options.findIndex(opt => opt.id   === correctAnswerId);
   const isCorrect = selectedIndex === correctIndex;

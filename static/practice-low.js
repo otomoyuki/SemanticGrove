@@ -21,7 +21,7 @@ function escapeHtml(text) {
 function shuffleOptions(question) {
   // 元の選択肢を保存
   const originalOptions = [...question.options];
-  const originalCorrectIndex = question.answer[0];
+  const originalCorrectIndex = originalOptions.findIndex(opt => opt.id === question.answer);
   
   // 固定ラベル（A, B, C, Dは変えない）
   const labels = ['A', 'B', 'C', 'D'];
@@ -47,7 +47,7 @@ function shuffleOptions(question) {
   return {
     ...question,
     options: shuffledOptions,
-    answer: [newCorrectIndex],
+    answer: labels[newCorrectIndex],
     originalOptions: originalOptions,
     originalAnswer: [originalCorrectIndex]
   };
@@ -158,7 +158,7 @@ function selectLowAnswer(selectedIndex) {
   
   answered = true;
   
-  const question = highQuestions[currentIndex];
+  const question = lowQuestions[currentIndex];
   const correctAnswerId = question.answer;
   const correctIndex = question.options.findIndex(opt => opt.id   === correctAnswerId);
   const isCorrect = selectedIndex === correctIndex;
