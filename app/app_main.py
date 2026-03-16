@@ -1167,67 +1167,6 @@ def get_practice_middle():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/practice/high")
-def get_practice_high():
-    """上級モード用API - 問題数をカスタマイズ可能"""
-    lang = request.args.get("lang", "JavaScript")
-    limit = request.args.get("limit", "10")
-    
-    try:
-        limit = int(limit)
-        if limit not in [10, 20, 30, 50]:
-            limit = 10
-    except ValueError:
-        limit = 10
-    
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        query = f"""
-            SELECT id, language, question_json, category, difficulty, score, meaning, usage
-            FROM questions
-            WHERE language = ? AND CAST(difficulty AS INTEGER) >= 5
-            ORDER BY RANDOM()
-            LIMIT {limit}
-        """
-        
-        cursor.execute(query, (lang,))
-        rows = cursor.fetchall()
-        conn.close()
-        
-        result = []
-        for row in rows:
-            try:
-                question_data = json.loads(row['question_json'])
-                
-                item = {
-                    "id": row['id'],
-                    "question": question_data.get('question', ''),
-                    "options": question_data.get('options', []),
-                    "answer": question_data.get('answer', [0]),
-                    "explanation": row['meaning'] or '',
-                    "learning_point": row['usage'] or '',
-                    "difficulty": row['difficulty'],
-                    "score": row['score']
-                }
-                
-                if 'image' in question_data and question_data['image']:
-                    item['image'] = question_data['image']
-                
-                result.append(item)
-                
-            except Exception as e:
-                print(f"Error processing row {row['id']}: {e}")
-                continue
-        
-        return jsonify(result)
-        
-    except Exception as e:
-        print(f"Error: {e}")
-        traceback.print_exc()
-        return jsonify({"error": str(e)}), 500
-
 # ==================== 統計API ====================
 
 @app.route('/api/answer', methods=['POST'])

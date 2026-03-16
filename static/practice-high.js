@@ -24,25 +24,30 @@ function escapeHtml(text) {
 // 選択肢の中身だけをシャッフルする関数
 function shuffleOptions(question) {
   const originalOptions = [...question.options];
-  const originalCorrectIndex = originalOptions.findIndex(opt => opt.id === question.answer);
-  
+
+  // answer が旧形式 [0] でも新形式 'C' でも両対応
+  let originalCorrectIndex;
+  if (Array.isArray(question.answer)) {
+    originalCorrectIndex = question.answer[0];
+  } else {
+    originalCorrectIndex = originalOptions.findIndex(opt => opt.id === question.answer);
+  }
+
   const labels = ['A', 'B', 'C', 'D'];
   const indices = originalOptions.map((_, index) => index);
-  
-  // Fisher-Yates シャッフル
+
   for (let i = indices.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [indices[i], indices[j]] = [indices[j], indices[i]];
   }
-  
-  // ラベルは固定、中身だけシャッフル
+
   const shuffledOptions = indices.map((originalIndex, newIndex) => ({
     id: labels[newIndex],
     text: originalOptions[originalIndex].text
   }));
-  
+
   const newCorrectIndex = indices.indexOf(originalCorrectIndex);
-  
+
   return {
     ...question,
     options: shuffledOptions,
@@ -452,36 +457,6 @@ function getModeFromPage() {
   return 'practice';
 }
 
-// 選択肢の中身だけをシャッフルする関数
-function shuffleOptions(question) {
-  const originalOptions = [...question.options];
-  const originalCorrectIndex = question.answer[0];
-  
-  const labels = ['A', 'B', 'C', 'D'];
-  const indices = originalOptions.map((_, index) => index);
-  
-  // Fisher-Yates シャッフル
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  
-  // ラベルは固定、中身だけシャッフル
-  const shuffledOptions = indices.map((originalIndex, newIndex) => ({
-    id: labels[newIndex],
-    text: originalOptions[originalIndex].text
-  }));
-  
-  const newCorrectIndex = indices.indexOf(originalCorrectIndex);
-  
-  return {
-    ...question,
-    options: shuffledOptions,
-    answer: [newCorrectIndex],
-    originalOptions: originalOptions,
-    originalAnswer: [originalCorrectIndex]
-  };
-}
 
 function startChallenge() {
   const lang = document.getElementById("language").value;
