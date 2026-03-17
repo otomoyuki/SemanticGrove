@@ -254,8 +254,8 @@ def api_auth_register():
         db.session.commit()
         
         # JWTトークン生成
-        access_token = create_access_token(identity=new_user.id)
-        refresh_token = create_refresh_token(identity=new_user.id)
+        access_token = create_access_token(identity=str(new_user.id))
+        refresh_token = create_refresh_token(identity=str(new_user.id))
         
         print(f"✅ 新規登録: {username} (ID: {new_user.id})")
         
@@ -309,8 +309,8 @@ def api_auth_login():
         login_bonus = check_login_bonus(user.id)
         
         # JWTトークン生成
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
         
         print(f"✅ ログイン: {username} (ボーナス: {login_bonus} SG)")
         
@@ -342,8 +342,8 @@ def api_auth_login():
 def api_auth_refresh():
     """トークン更新API"""
     try:
-        current_user_id = get_jwt_identity()
-        access_token = create_access_token(identity=current_user_id)
+        current_user_id = int(get_jwt_identity())
+        access_token = create_access_token(identity=str(current_user_id))
         
         return jsonify({
             'success': True,
@@ -362,7 +362,7 @@ def api_auth_refresh():
 def api_auth_me():
     """ユーザー情報取得API"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = PostgresUser.query.get(current_user_id)
         
         if not user:
@@ -395,7 +395,7 @@ def api_auth_me():
 def api_sg_balance_jwt():
     """SG残高取得API（JWT認証）"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         user = PostgresUser.query.get(current_user_id)
         
         if not user:
@@ -421,7 +421,7 @@ def api_sg_balance_jwt():
 def api_sg_add_jwt():
     """SG加算API（JWT認証）"""
     try:
-        current_user_id = get_jwt_identity()
+        current_user_id = int(get_jwt_identity())
         data = request.get_json()
         
         amount = data.get('amount', 0)
