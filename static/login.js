@@ -72,11 +72,13 @@ form.addEventListener('submit', async (e) => {
             }, 1500);
             
         } else {
+            // ログイン失敗時にlocalStorageをクリア（古いトークン除去）
+            localStorage.clear();
             showError(data.error || 'ログインに失敗しました');
             submitBtn.disabled = false;
             submitBtn.textContent = '🔐 ログイン';
-        }
-        
+}
+
     } catch (error) {
         console.error('Login error:', error);
         showError('ログインに失敗しました。もう一度お試しください。');
