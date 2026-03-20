@@ -131,7 +131,6 @@
 
 - アプリ内「ご意見」ボタン
 - GitHub Issues
-- Twitter（準備中）
 
 ---
 

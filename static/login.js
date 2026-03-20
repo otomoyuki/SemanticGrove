@@ -102,14 +102,29 @@ function showSuccess(message) {
 }
 
 // ページ読み込み時
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('✅ Login page loaded');
     
-    // 既にログイン済みの場合はリダイレクト
+    // 既にログイン済みの場合はトークンを検証してからリダイレクト
     const token = localStorage.getItem('access_token');
     if (token) {
-        console.log('Already logged in, redirecting...');
-        window.location.href = '/';
+        try {
+            const res = await fetch('/api/sg/balance-jwt', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                // トークンが有効ならリダイレクト
+                console.log('Already logged in, redirecting...');
+                window.location.href = '/';
+                return;
+            } else {
+                // 無効なトークンはクリアしてログイン画面を表示
+                console.log('Token invalid, clearing...');
+                localStorage.clear();
+            }
+        } catch (e) {
+            localStorage.clear();
+        }
     }
     
     // ログアウト後のメッセージ
