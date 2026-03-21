@@ -950,11 +950,34 @@ def get_learning_content():
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/save-score", methods=['POST'])
-@login_required
+@jwt_required(optional=True)
 def save_score():
     """スコアを保存"""
     data = request.json
     
+    try:
+        # JWT認証でユーザー取得
+        user_id_str = get_jwt_identity()
+        
+        # 上級モードの終了時ボーナス計算
+        if data.get('mode') == 'high' and user_id_str:
+            try:
+                user_id = int(user_id_str)
+                correct = data.get('correct', 0)
+                total = data.get('total', 1)
+                bonus = round((correct ** 2 / total ** 2) * 20)
+                
+                if bonus > 0:
+                    add_sg_points(user_id, bonus, f'advanced_completion_bonus_{correct}/{total}')
+                    print(f"✅ 上級モード完了ボーナス: {bonus} SG ({correct}/{total}問正解)")
+            except Exception as e:
+                print(f"⚠️ ボーナス計算エラー: {e}")
+        
+        return jsonify({"success": True, "message": "スコアを保存しました"})
+        
+    except Exception as e:
+        print(f"Error saving score: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500    
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
