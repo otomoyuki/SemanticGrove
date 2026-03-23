@@ -14,15 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // SGポイント残高を取得
 async function loadSGBalance() {
     try {
-        const response = await fetch('/api/sg/balance');
+        const token = localStorage.getItem('access_token');
+        if (!token) return;
+
+        const response = await fetch('/api/sg/balance-jwt', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         const data = await response.json();
-        
+
         if (data.success) {
-            document.getElementById('sgPoints').textContent = data.balance;
-            
-            if (data.bonus > 0) {
-                showSuccessMessage(`ログインボーナス +${data.bonus} SG を獲得！`);
-            }
+            const sgPoints = document.getElementById('sgPoints');
+            if (sgPoints) sgPoints.textContent = data.balance;
         }
     } catch (error) {
         console.error('SGポイント取得エラー:', error);
