@@ -58,6 +58,11 @@ db.init_app(app)
 # JWT設定
 jwt = JWTManager(app)
 
+# トークン有効期限を延長
+from datetime import timedelta
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=90)
+
 # CORS設定
 CORS(app, resources={
     r"/api/*": {
@@ -1193,13 +1198,21 @@ def get_practice_middle():
 # ==================== 統計API ====================
 
 @app.route('/api/answer', methods=['POST'])
+@jwt_required(optional=True)
 def api_answer():
     """回答を記録"""
-    stats_user = get_or_create_stats_user()
     data = request.json
     
+    # JWTユーザーがいればそちらを使う、なければゲスト
+    user_id_str = get_jwt_identity()
+    if user_id_str:
+        user_id = int(user_id_str)
+    else:
+        stats_user = get_or_create_stats_user()
+        user_id = stats_user.id
+    
     record_answer(
-        user_id=stats_user.id,
+        user_id=user_id,
         question_id=data['question_id'],
         language=data['language'],
         category=data.get('category', ''),
