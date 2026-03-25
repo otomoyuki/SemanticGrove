@@ -238,11 +238,14 @@ def api_auth_register():
         password_hash = generate_password_hash(password)
         
         # 新規ユーザー作成
+        from datetime import date as date_cls
         new_user = PostgresUser(
             username=username,
             email=email,
             password_hash=password_hash,
-            sg_points=500  # 登録ボーナス 500SGに増額
+            sg_points=500,  # 登録ボーナス 500SG
+            total_logins=1,              # ← 初回登録済みとしてマーク
+            last_login_date=date_cls.today()  # ← 今日ログイン済みとしてマーク
         )
 
         db.session.add(new_user)
