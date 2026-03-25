@@ -665,71 +665,6 @@ def record_answer(user_id, question_id, language, category, difficulty, mode, is
     
     db.session.commit()
 
-# ==================== SGポイントシステム ====================
-
-def add_sg_points(user_id, points, reason):
-    """SGポイントを付与"""
-    try:
-        user = PostgresUser.query.get(user_id)
-        if not user:
-            return False
-        
-        # ポイント追加
-        user.sg_points += points
-        
-        # 履歴記録
-        history = PointHistory(
-            user_id=user_id,
-            points=points,
-            reason=reason
-        )
-        db.session.add(history)
-        db.session.commit()
-        
-        print(f"✅ {user.username} に {points} SG を付与: {reason}")
-        return True
-        
-    except Exception as e:
-        print(f"❌ ポイント付与エラー: {e}")
-        db.session.rollback()
-        return False
-
-def check_login_bonus(user_id):
-    """ログインボーナスをチェック（修正版）"""
-    try:
-        user = PostgresUser.query.get(user_id)
-        if not user:
-            return 0
-        
-        from datetime import date
-        today = date.today()
-        
-        # 今日既にボーナスを受け取っているか確認
-        if user.last_login_date == today:
-            return 0  # 既に受け取り済み
-        
-        # 初回ログイン（total_logins == 0 または last_login_date が None）
-        if user.total_logins == 0 or user.last_login_date is None:
-            add_sg_points(user_id, 10, 'first_login')
-            user.total_logins = 1
-            user.last_login_date = today
-            db.session.commit()
-            print(f"🎁 初回ログインボーナス: {user.username} +10 SG")
-            return 10
-        
-        # 連続ログイン（2回目以降）
-        add_sg_points(user_id, 5, 'daily_login')
-        user.total_logins += 1
-        user.last_login_date = today
-        db.session.commit()
-        print(f"🎁 デイリーログインボーナス: {user.username} +5 SG")
-        return 5
-        
-    except Exception as e:
-        print(f"❌ ログインボーナスエラー: {e}")
-        db.session.rollback()
-        return 0
-
 
 # ==================== ルーティング ====================
 @app.route('/login')
@@ -983,47 +918,6 @@ def save_score():
     except Exception as e:
         print(f"Error saving score: {e}")
         return jsonify({"success": False, "error": str(e)}), 500    
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        cursor.execute("""
-            INSERT INTO scores (user_id, mode, language, total_questions, correct_answers, time_seconds, score_points)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            current_user.id,
-            data.get('mode'),
-            data.get('language'),
-            data.get('total'),
-            data.get('correct'),
-            data.get('time'),
-            data.get('score')
-        ))
-        
-        conn.commit()
-        conn.close()
-        
-        # ✨ 上級モードの終了時ボーナス計算
-        if data.get('mode') == 'high':
-            try:
-                stats_user = get_or_create_stats_user()
-                correct = data.get('correct', 0)
-                total = data.get('total', 1)
-                
-                # (正解数²/問題数²)×20 を計算して四捨五入
-                bonus = round((correct ** 2 / total ** 2) * 20)
-                
-                if bonus > 0:
-                    add_sg_points(stats_user.id, bonus, f'advanced_completion_bonus_{correct}/{total}')
-                    print(f"✅ 上級モード完了ボーナス: {bonus} SG ({correct}/{total}問正解)")
-            except Exception as e:
-                print(f"⚠️ ボーナス計算エラー: {e}")
-        
-        return jsonify({"success": True, "message": "スコアを保存しました"})
-        
-    except Exception as e:
-        print(f"Error saving score: {e}")
-        return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route("/api/ranking")
 def get_ranking():
