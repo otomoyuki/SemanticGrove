@@ -95,8 +95,10 @@ class UserStats(db.Model):
     
     def update_stats(self):
         """統計を再計算"""
-        if self.total_questions_attempted > 0:
-            self.accuracy_rate = round((self.total_correct / self.total_questions_attempted) * 100, 1)
+        total_attempted = self.total_questions_attempted or 0
+        total_correct = self.total_correct or 0
+        if total_attempted > 0:
+            self.accuracy_rate = round((total_correct / total_attempted) * 100, 1)
         else:
             self.accuracy_rate = 0.0
     
