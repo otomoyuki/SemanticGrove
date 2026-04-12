@@ -41,10 +41,7 @@ class DevelopmentConfig(Config):
     """開発環境設定"""
     DEBUG = True
     SQLALCHEMY_ECHO = True
-    # 開発環境では明示的にSQLiteを使う
-    SQLALCHEMY_BINDS = {
-        'postgres': 'sqlite:///users.db'
-    }
+    # SQLALCHEMY_BINDSは親クラスのConfigから引き継ぐ（DATABASE_URLがあればPostgreSQL、なければSQLite）
 
 class ProductionConfig(Config):
     """本番環境設定"""
